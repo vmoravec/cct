@@ -1,24 +1,17 @@
-# Cct
-
-TODO: Write a gem description
+# Cct - Cucumber Cloud Testsuite
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'cct'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install cct
+  $ git clone git@github.com:vmoravec/cct
+  $ bundle install
 
 ## Usage
+
+  $ rake -T
+
+or
+
+  $ rake help
 
 TODO: Write usage instructions here
 
