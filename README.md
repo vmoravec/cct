@@ -2,17 +2,17 @@
 
 ## Installation
 
-    `git clone git@github.com:vmoravec/cct`
+     git clone git@github.com:vmoravec/cct
 
-    `bundle install`
+     bundle install
 
 ## Usage
 
-    `rake -T`
+     rake -T
 
-or
+  or
 
-    `rake help`
+     rake help
 
 TODO: Write usage instructions here
 
