@@ -1,0 +1,8 @@
+automation:
+  git:
+    url: github.com:suse-cloud/automation
+    branch: master
+
+vendor_dir: vendor
+autoload_config_files: []
+

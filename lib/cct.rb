@@ -1,5 +1,8 @@
 require "cct/version"
 
 module Cct
-  # Your code goes here...
+  class << self
+    def setup root_dir
+    end
+  end
 end
