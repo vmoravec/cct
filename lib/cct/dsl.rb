@@ -20,11 +20,13 @@ module Cct
       Rake::Task[task_name].invoke
     end
 
-    def feature version_with_name
-      @feature = version_with_name
+    def feature name=nil
+      name ? @feature = name : @feature
     end
 
     def feature_task name, options={}
+      fail "Feature name not defined" unless feature
+
       rake_desc = options[:name].dup
       rake_desc << " -- #{options[:tag]}" if options[:tag]
 
