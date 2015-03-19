@@ -1,8 +1,8 @@
-automation:
-  git:
-    url: github.com:suse-cloud/automation
-    branch: master
+cloud:
+  version: 6
+
+crowbar:
+  url: http://localhost:3000
 
 vendor_dir: vendor
-autoload_config_files: []
 

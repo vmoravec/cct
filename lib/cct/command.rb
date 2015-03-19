@@ -9,10 +9,10 @@ module Cct
     def initialize options={}
       fail "Command name not set up" unless self.class.command_name
 
-      @params   = params ? params.concat(options[:params] || []) : options[:params] || []
-      @env      = env ? env.concat(options[:env] || []) : options[:env] || []
-      @bin_path ||= options[:bin_path]
-      @config   ||= options[:config] && options[:config][command_name]
+      @params   = options[:params].split || []
+      @env      = env || {}
+      @bin_path = options[:bin_path]
+      @config   = config
       set_up_logger(options)
     end
 
@@ -23,10 +23,10 @@ module Cct
     def run options={}
       status = :success
       sudo   = options[:sudo] ? 'sudo' : ''
-      params.concat(options[:params] || [])
+      params.concat(options[:params]) if options[:params]
 
-      command = "#{sudo} #{export(env)} #{bin_path}/#{command_name} #{params.join(' ')}"
-      logger.info("Executing command `#{command.strip}`")
+      command = "#{sudo} #{export(env)} #{bin_path ? bin_path : command_name} #{params.join(' ')}".strip
+      logger.info("Executing command `#{command}`")
 
       IO.popen(command, :err=>[:child, :out]) do |lines|
         lines.each do |line|
@@ -49,7 +49,7 @@ module Cct
 
       options.merge(status: status)
     rescue Errno::ENOENT => e
-      logger.error("Command `#{command}` not found")
+      logger.error("Command `#{command_name}` not found")
     end
 
     private
@@ -72,4 +72,4 @@ module Cct
   end
 end
 
-require "cct/commands/mkcloud"
+require "cct/commands/crowbar"

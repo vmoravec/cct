@@ -1,4 +1,4 @@
-desc "Start console and load spider environment"
+desc "Start console"
 task :console do
   require 'irb'
   ARGV.clear

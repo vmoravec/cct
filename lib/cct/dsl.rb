@@ -20,28 +20,22 @@ module Cct
       Rake::Task[task_name].invoke
     end
 
-    def feature name=nil
-      name ? @feature = name : @feature
+    def feature_name name=nil
+      name ? @feature_name = name : @feature_name
     end
 
     def feature_task name, options={}
-      fail "Feature name not defined" unless feature
+      fail "Feature name not defined" unless feature_name
 
-      rake_desc = options[:name].dup
-      rake_desc << " -- #{options[:tag]}" if options[:tag]
+      rake_desc = Rake.application.last_description
+      tags = resolve_tags(options[:tags])
 
       Cucumber::Rake::Task.new(name, rake_desc) do |task|
-        task.cucumber_opts = ["--name '#{options[:name]}'"]
-        task.cucumber_opts << "--tags #{options[:tag]}" if options[:tag]
-        task.cucumber_opts << "--require #{Spider.root.join("features/#{options[:version]}")}"
+        task.cucumber_opts = ["--name '#{feature_name}'"]
+        task.cucumber_opts << "--tags #{tags}" unless tags.empty?
+        task.cucumber_opts << "--require #{Cct.root.join("features")}"
         yield(task) if block_given?
       end
-    end
-
-    def export hash
-      env = hash.map {|key, value| "#{key}=#{value}" }.join(" ")
-      log.info "Setting environment variables #{env}"
-      env
     end
 
     def before task, prerequisite=nil, *args, &block
@@ -65,6 +59,21 @@ module Cct
       post_task = Rake::Task[post_task]
       Rake::Task[task].enhance do
         post_task.invoke
+      end
+    end
+
+    private
+
+    def resolve_tags tags
+      case tags
+      when String, Symbol
+        tags.to_s
+      when Array
+        tags.join(",")
+      when nil
+        ""
+      else
+        fail "Tags must be an array or string"
       end
     end
   end

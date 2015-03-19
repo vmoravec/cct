@@ -1,6 +1,7 @@
 #!/bin/env rake
 
 require "bundler/setup"
+require "bundler/gem_tasks"
 require "cct"
 require "cucumber"
 require "cucumber/rake/task"
