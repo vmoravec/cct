@@ -76,7 +76,7 @@ module Cct
                   else
                     fail "Tags must be an array or string"
                   end
-      rake_tags + (env_tags.empty? ? "" : ",#{env_tags}")
+      rake_tags + (env_tags.empty? ? "" : (rake_tags.empty? ? "#{env_tags}" : ",#{env_tags}"))
     end
   end
 end

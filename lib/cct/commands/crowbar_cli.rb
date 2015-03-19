@@ -1,5 +1,5 @@
 module Cct
-  class Crowbar < Command
+  class CrowbarCli < Command
     self.command_name = "crowbar"
   end
 end

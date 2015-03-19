@@ -9,7 +9,7 @@ module Cct
     def initialize options={}
       fail "Command name not set up" unless self.class.command_name
 
-      @params   = options[:params].split || []
+      @params   = options[:params].to_s.split || []
       @env      = env || {}
       @bin_path = options[:bin_path]
       @config   = config
@@ -72,4 +72,4 @@ module Cct
   end
 end
 
-require "cct/commands/crowbar"
+require "cct/commands/crowbar_cli"
