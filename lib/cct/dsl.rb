@@ -65,16 +65,18 @@ module Cct
     private
 
     def resolve_tags tags
-      case tags
-      when String, Symbol
-        tags.to_s
-      when Array
-        tags.join(",")
-      when nil
-        ""
-      else
-        fail "Tags must be an array or string"
-      end
+      env_tags  = ENV['tags'].to_s
+      rake_tags = case tags
+                  when String, Symbol
+                    tags.to_s
+                  when Array
+                    tags.join(",")
+                  when nil
+                    ""
+                  else
+                    fail "Tags must be an array or string"
+                  end
+      rake_tags + (env_tags.empty? ? "" : ",#{env_tags}")
     end
   end
 end

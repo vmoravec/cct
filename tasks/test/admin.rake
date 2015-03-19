@@ -2,15 +2,14 @@ namespace :test do
   feature_name "Admin node"
 
   namespace :admin do
-
-    desc "Smoke test for admin node"
-    feature_task :smoke, tags: :@smoke
-
-    desc "NTP Server availability"
+    desc "Test NTP Server availability"
     feature_task :ntp, tags: :@ntp
 
-    desc "Support for the operating system"
+    desc "Check system support"
     feature_task :system, tags: :@system
+
+    desc "Detect required services"
+    feature_task :services, tags: :@services
 
     desc "Admin node HTTP API"
     feature_task :api, tags: :@api

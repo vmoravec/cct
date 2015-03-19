@@ -4,11 +4,11 @@ Feature: Admin node
   In order to proceed with Openstack deployment
 
   @system
-  Scenario: System is supported
+  Scenario: Check system support
 
   @ntp
-  Scenario: NTP Server availability
+  Scenario: Test NTP Server availability
 
   @services
-  Scenario: Services availability
+  Scenario: Detect required services
 
