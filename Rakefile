@@ -1,6 +1,7 @@
 #!/bin/env rake
 
-require "bundler/setup"
+$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+
 require "cct"
 require "cucumber"
 require "cucumber/rake/task"
