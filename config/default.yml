@@ -1,5 +1,5 @@
 cloud:
-  version: 6
+  version: 5
 
 crowbar:
   url: http://localhost:3000

@@ -5,8 +5,8 @@ namespace :test do
     desc "Test NTP Server availability"
     feature_task :ntp, tags: :@ntp
 
-    desc "Check system support"
-    feature_task :system, tags: :@system
+    desc "Check operating system support"
+    feature_task :os, tags: :@os
 
     desc "Detect required services"
     feature_task :services, tags: :@services

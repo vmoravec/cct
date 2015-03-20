@@ -1,10 +1,10 @@
 Feature: Admin node
   As a cloud administrator
-  I want to validate the the admin node deployment
-  In order to proceed with Openstack deployment
+  I want to validate the admin node installation and configuration
+  In order to make sure the node management works flawlessly
 
-  @system
-  Scenario: Check system support
+  @os
+  Scenario: Check operating system support
     Given I successfully detected parameters of the admin node system
     Then I want them to match our system expectations
 
