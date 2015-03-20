@@ -1,5 +1,5 @@
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     builder (3.2.2)
     cucumber (2.0.0.rc.5)
@@ -35,6 +35,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler
   cucumber (~> 2.0.0.rc.5)
   rake
   rspec (~> 3.2.0)
