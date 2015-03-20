@@ -5,7 +5,5 @@
 /pkg/
 /spec/reports/
 /tmp/
-*.so
 *.o
 *.a
-mkmf.log
