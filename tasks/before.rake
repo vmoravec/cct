@@ -1,3 +1,3 @@
 task :before do
-  # Not used yet
+  puts "Running testsuite for SUSE OpenStack Cloud 5"
 end

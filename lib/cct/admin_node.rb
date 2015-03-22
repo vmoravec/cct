@@ -8,6 +8,7 @@ module Cct
     end
 
     def validate!
+      true
     end
   end
 end
