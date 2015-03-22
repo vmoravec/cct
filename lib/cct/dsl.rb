@@ -41,7 +41,7 @@ module Cct
     def before task, prerequisite=nil, *args, &block
       if prerequisite.nil?
         letters = [*'a'..'z']
-        prerequisite = letters.shuffle.take(10).join
+        prerequisite = "before-task:#{task}:" << letters.shuffle.take(10).join
       end
 
       prerequisite = Rake::Task.define_task(prerequisite, *args, &block)

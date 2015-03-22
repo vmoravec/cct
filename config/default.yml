@@ -3,11 +3,13 @@ cloud:
   product: SUSE OpenStack Cloud
 
 admin_node:
-  url: http://localhost:3000
-  os:
-    name: SLE11-SP3
-    version_id: 11.3
+  attributes:
+    os:
+      name: SLE11-SP3
+      version_id: 11.3
 
+  crowbar:
+    url: http://localhost:3000
 
 vendor_dir: vendor
 

@@ -7,3 +7,6 @@
 /tmp/
 *.o
 *.a
+
+/config/
+/vendor

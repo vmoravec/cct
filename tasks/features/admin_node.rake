@@ -1,4 +1,4 @@
-namespace :test do
+namespace :feature do
   feature_name "Admin node"
 
   namespace :admin do
@@ -23,3 +23,4 @@ namespace :test do
   desc "Top-down verification of admin node"
   task :admin => "admin:all"
 end
+

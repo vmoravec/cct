@@ -1,8 +1,8 @@
 require "cct"
-require "cct/cucumber/world"
+require "cct/cukes/world"
 
 Cct.setup(Dir.pwd)
 
 World do
-  Cct::Cucumber::World.new
+  Cct::Cukes::World.new
 end

@@ -1,23 +1,15 @@
 module Cct
   class Command
-    class << self
-      attr_accessor :command_name
-    end
-
     attr_reader :logger, :config, :bin_path, :env, :params
+    attr_reader :command_name
 
-    def initialize options={}
-      fail "Command name not set up" unless self.class.command_name
-
+    def initialize command_name, options={}
+      @command_name
       @params   = options[:params].to_s.split || []
       @env      = env || {}
       @bin_path = options[:bin_path]
       @config   = config
       set_up_logger(options)
-    end
-
-    def command_name
-      self.class.command_name
     end
 
     def run options={}
@@ -71,5 +63,3 @@ module Cct
     end
   end
 end
-
-require "cct/commands/crowbar_cli"

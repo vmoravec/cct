@@ -9,7 +9,7 @@ require "cct/version"
 require "cct/logger"
 require "cct/config"
 require "cct/dsl"
-require "cct/admin_node"
+require "cct/errors"
 
 module Cct
   class << self

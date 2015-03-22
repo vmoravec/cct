@@ -5,7 +5,7 @@ namespace :help do
 
   desc "Show admin node test commands"
   task :admin do
-    system "rake -T test:admin"
+    system "rake -T feature:admin"
   end
 end
 
