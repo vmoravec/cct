@@ -1,12 +1,32 @@
 module Cct
-  module Node
-    attr_reader :admin
+  class Node
+    attr_reader :config, :command_proxy, :admin
 
-    def initialize
-      @admin = false
+    private :command_proxy, :admin
+
+    def initialize options={}
+      @admin = false unless admin
+      @config = options[:config] unless config
+      @command_proxy = CommandProxy.new(:remote) unless command_proxy
     end
 
-    alias_method :admin?, :admin
+    def exec! command_name, *options
+      command_proxy.exec!(command_name, options)
+    end
+
+    def admin?
+      @admin
+    end
+
+    # Change by implementing your own version in subclass
+    def remote?
+      true
+    end
+
+    # Change by implementing your own version in subclass
+    def local?
+      false
+    end
   end
 end
 

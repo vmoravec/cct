@@ -1,7 +1,9 @@
 require "cct"
 require "cct/cukes/world"
 
-Cct.setup(Dir.pwd)
+verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
+
+Cct.setup(Dir.pwd, verbose)
 
 World do
   Cct::Cukes::World.new

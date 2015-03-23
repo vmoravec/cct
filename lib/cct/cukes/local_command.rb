@@ -1,5 +1,13 @@
 module Cct
-  class Command
+  class LocalCommand
+    def initialize
+    end
+
+    def exec! command_name, options={}
+    end
+  end
+
+  class OldLocalCommand
     attr_reader :logger, :config, :bin_path, :env, :params
     attr_reader :command_name
 

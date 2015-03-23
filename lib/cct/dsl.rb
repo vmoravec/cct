@@ -34,6 +34,7 @@ module Cct
         task.cucumber_opts = ["--name '#{feature_name}'"]
         task.cucumber_opts << "--tags #{tags}" unless tags.empty?
         task.cucumber_opts << "--require #{Cct.root.join("features")}"
+        task.cucumber_opts << "--verbose" if Cct.verbose?
         yield(task) if block_given?
       end
     end

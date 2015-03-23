@@ -1,0 +1,12 @@
+---
+admin_node:
+  remote:
+    ip: 192.168.175.10
+    user: root
+    password: linux
+
+  gateway:
+    ip:
+    user:
+    password:
+
