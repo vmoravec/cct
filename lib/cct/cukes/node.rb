@@ -1,17 +1,20 @@
 module Cct
   class Node
-    attr_reader :config, :command_proxy, :admin
+    extend Forwardable
 
-    private :command_proxy, :admin
+    def_delegators :@command, :exec!, :connected?, :connect!
+
+    attr_reader :admin, :name, :ip, :user, :password, :timeout
+
+    private :admin
 
     def initialize options={}
-      @admin = false unless admin
-      @config = options[:config] unless config
-      @command_proxy = CommandProxy.new(:remote) unless command_proxy
-    end
+      extract_options(options)
+      fail "Missing node name" unless name
 
-    def exec! command_name, *options
-      command_proxy.exec!(command_name, options)
+      @admin = false
+      yield if block_given?
+      @command ||= RemoteCommand.new(node: self)
     end
 
     def admin?
@@ -26,6 +29,16 @@ module Cct
     # Change by implementing your own version in subclass
     def local?
       false
+    end
+
+    private
+
+    def extract_options options
+      @ip = options['ip'] || options[:ip]
+      @name ||= (options['name'] || options[:name])
+      @user = options['user'] || options[:user]
+      @password = options['password'] || options[:password]
+      @timeout = options['timeout'] || options[:timeout]
     end
   end
 end

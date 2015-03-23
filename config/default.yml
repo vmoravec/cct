@@ -1,3 +1,6 @@
+ssh:
+  timeout: 2
+
 cloud:
   version: 5
   product: SUSE OpenStack Cloud

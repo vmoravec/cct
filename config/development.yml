@@ -5,8 +5,8 @@ admin_node:
     user: root
     password: linux
 
-  gateway:
-    ip:
-    user:
-    password:
+gateway:
+  ip:
+  user:
+  password:
 

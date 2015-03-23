@@ -15,10 +15,11 @@ module Cct
     def setup root_dir, verbose=false
       @verbose = verbose
       @root = Pathname.new(root_dir.to_s)
+      @config = Config.new
       @user = LocalUser.new
       @logger = Logger.new(STDOUT)
       logger.level = verbose? ? Logger::DEBUG : Logger::INFO
-      @config = Config.new
+      logger.progname = 'cct'
     end
 
     def verbose?
