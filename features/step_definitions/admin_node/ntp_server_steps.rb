@@ -1,16 +1,18 @@
 Given(/^the NTP Server is running$/) do
-  puts admin_node.exec!('cat /etc/SuSE-release')
+  expect(admin_node.exec!('service ntp status')).to match(/running/)
 end
 
 When(/^I request server for estimated correct local date and time$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(`sntp #{admin_node.ip}`).to match(/Started sntp/)
 end
 
-Then(/^I receive a response within the "([^"]*)" seconds timeout$/) do |arg1|
-  pending # Write code here that turns the phrase above into concrete actions
+Then(/^I receive a response within the "([^"]*)" seconds timeout$/) do |to_seconds|
+  timeout(to_seconds.to_i) { `sntp #{admin_node.ip}`}
 end
 
-Then(/^the result is within "([^"]*)" second$/) do |arg1|
-  pending # Write code here that turns the phrase above into concrete actions
+Then(/^the correction is within "([^"]*)" second$/) do |correction|
+  sntp_result = `sntp #{admin_node.ip}`
+  actual_correction = sntp_result.split("+/-").last.split.first.to_f
+  expect(actual_correction).to be < correction.to_f
 end
 

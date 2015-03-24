@@ -1,5 +1,6 @@
 require "forwardable"
 require "etc"
+require "logger"
 
 require "cct/version"
 require "cct/core_ext"
@@ -19,7 +20,7 @@ module Cct
       @user = LocalUser.new
       @logger = Logger.new(STDOUT)
       logger.level = verbose? ? Logger::DEBUG : Logger::INFO
-      logger.progname = 'cct'
+      logger.progname = "cct"
     end
 
     def verbose?

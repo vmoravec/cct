@@ -9,36 +9,51 @@ module Cct
     private :admin
 
     def initialize options={}
-      extract_options(options)
-      fail "Missing node name" unless name
-
-      @admin = false
-      yield if block_given?
-      @command ||= RemoteCommand.new(node: self)
+      set_node_attributes(options) unless options.empty?
+      @admin ||= false
+      @command ||= RemoteCommand.new(extract_attributes)
+      validate_attributes
     end
 
     def admin?
       @admin
     end
 
-    # Change by implementing your own version in subclass
     def remote?
       true
     end
 
-    # Change by implementing your own version in subclass
     def local?
       false
     end
 
     private
 
-    def extract_options options
+    def set_node_attributes options
       @ip = options['ip'] || options[:ip]
       @name ||= (options['name'] || options[:name])
       @user = options['user'] || options[:user]
       @password = options['password'] || options[:password]
       @timeout = options['timeout'] || options[:timeout]
+    end
+
+    def extract_attributes
+      { ip: ip,
+        user: user,
+        target: name,
+        name: name,
+        password: password,
+        timeout: timeout
+      }
+    end
+
+    def validate_attributes node=self
+      errors = []
+      errors.push("IP can't be blank")   unless ip
+      errors.push("user can't be blank") unless user
+      errors.push("name can't be blank") unless name
+      errors.unshift("Invalid attributes for node '#{name}'") unless errors.empty?
+      raise ValidationError.new(self, errors) unless errors.empty?
     end
   end
 end

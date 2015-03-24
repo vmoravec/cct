@@ -3,21 +3,28 @@ module Cct
     NAME = "admin"
 
     attr_reader :location
-    private :location
+    private     :location
 
     def initialize options={}
-      @name = options[:name] || NAME
-      super do
-        @admin = true
+      @name = options[:name] || config["name"] || NAME
+      @admin = true
+
+      if !options.empty?
+        @location = (options["remote"] || options[:remote]) ? :remote : :local
+        @location = :local if options[:local]
+        set_node_attributes(options)
+      else
         @location = config["remote"] ? :remote : :local
-        @command =
-          if remote?
-            extract_options(config["remote"])
-            RemoteCommand.new(node: self)
-          else
-            LocalCommand.new(node: self)
-          end
+        set_node_attributes(config["remote"]) if remote?
       end
+
+      @command =
+        if remote?
+          RemoteCommand.new(extract_attributes)
+        else
+          LocalCommand.new
+        end
+      super
     end
 
     def config
@@ -42,6 +49,14 @@ module Cct
 
     def local?
       location == :local
+    end
+
+    private
+
+    def validate_attributes
+      return if local?
+
+      super
     end
   end
 end

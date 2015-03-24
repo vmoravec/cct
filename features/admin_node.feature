@@ -17,7 +17,7 @@ Feature: Admin node
     Given the NTP Server is running
     When I request server for estimated correct local date and time
     Then I receive a response within the "10" seconds timeout
-    And the result is within "1" second
+    And the correction is within "1" second
 
   @services
   Scenario: Required services detected

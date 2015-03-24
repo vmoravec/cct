@@ -1,5 +1,7 @@
 require "logger"
 require "net/ssh"
+require "ostruct"
+require "timeout"
 
 require "cct/cukes/logger"
 require "cct/cukes/errors"
@@ -14,15 +16,22 @@ require "cct/cukes/test_cloud"
 module Cct
   module Cukes
     class World
-      attr_reader :admin_node, :cloud
+      attr_reader :cloud
 
-      def initialize options={}
-        @admin_node = AdminNode.new(options)
-        @cloud = TestCloud.new(admin_node, options)
+      def initialize
+        @cloud = TestCloud.new
+      end
+
+      def admin_node
+        cloud.admin_node
       end
 
       def config
         Cct.config
+      end
+
+      def exec!
+        raise NotImplementedError
       end
     end
   end

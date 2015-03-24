@@ -1,18 +1,17 @@
 module Cct
   class RemoteCommand
     TIMEOUT = 10
-    DEFAULT_OPTIONS = {
+    EXTENDED_OPTIONS = OpenStruct.new(
       logger: Cct.logger,
       number_of_password_prompts: 0
-    }
+    )
 
-    attr_reader :session, :timeout, :options, :node
+    attr_reader :session, :options
 
-    def initialize options={}
-      @node = options[:node]
-      @timeout = node.timeout || Cct.config['ssh']['timeout'] || TIMEOUT
-      @options = construct_ssh_options(options)
-      validate_options!
+    def initialize opts={}
+      @options = OpenStruct.new
+      construct_options(opts)
+      validate_options
     end
 
     def exec! command, *params
@@ -23,33 +22,40 @@ module Cct
     def connect!
       return true if connected?
 
-      @session = Net::SSH.start(*options)
+      @session = Net::SSH.start(options.ip, options.user, options.extended.to_h)
       true
     rescue Timeout::Error
-      raise SshConnectionTimeoutError.new(node: node, timeout: timeout)
+      raise SshConnectionTimeoutError.new(target: target, timeout: timeout)
     end
 
     def connected?
-      !!session
+      session && !session.closed? ? true : false
     end
 
     private
 
-    def construct_ssh_options opts
-      options = []
-      options << ( node.ip   || opts['ip']   || opts['hostname'] )
-      options << ( node.user || opts['user'] || opts['login'] )
-      options << DEFAULT_OPTIONS
-      options.last.merge!(timeout: timeout)
-      options.last.merge!(password: node.password || opts['password']) if opts['password'] || node.password
-      options
+    def construct_options opts
+      options.ip = opts['ip'] || opts[:ip]
+      options.user = opts['user'] || opts[:user]
+      options.target = opts['target'] || opts[:target]
+      options.extended = EXTENDED_OPTIONS
+      options.extended.password = opts['password'] || opts[:password]
+      options.extended.timeout = detect_timeout(opts)
     end
 
-    def validate_options!
+    def detect_timeout opts
+      timeout = TIMEOUT
+      timeout = Cct.config['ssh'] ? Cct.config['ssh']['timeout'] : timeout
+      timeout = opts['timeout'] || opts[:timeout] || timeout
+      timeout
+    end
+
+    def validate_options
       errors = []
-      errors.push("missing IP or hostname") if options.first.to_s.empty?
-      errors.push("missing user name") if options[1].to_s.empty?
-      errors.unshift("Insufficient options for node '#{node.name}'") unless errors.empty?
+      errors.push("missing ip") unless options.ip
+      errors.push("missing user")      unless options.user
+      errors.push("missing target")    unless options.target
+      errors.unshift("Invalid options#{" for target '#{options.target}'" if options.target}") unless errors.empty?
       raise ValidationError.new(self, errors) unless errors.empty?
     end
   end

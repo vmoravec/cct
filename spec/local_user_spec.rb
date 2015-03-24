@@ -23,15 +23,23 @@ module Cct
     end
 
     describe "#homedir" do
-      pending
+      it "returns the existing path to the homedir" do
+        expect(File.exist?(user.homedir)).to eq(true)
+      end
     end
 
     describe "#uid" do
-      pending
+      it "returns the user id" do
+        expect(user.uid).not_to be(nil)
+        expect(user.uid).to be_a(Integer)
+      end
     end
 
     describe "#gid" do
-      pending
+      it "returns the user group id" do
+        expect(user.gid).not_to be(nil)
+        expect(user.gid).to be_a(Integer)
+      end
     end
 
     describe "#root?" do

@@ -19,6 +19,7 @@ module Cct
       @files = []
       @content = load_default_config
       load_devel_config
+      load_env_config
     end
 
     def [](config_value)
@@ -35,6 +36,14 @@ module Cct
     end
 
     private
+
+    def load_env_config
+      env_config = ENV["cct_config"]
+      return if env_config.to_s.empty?
+
+      env_config = YAML.load(env_config)
+      content.deep_merge!(env_config)
+    end
 
     def load_devel_config
       devel_config = dir.join(DEVELOPMENT_FILE)
