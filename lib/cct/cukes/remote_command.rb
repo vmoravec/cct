@@ -25,7 +25,9 @@ module Cct
       @session = Net::SSH.start(options.ip, options.user, options.extended.to_h)
       true
     rescue Timeout::Error
-      raise SshConnectionTimeoutError.new(target: target, timeout: timeout)
+      raise SshConnectionTimeoutError.new(
+        target: options.target, timeout: options.extended.timeout
+      )
     end
 
     def connected?

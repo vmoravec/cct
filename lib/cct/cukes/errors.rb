@@ -1,7 +1,7 @@
 module Cct
   class SshConnectionTimeoutError < StandardError
-    def initialize timeout: 5, node: 'unknown'
-      super("SSH connection to node '#{node.name}' timed out after #{timeout} seconds")
+    def initialize timeout: 5, target: 'unknown'
+      super("SSH connection to '#{target}' timed out after #{timeout} seconds")
     end
   end
 

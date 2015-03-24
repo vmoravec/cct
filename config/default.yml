@@ -1,6 +1,3 @@
-ssh:
-  timeout: 2
-
 cloud:
   version: 5
   product: SUSE OpenStack Cloud
@@ -15,4 +12,6 @@ admin_node:
     url: http://localhost:3000
 
 vendor_dir: vendor
+ssh:
+  timeout: 10
 

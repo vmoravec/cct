@@ -10,3 +10,5 @@ gateway:
   user:
   password:
 
+ssh:
+  timeout: 3
