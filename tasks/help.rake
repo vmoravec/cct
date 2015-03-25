@@ -11,4 +11,4 @@ end
 
 desc "Show commands"
 task :help => "help:all"
-task :h => "help:all"
+task :h    => "help:all"
