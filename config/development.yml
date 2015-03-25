@@ -1,15 +1,15 @@
 ---
 admin_node:
   remote:
-    ip: 10.162.24.10
+    ip:
     ssh:
       user: root
-      password: linux
+      password:
       port: 22
 
     api:
       user: crowbar
-      password: 088435ca9456bc954677d88d08b8020f
+      password:
       port: 3000
       ssl: false
 
