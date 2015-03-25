@@ -1,7 +1,7 @@
 ---
 admin_node:
   remote:
-    ip:
+    ip: CAN'T BE BLANK
     ssh:
       user: root
       password:
@@ -9,7 +9,7 @@ admin_node:
 
     api:
       user: crowbar
-      password:
+      password: CAN'T BE BLANK
       port: 3000
       ssl: false
 
@@ -21,3 +21,4 @@ gateway:
 timeout:
   ssh: 2
   http: 1
+

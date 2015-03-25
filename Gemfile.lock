@@ -1,0 +1,60 @@
+PATH
+  remote: .
+  specs:
+    cct (0.0.1)
+      awesome_print
+      bundler (~> 1.6)
+      cucumber (~> 2.0.0.rc.5)
+      faraday
+      faraday-digestauth
+      net-ssh
+      rake (~> 10.0)
+      rspec (~> 3.2.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    awesome_print (1.6.1)
+    builder (3.2.2)
+    cucumber (2.0.0.rc.5)
+      builder (>= 2.1.2)
+      cucumber-core (~> 1.1.0)
+      diff-lcs (>= 1.1.3)
+      gherkin (~> 2.12)
+      multi_json (>= 1.7.5, < 2.0)
+      multi_test (>= 0.1.2)
+    cucumber-core (1.1.3)
+      gherkin (~> 2.12.0)
+    diff-lcs (1.2.5)
+    faraday (0.9.1)
+      multipart-post (>= 1.2, < 3)
+    faraday-digestauth (0.2.0)
+      faraday (~> 0.7)
+      net-http-digest_auth (~> 1.4)
+    gherkin (2.12.2)
+      multi_json (~> 1.3)
+    multi_json (1.11.0)
+    multi_test (0.1.2)
+    multipart-post (2.0.0)
+    net-http-digest_auth (1.4)
+    net-ssh (2.9.2)
+    rake (10.4.2)
+    rspec (3.2.0)
+      rspec-core (~> 3.2.0)
+      rspec-expectations (~> 3.2.0)
+      rspec-mocks (~> 3.2.0)
+    rspec-core (3.2.2)
+      rspec-support (~> 3.2.0)
+    rspec-expectations (3.2.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.2.0)
+    rspec-mocks (3.2.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.2.0)
+    rspec-support (3.2.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  cct!
