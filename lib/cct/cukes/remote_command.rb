@@ -3,7 +3,8 @@ module Cct
     TIMEOUT = 10
     EXTENDED_OPTIONS = OpenStruct.new(
       logger: Cct.logger,
-      number_of_password_prompts: 0
+      number_of_password_prompts: 0,
+      port: 22
     )
 
     attr_reader :session, :options
@@ -34,6 +35,15 @@ module Cct
       session && !session.closed? ? true : false
     end
 
+    def ssh_test!
+      Net::SSH::Transport::Session.new(options.ip, timeout: options.extended.timeout)
+      true
+    rescue Timeout::Error, Errno::ETIMEDOUT
+      raise SshConnectionTimeoutError.new(
+        target: options.target, timeout: options.extended.timeout, host: options.ip
+      )
+    end
+
     private
 
     def construct_options opts
@@ -41,15 +51,16 @@ module Cct
       options.user = opts['user'] || opts[:user]
       options.target = opts['target'] || opts[:target]
       options.extended = EXTENDED_OPTIONS
+      options.extended.port = opts['port'] || opts[:port] if opts['port'] || opts[:port]
       options.extended.password = opts['password'] || opts[:password]
       options.extended.timeout = detect_timeout(opts)
     end
 
     def detect_timeout opts
       timeout = TIMEOUT
-      timeout = Cct.config['ssh'] ? Cct.config['ssh']['timeout'] : timeout
+      timeout = Cct.config['timeout']['ssh'] ? Cct.config['timeout']['ssh'] : timeout
       timeout = opts['timeout'] || opts[:timeout] || timeout
-      timeout
+      timeout.to_i
     end
 
     def validate_options

@@ -3,15 +3,17 @@ cloud:
   product: SUSE OpenStack Cloud
 
 admin_node:
-  attributes:
-    os:
-      name: SLE11-SP3
-      version_id: 11.3
+  os:
+    name: SUSE Linux Enterprise Server 11
+    version: 11
+    patchlevel: 3
 
-  crowbar:
-    url: http://localhost:3000
+  api:
+    url: localhost
+    port: 3000
+    ssl: true
 
-vendor_dir: vendor
-ssh:
-  timeout: 10
+timeout:
+  ssh: 5
+  http: 5
 

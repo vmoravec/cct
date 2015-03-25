@@ -1,15 +1,28 @@
 module Cct
   class Node
+    module Commands
+      # Ping with 5 seconds timeout and a single attempt
+      def ping!
+        command = "ping -q -c 1 -W 5 #{ip}"
+        result  = `#{command}`
+        if $?.exitstatus.nonzero?
+          raise PingError.new(command, result)
+        end
+      end
+    end
+
+    include Commands
+
     extend Forwardable
 
-    def_delegators :@command, :exec!, :connected?, :connect!
+    def_delegators :@command, :exec!, :connected?, :connect!, :ssh_test!
 
-    attr_reader :admin, :name, :ip, :user, :password, :timeout
+    attr_reader :admin, :name, :ip, :user, :password, :port
 
     private :admin
 
     def initialize options={}
-      set_node_attributes(options) unless options.empty?
+      set_node_attributes(options)
       @admin ||= false
       @command ||= RemoteCommand.new(extract_attributes)
       validate_attributes
@@ -30,11 +43,13 @@ module Cct
     private
 
     def set_node_attributes options
+      return if options.empty?
+
       @ip = options['ip'] || options[:ip]
       @name ||= (options['name'] || options[:name])
-      @user = options['user'] || options[:user]
-      @password = options['password'] || options[:password]
-      @timeout = options['timeout'] || options[:timeout]
+      @user = options['ssh']['user'] || options[:ssh][:user]
+      @password = options['ssh']['password'] || options[:ssh][:password]
+      @port = options['ssh']['port'] || options[:ssh][:port]
     end
 
     def extract_attributes
@@ -43,11 +58,10 @@ module Cct
         target: name,
         name: name,
         password: password,
-        timeout: timeout
       }
     end
 
-    def validate_attributes node=self
+    def validate_attributes
       errors = []
       errors.push("IP can't be blank")   unless ip
       errors.push("user can't be blank") unless user

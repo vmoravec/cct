@@ -1,6 +1,7 @@
 require "forwardable"
 require "etc"
 require "logger"
+require "pathname"
 
 require "cct/version"
 require "cct/core_ext"

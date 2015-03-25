@@ -20,6 +20,15 @@ module Cct
       Rake::Task[task_name].invoke
     end
 
+    def feature_namespace name=nil, &block
+      if name
+        @feature_namespace = name
+        namespace name, &block
+      else
+        @feature_namespace
+      end
+    end
+
     def feature_name name=nil
       name ? @feature_name = name : @feature_name
     end

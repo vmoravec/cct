@@ -1,14 +1,23 @@
 ---
 admin_node:
   remote:
-    ip: 192.168.175.10
-    user: root
-    password: linux
+    ip: 10.162.24.10
+    ssh:
+      user: root
+      password: linux
+      port: 22
+
+    api:
+      user: crowbar
+      password: 088435ca9456bc954677d88d08b8020f
+      port: 3000
+      ssl: false
 
 gateway:
   ip:
   user:
   password:
 
-ssh:
-  timeout: 3
+timeout:
+  ssh: 2
+  http: 1
