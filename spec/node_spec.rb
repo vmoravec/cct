@@ -10,8 +10,11 @@ module Cct
         @node = Node.new(
           name: "test",
           ip: "127.0.0.1",
-          user: "test",
-          password: "test+password",
+          ssh: {
+            user: "test",
+            password: "test+password",
+            port: 22
+          },
           timeout: 2
         )
       }.not_to raise_error

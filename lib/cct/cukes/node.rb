@@ -47,9 +47,7 @@ module Cct
 
       @ip = options['ip'] || options[:ip]
       @name ||= (options['name'] || options[:name])
-      @user = options['ssh']['user'] || options[:ssh][:user]
-      @password = options['ssh']['password'] || options[:ssh][:password]
-      @port = options['ssh']['port'] || options[:ssh][:port]
+      set_ssh_attributes(options['ssh'] || options[:ssh])
     end
 
     def extract_attributes
@@ -59,6 +57,14 @@ module Cct
         name: name,
         password: password,
       }
+    end
+
+    def set_ssh_attributes options={}
+      return if options.empty?
+
+      @user = options['user'] || options[:user]
+      @password = options['password'] || options[:password]
+      @port = options['port'] || options[:port]
     end
 
     def validate_attributes
