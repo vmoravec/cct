@@ -8,5 +8,5 @@
 *.o
 *.a
 
-/config/
+/config
 /vendor
