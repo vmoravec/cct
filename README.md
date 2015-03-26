@@ -5,7 +5,7 @@
 
 ## Installation
 
-  Make sure you have installed all [dependencies](Dependencies)
+  Make sure you have installed all [dependencies](#Dependencies)
 
      git clone git@github.com:vmoravec/cct
 
@@ -39,13 +39,27 @@
 
     rake aborted!
     LoadError: cannot load such file -- cucumber
-    /home/vmoravec/code/cct/Rakefile:6:in `<top (required)>'
+    /home/path/to/code/cct/Rakefile:6:in `<top (required)>'
 
   the rubygems installed in path `vendor/bundle` are not visible to `rake`.
 
 ## Commands
 
-     rake h[elp]
+### Get some help
+
+     rake help
+     rake h
+     rake -T
+     rake -T keyword
+
+### Run unit tests for code inside `lib` directory
+
+     rake spec
+
+### Show the current configuration
+
+     rake config
+
 
 ## Contributing
 
