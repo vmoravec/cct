@@ -29,11 +29,13 @@
 
      bundle exec rake help
 
-  To get rid of the annoying command overload, having done
+  To get rid of the annoying `rake` command prefixing with `bundle exec`, having done
 
      alias rake="bundle exec rake"
 
-  might be useful.
+  might be useful. The command `bundle exec` takes care about locating and loading
+  the correct rubygems from the pre-configured path in `vendor/bundle` that is present
+  at `.bundle/config`.
 
   If you get an error like
 
@@ -82,6 +84,22 @@
   To let git ignore the updated `config/development.yml` file, run
 
     rake git:ignore file=config/development.yml
+
+  If you think you might need to add more configuration files, add them into the
+  `config/` directory, they will be ignored by git. To make the testsuite load them
+  for you, add this line to the `config/development.yml` file:
+
+    autoload_config_files:
+     - your_file.yml
+
+  If the file you added does not exist, the testsuite will fail.
+
+  Additionally, you can provide configuration data in `json` or `yaml` format to
+  every `rake` command like this:
+
+    rake feature:admin config='{"admin_node":{"remote":{"ip":"192.168.199:10"}}}'
+
+
 
 
 

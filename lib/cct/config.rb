@@ -38,7 +38,7 @@ module Cct
     private
 
     def load_env_config
-      env_config = ENV["cct_config"]
+      env_config = ENV["config"]
       return if env_config.to_s.empty?
 
       env_config = YAML.load(env_config)
@@ -63,8 +63,12 @@ module Cct
       return unless content['autoload_config_files']
 
       content['autoload_config_files'].each do |config_file|
+        config_file << EXT unless config_file.to_s.match(/.#{EXT}$/)
         next if config_file.to_s.match(/\A#{DEFAULT_FILE}$/)
-        next if !File.exist?(dir.join( config_file + EXT))
+
+        if !File.exist?(dir.join( config_file))
+          abort "Configuration file #{config_file} does not exist".red
+        end
 
         merge!(config_file)
       end
