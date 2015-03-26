@@ -33,13 +33,13 @@
 
 ## Topics
 
-  I    [Installation](#installation)
-  II   [Dependencies](#dependencies)
-  III  [Usage](#usage)
-  IV   [Configuration](#configuration)
-  V    [Tasks](#tasks) missing
-  VI   [Features](#features)
-  VII  [Code](#code) missing
+  I    [Installation](#installation)  
+  II   [Dependencies](#dependencies)  
+  III  [Usage](#usage)  
+  IV   [Configuration](#configuration)  
+  V    [Tasks](#tasks) missing  
+  VI   [Features](#features)  
+  VII  [Code](#code) missing  
 
 
 ## Quick start
