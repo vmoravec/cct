@@ -15,7 +15,7 @@ module Cct
 
     extend Forwardable
 
-    def_delegators :@command, :exec!, :connected?, :connect!, :ssh_test!
+    def_delegators :@command, :exec!, :connected?, :connect!, :test_ssh!
 
     attr_reader :admin, :name, :ip, :user, :password, :port
 

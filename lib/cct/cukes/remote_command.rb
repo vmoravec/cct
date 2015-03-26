@@ -35,7 +35,7 @@ module Cct
       session && !session.closed? ? true : false
     end
 
-    def ssh_test!
+    def test_ssh!
       Net::SSH::Transport::Session.new(options.ip, timeout: options.extended.timeout)
       true
     rescue Timeout::Error, Errno::ETIMEDOUT
@@ -66,8 +66,8 @@ module Cct
     def validate_options
       errors = []
       errors.push("missing ip") unless options.ip
-      errors.push("missing user")      unless options.user
-      errors.push("missing target")    unless options.target
+      errors.push("missing user") unless options.user
+      errors.push("missing target") unless options.target
       errors.unshift("Invalid options#{" for target '#{options.target}'" if options.target}") unless errors.empty?
       raise ValidationError.new(self, errors) unless errors.empty?
     end

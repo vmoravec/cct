@@ -13,6 +13,8 @@ module Cct
         f.request(:digest, options['user'], options['password'])
         f.adapter ::Faraday.default_adapter
       end
+    rescue Faraday::ConnectionFailed => e
+      raise HttpConnectionFailed, e.message
     end
 
     private

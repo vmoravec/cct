@@ -15,13 +15,17 @@ module Cct
       @command = remote? ? RemoteCommand.new(extract_attributes) : LocalCommand.new
       @api = detect_api
       super
+    rescue Faraday::ConnectionFailed => e
+      raise HttpConnectionFailed, e.message
     end
 
-    def api_test!
+    def test_api!
       if !api.connection.head.success?
         raise CrowbarApiError, "Crowbar API head request call at #{ip} failed"
       end
       true
+    rescue Faraday::ConnectionFailed => e
+      raise HttpConnectionFailed, e.message
     end
 
     def config

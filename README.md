@@ -3,15 +3,43 @@
   The `master` branch contains the testsuites for SUSE Cloud 5.
   Testsuites for other versions of cloud will be available in repository branches.
 
+
+## Crash course
+
+#### Run a feature
+
+    rake feature:admin
+
+#### Run a test/scenario
+
+    rake featuer:admin:ntp
+
+#### Rake task is your friend
+
+    rake help
+
+#### Add new feature
+
+    rake add:feature
+
+#### Add new test
+
+    rake add:test
+
+#### Add new code to `lib/`
+
+  Lorem ipsum
+
+
 ## Topics
 
-  1. [Installation](#installation)
-  2. [Dependencies](#dependencies)
-  3. [Usage](#usage)
-  4. [Configuration](#configuration)
-  5. [Tasks](#tasks) missing
-  6. [Features](#features)
-  7. [Code](#code) missing
+  I    [Installation](#installation)
+  II   [Dependencies](#dependencies)
+  III  [Usage](#usage)
+  IV   [Configuration](#configuration)
+  V    [Tasks](#tasks) missing
+  VI   [Features](#features)
+  VII  [Code](#code) missing
 
 
 ## Quick start
