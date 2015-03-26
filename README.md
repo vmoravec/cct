@@ -64,7 +64,8 @@
 
      rake config
 
-#### Config files
+
+#### Default config files
 
   By default the testsuite contains two configuration files:
 
@@ -87,6 +88,9 @@
 
     rake git:ignore file=config/development.yml
 
+
+#### Custom config files
+
   If you think you might need to add more configuration files, add them into the
   `config/` directory, they will be ignored by git. To make the testsuite load them
   for you, add this line to the `config/development.yml` file:
@@ -94,15 +98,20 @@
     autoload_config_files:
      - your_file.yml
 
+  The config files are loaded in the order as specified in the list. Don't forget
+  that if you have the same sections in your config files, the last loaded file wins.
+
   If the file you added does not exist, the testsuite will fail.
+
+
+#### Custom config data as json or yaml
 
   Additionally, you can provide configuration data in `json` or `yaml` format to
   every `rake` command like this:
 
     rake feature:admin config='{"admin_node":{"remote":{"ip":"192.168.199:10"}}}'
 
-
-
+  These are merged with the data after all configuration files have been loaded.
 
 
 
