@@ -64,6 +64,8 @@
 
      rake config
 
+#### Config files
+
   By default the testsuite contains two configuration files:
 
      config/default.yml
