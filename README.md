@@ -3,6 +3,15 @@
   The `master` branch contains the testsuites for SUSE Cloud 5.
   Testsuites for other versions of cloud will be available in repository branches.
 
+## Quick start
+
+  1.  Check [system dependencies](#dependencies)
+  2.  `git clone git@github.com:vmoravec/cct`
+  3.  `bundle install`
+  4.  Add missing data into `config/development.yml` file
+  5.  `rake feature:admin`
+
+
 ## Installation
 
   Make sure you have installed all [dependencies](#Dependencies)
@@ -74,7 +83,7 @@
 
   The first one, `config/default.yml` contains general information about the product,
   used by the features and test cases in the testsuite. You should not need to alter
-  these data at all. If you think they need to be changed, create a pull request.
+  this data at all. If you think they need to be changed, create a pull request.
 
   The second one, `config/development.yml` is a template configuration file you
   might use for testing your cloud instance. You will need to add some data to let
@@ -112,6 +121,28 @@
     rake feature:admin config='{"admin_node":{"remote":{"ip":"192.168.199:10"}}}'
 
   These are merged with the data after all configuration files have been loaded.
+
+
+## Features
+
+  The testsuite is powered by `cucumber` which is a tool for running automated
+  tests written in plain language. More information is available at the
+  [Cucumber Github Wiki](https://github.com/cucumber/cucumber/wiki/A-Table-Of-Content).
+
+#### Feature files
+
+  All features are stored in files with `.feature` suffix in the directory `features/`.
+  Every file describes a single feature with one or more scenarios using
+  [Gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin).
+  It is a Domain Specific Language that lets you describe behaviour without detailing
+  how that behaviour is implemented.
+
+#### Run a feature!
+
+  The command line interface is powered by `rake` which is a task management tool,
+  more information is available at the [rake Github repo](https://github.com/ruby/rake).
+
+
 
 
 
