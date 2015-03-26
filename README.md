@@ -7,7 +7,7 @@
 
   1.  Check [system dependencies](#dependencies)
   2.  `git clone git@github.com:vmoravec/cct`
-  3.  `bundle install`
+  3.  `cd cct && bundle install`
   4.  Add missing data into `config/development.yml` file
   5.  `rake feature:admin`
 
@@ -141,6 +141,13 @@
 
   The command line interface is powered by `rake` which is a task management tool,
   more information is available at the [rake Github repo](https://github.com/ruby/rake).
+
+  Feature tasks begin with `feature` keyword, to test only a particular scenario you need
+  to run some specific `rake` task:
+
+    rake feature:admin       # Run all scenarios for admin node
+    rake feature:admin:ntp   # Test NTP Server availability on admin node
+    rake feature:admin:os    # Check operating system support for admin node
 
 
 
