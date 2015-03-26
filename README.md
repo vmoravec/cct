@@ -3,6 +3,17 @@
   The `master` branch contains the testsuites for SUSE Cloud 5.
   Testsuites for other versions of cloud will be available in repository branches.
 
+## Topics
+
+  1. [Installation](#installation)
+  2. [Dependencies](#dependencies)
+  3. [Usage](#usage)
+  4. [Configuration](#configuration)
+  5. [Tasks](#tasks) missing
+  6. [Features](#features)
+  7. [Code](#code) missing
+
+
 ## Quick start
 
   1.  Check [system dependencies](#dependencies)
@@ -54,7 +65,7 @@
 
   the rubygems installed in path `vendor/bundle` are not visible to `rake`.
 
-## Useful commands
+#### Useful commands
 
   Get some help:
 
