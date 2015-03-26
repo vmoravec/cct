@@ -1,39 +1,55 @@
-# Cct - Cucumber Cloud Testsuite
+# cct - Cucumber Cloud Testsuite
 
-  The `master` branch contains the testsuites for the product being currently in
-  development cycle. Code for the already released versions are available in
-  appropriate branches of this repo.
+  The `master` branch contains the testsuites for SUSE Cloud 5.
+  Testsuites for other versions of cloud will be available in repository branches.
 
 ## Installation
+
+  Make sure you have installed all [dependencies](Dependencies)
 
      git clone git@github.com:vmoravec/cct
 
      bundle install
 
-  If you are not using any Ruby version manager you will be prompt for root password.
+  All rubygems will be installed into the directory `vendor/bundle` within the repo.
+
+  This is the default setup, if you use one of Ruby version managers like `RVM`,
+  you might want to create a new gemset and override the bundle config with:
+
+     bundle install --system
 
 ## Dependencies
 
-  They are to be found in the cct.gemspec file.
+    zypper in rubygem-bundler ruby-devel
+    zypper in gcc make
 
-  Currently the main dependency is cucumber testing framework (`rake` and `bundler` are
-  part of ruby installation). Due to making use of features which are not available
-  in the stable cucumber version (>= 1.3), we rely on rubygem available at
-  rubygems.org and not the rpm `rubygem-cucumber` available in opensuse repos.
-
-  For testing the code in `lib` directory we use `rspec` framework.
+  List of required rubygems can be found in file `cct.gemspec` .
 
 ## Usage
 
-     rake -T
+     bundle exec rake help
 
-  or
+  To get rid of the annoying command overload, having done
 
-     rake help
+     alias rake="bundle exec rake"
+
+  might be useful.
+
+  If you get an error like
+
+    rake aborted!
+    LoadError: cannot load such file -- cucumber
+    /home/vmoravec/code/cct/Rakefile:6:in `<top (required)>'
+
+  the rubygems installed in path `vendor/bundle` are not visible to `rake`.
+
+## Commands
+
+     rake h[elp]
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/cct/fork )
+1. Fork it!
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
