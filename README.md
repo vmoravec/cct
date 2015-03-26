@@ -45,22 +45,45 @@
 
 ## Useful commands
 
-  Get some help
+  Get some help:
 
      rake help
      rake h
      rake -T
      rake -T keyword
 
-  Run unit tests for code inside `lib` directory
+  Run unit tests for code inside `lib` directory:
 
      rake spec
 
-  Show the current configuration
+## Configuration
+
+  Show the current configuration:
 
      rake config
 
-## Configuration
+  By default the testsuite contains two configuration files:
+
+     config/default.yml
+     config/development.yml
+
+  The first one, `config/default.yml` contains general information about the product,
+  used by the features and test cases in the testsuite. You should not need to alter
+  these data at all. If you think they need to be changed, create a pull request.
+
+  The second one, `config/development.yml` is a template configuration file you
+  might use for testing your cloud instance. You will need to add some data to let
+  the testsuite detect your cloud:
+
+    * ip address for the admin node
+    * password for the admin node HTTP API
+    * SSH password for the admin node unless you use key based authentication
+
+  To let git ignore the updated `config/development.yml` file, run
+
+    rake git:ignore file=config/development.yml
+
+
 
 
 ## Contributing

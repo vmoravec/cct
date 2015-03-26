@@ -8,11 +8,6 @@ admin_node:
     version: 11
     patchlevel: 3
 
-  api:
-    url: localhost
-    port: 3000
-    ssl: true
-
 timeout:
   ssh: 5
   http: 5
