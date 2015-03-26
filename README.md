@@ -3,34 +3,6 @@
   The `master` branch contains the testsuites for SUSE Cloud 5.
   Testsuites for other versions of cloud will be available in repository branches.
 
-
-## Crash course
-
-#### Run a feature
-
-    rake feature:admin
-
-#### Run a test/scenario
-
-    rake featuer:admin:ntp
-
-#### Rake task is your friend
-
-    rake help
-
-#### Add new feature
-
-    rake add:feature
-
-#### Add new test
-
-    rake add:test
-
-#### Add new code to `lib/`
-
-  Lorem ipsum
-
-
 ## Topics
 
   I    [Installation](#installation)  
@@ -72,6 +44,46 @@
     zypper in gcc make
 
   List of required rubygems can be found in file `cct.gemspec` .
+
+## Crash course
+
+#### Run a feature
+
+    rake feature:admin
+
+#### Run a test/scenario
+
+    rake featuer:admin:ntp
+
+#### Rake task is your friend
+
+    rake help
+
+  `rake` is the only way to run the tests and other commands. All files with tasks
+  are located in the directory `tasks/` and have suffix `.rake`
+  All are loaded automatically. Just
+  put `your_new.rake` file into the directory and add your tasks.
+
+  A single file usually contains several tasks within some well chosen namespace.
+
+  In general there is 2 kinds of tasks:
+
+    * regular rake tasks => for managing testsuite and providing help 
+    * feature rake task  => for running cucumber features
+
+
+#### Add new feature
+
+    rake add:feature
+
+#### Add new test
+
+    rake add:test
+
+#### Add new code to `lib/`
+
+  Lorem ipsum
+
 
 ## Usage
 
