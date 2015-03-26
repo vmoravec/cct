@@ -11,11 +11,11 @@ namespace :feature do
     desc "Detect required services"
     feature_task :services, tags: :@services
 
-    desc "Admin node HTTP API"
+    desc "Test crowbar API"
     feature_task :api, tags: :@api
 
-    desc "Admin node UI"
-    feature_task :ui, tags: :@ui
+    desc "Smoke tests for admin feature"
+    feature_task :smoke, tags: :@smoke
 
     feature_task :all
   end

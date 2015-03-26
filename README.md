@@ -43,22 +43,24 @@
 
   the rubygems installed in path `vendor/bundle` are not visible to `rake`.
 
-## Commands
+## Useful commands
 
-### Get some help
+  Get some help
 
      rake help
      rake h
      rake -T
      rake -T keyword
 
-### Run unit tests for code inside `lib` directory
+  Run unit tests for code inside `lib` directory
 
      rake spec
 
-### Show the current configuration
+  Show the current configuration
 
      rake config
+
+## Configuration
 
 
 ## Contributing
