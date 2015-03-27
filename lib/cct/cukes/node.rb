@@ -56,6 +56,7 @@ module Cct
         target: name,
         name: name,
         password: password,
+        port: port
       }
     end
 

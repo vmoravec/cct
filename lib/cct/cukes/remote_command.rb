@@ -25,9 +25,12 @@ module Cct
 
       @session = Net::SSH.start(options.ip, options.user, options.extended.to_h)
       true
-    rescue Timeout::Error
-      raise SshConnectionTimeoutError.new(
-        target: options.target, timeout: options.extended.timeout
+    rescue Timeout::Error => e
+      raise SshConnectionError.new(
+        ip: options.ip,
+        message: e.message,
+        target: options.target,
+        timeout: options.extended.timeout
       )
     end
 
@@ -36,12 +39,17 @@ module Cct
     end
 
     def test_ssh!
-      Net::SSH::Transport::Session.new(options.ip, timeout: options.extended.timeout)
-      true
-    rescue Timeout::Error, Errno::ETIMEDOUT
-      raise SshConnectionTimeoutError.new(
-        target: options.target, timeout: options.extended.timeout, host: options.ip
+      Net::SSH::Transport::Session.new(
+        options.ip,
+        timeout: options.extended.timeout,
+        port: options.extended.port
       )
+      true
+    rescue Timeout::Error, Errno::ETIMEDOUT, Errno::ECONNREFUSED => e
+      raise SshConnectionError.new(
+        ip: options.ip,
+        target: options.target,
+        message: e.message)
     end
 
     private

@@ -1,7 +1,9 @@
 module Cct
-  class SshConnectionTimeoutError < StandardError
-    def initialize timeout: 5, target: 'unknown', host: nil
-      super("SSH connection to '#{target}' at #{host} timed out after #{timeout} seconds")
+  class SshConnectionError < StandardError
+    def initialize options={}
+      message = "SSH connection to #{options[:ip]} failed\n#{options[:message]}"
+      message << "\nTimeout #{options[:timeout]} seconds" if options[:timeout]
+      super(message)
     end
   end
 
