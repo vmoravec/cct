@@ -5,13 +5,13 @@
 
 ## Topics
 
-  I    [Installation](#installation)  
-  II   [Dependencies](#dependencies)  
-  III  [Usage](#usage)  
-  IV   [Configuration](#configuration)  
-  V    [Tasks](#tasks) missing  
-  VI   [Features](#features)  
-  VII  [Code](#code) missing  
+  [Installation](#installation)  
+  [Dependencies](#dependencies)  
+  [Usage](#usage)  
+  [Configuration](#configuration)  
+  [Code](#code) missing  
+  [Tasks](#tasks) missing  
+  [Features](#features)  
 
 
 ## Quick start
@@ -49,11 +49,11 @@
 
 #### Run a feature
 
-    rake feature:admin
+    rake feature:FEATURE_NAME
 
 #### Run a test/scenario
 
-    rake featuer:admin:ntp
+    rake featuer:FEATURE_NAME:SCENARIO_NAME
 
 #### Rake task is your friend
 
@@ -211,3 +211,4 @@
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
