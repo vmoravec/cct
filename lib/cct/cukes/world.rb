@@ -7,7 +7,7 @@ require "faraday/digestauth"
 
 require "cct/cukes/logger"
 require "cct/cukes/errors"
-require "cct/cukes/http_command"
+require "cct/cukes/crowbar_api"
 require "cct/cukes/local_command"
 require "cct/cukes/remote_command"
 require "cct/cukes/node"

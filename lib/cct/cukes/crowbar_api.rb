@@ -1,5 +1,5 @@
 module Cct
-  class HttpCommand
+  class CrowbarApi
     HEADERS = {
       "Content-Type" => "application/json"
     }
@@ -14,12 +14,12 @@ module Cct
         f.adapter ::Faraday.default_adapter
       end
     rescue Faraday::ConnectionFailed => e
-      raise HttpConnectionFailed, e.message
+      raise CrowbarApiError, e.message
     end
 
     private
 
-    def validate options
-    end
+    #TODO
+    def validate options;  end
   end
 end

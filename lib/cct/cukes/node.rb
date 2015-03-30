@@ -8,6 +8,7 @@ module Cct
         if $?.exitstatus.nonzero?
           raise PingError.new(command, result)
         end
+        result
       end
     end
 
@@ -30,14 +31,6 @@ module Cct
 
     def admin?
       @admin
-    end
-
-    def remote?
-      true
-    end
-
-    def local?
-      false
     end
 
     private
