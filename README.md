@@ -82,7 +82,7 @@
 
 #### Add new code to `lib/`
 
-  Lorem ipsum
+    TODO
 
 
 ## Usage
