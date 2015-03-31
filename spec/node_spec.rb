@@ -26,18 +26,6 @@ module Cct
       end
     end
 
-    describe "#local?" do
-      it "is not a local node" do
-        expect(node.local?).to eq(false)
-      end
-    end
-
-    describe "#remote?" do
-      it "is a remote node" do
-        expect(node.remote?).to eq(true)
-      end
-    end
-
     describe "#connected?" do
       it "is not connected automatically" do
         expect(node.connected?).to eq(false)

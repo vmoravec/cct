@@ -2,14 +2,14 @@ module Cct
   class RemoteCommand
     TIMEOUT = 10
     EXTENDED_OPTIONS = OpenStruct.new(
-      logger: Cct.logger,
       number_of_password_prompts: 0,
       port: 22
     )
 
-    attr_reader :session, :options
+    attr_reader :session, :options, :log
 
     def initialize opts={}
+      @log = BaseLogger.new("SSH")
       @options = OpenStruct.new
       construct_options(opts)
       validate_options
@@ -42,7 +42,8 @@ module Cct
       Net::SSH::Transport::Session.new(
         options.ip,
         timeout: options.extended.timeout,
-        port: options.extended.port
+        port: options.extended.port,
+        logger: log
       )
       true
     rescue Timeout::Error, Errno::ETIMEDOUT, Errno::ECONNREFUSED => e
@@ -59,6 +60,7 @@ module Cct
       options.user = opts['user'] || opts[:user]
       options.target = opts['target'] || opts[:target]
       options.extended = EXTENDED_OPTIONS
+      options.extended.logger = log
       options.extended.port = opts['port'] || opts[:port] if opts['port'] || opts[:port]
       options.extended.password = opts['password'] || opts[:password]
       options.extended.timeout = detect_timeout(opts)

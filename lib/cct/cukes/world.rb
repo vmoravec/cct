@@ -5,7 +5,6 @@ require "timeout"
 require "faraday"
 require "faraday/digestauth"
 
-require "cct/cukes/logger"
 require "cct/cukes/errors"
 require "cct/cukes/crowbar_api"
 require "cct/cukes/local_command"

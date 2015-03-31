@@ -4,6 +4,10 @@ module Cct
       "Content-Type" => "application/json"
     }
 
+    extend Forwardable
+
+    def_delegators :@connection, :head, :get
+
     attr_reader :connection
 
     def initialize options={}

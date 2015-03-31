@@ -1,5 +1,5 @@
-module Cct
-  module Dsl
+module Rake
+  module DSL
     def local_user
       Cct.user
     end
@@ -90,5 +90,3 @@ module Cct
     end
   end
 end
-
-self.extend(Cct::Dsl)
