@@ -4,6 +4,7 @@ require "ostruct"
 require "timeout"
 require "faraday"
 require "faraday/digestauth"
+require "faraday_middleware"
 
 require "cct/cukes/errors"
 require "cct/cukes/crowbar_api"
@@ -11,6 +12,7 @@ require "cct/cukes/local_command"
 require "cct/cukes/remote_command"
 require "cct/cukes/node"
 require "cct/cukes/admin_node"
+require "cct/cukes/nodes"
 require "cct/cukes/test_cloud"
 
 module Cct
@@ -24,6 +26,14 @@ module Cct
 
       def admin_node
         cloud.admin_node
+      end
+
+      def crowbar
+        cloud.crowbar
+      end
+
+      def nodes
+        cloud.nodes
       end
 
       def config

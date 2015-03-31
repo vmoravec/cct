@@ -7,6 +7,7 @@ PATH
       cucumber (~> 2.0.0.rc.5)
       faraday
       faraday-digestauth
+      faraday_middleware
       net-ssh
       rake (~> 10.0)
       rspec (~> 3.2.0)
@@ -16,9 +17,9 @@ GEM
   specs:
     awesome_print (1.6.1)
     builder (3.2.2)
-    cucumber (2.0.0.rc.5)
+    cucumber (2.0.0)
       builder (>= 2.1.2)
-      cucumber-core (~> 1.1.0)
+      cucumber-core (~> 1.1.3)
       diff-lcs (>= 1.1.3)
       gherkin (~> 2.12)
       multi_json (>= 1.7.5, < 2.0)
@@ -31,6 +32,8 @@ GEM
     faraday-digestauth (0.2.0)
       faraday (~> 0.7)
       net-http-digest_auth (~> 1.4)
+    faraday_middleware (0.9.1)
+      faraday (>= 0.7.4, < 0.10)
     gherkin (2.12.2)
       multi_json (~> 1.3)
     multi_json (1.11.0)

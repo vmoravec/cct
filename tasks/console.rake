@@ -1,7 +1,16 @@
 desc "Start console"
 task :console do
   require 'irb'
+  require 'cct/cukes/world'
+
   ARGV.clear
   log.info "Starting console (irb session)" 
-  IRB.start
+
+  self.extend(Module.new {
+    def cloud
+      Cct::Cukes::TestCloud.new
+    end
+  })
+
+  IRB.start(__FILE__)
 end

@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "awesome_print"
   spec.add_dependency "faraday"
   spec.add_dependency "faraday-digestauth"
+  spec.add_dependency "faraday_middleware"
 end
