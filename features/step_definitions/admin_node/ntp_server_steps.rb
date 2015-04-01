@@ -3,10 +3,10 @@ Given(/^the NTP Server is running$/) do
 end
 
 When(/^I request server for estimated correct local date and time$/) do
-  expect(`sntp #{admin_node.ip}`).to match(/Started sntp/)
+  expect(exec!("sntp #{admin_node.ip}")).to match(/Started sntp/)
 end
 
 Then(/^I receive a response within the "([^"]*)" seconds timeout$/) do |to_seconds|
-  timeout(to_seconds.to_f) { `sntp #{admin_node.ip}`}
+  timeout(to_seconds.to_f) { exec!("sntp #{admin_node.ip}") }
 end
 

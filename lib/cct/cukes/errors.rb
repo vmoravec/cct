@@ -25,4 +25,5 @@ module Cct
 
   class CrowbarApiError < StandardError; end
   class HttpConnectionFailed < StandardError; end
+  class LocalCommandFailed < StandardError; end
 end

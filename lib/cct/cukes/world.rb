@@ -22,6 +22,11 @@ module Cct
 
       def initialize
         @cloud = TestCloud.new
+        @local_command = LocalCommand.new
+      end
+
+      def exec! command_name, *params
+        @local_command.exec!(command_name, params)
       end
 
       def admin_node
@@ -38,10 +43,6 @@ module Cct
 
       def config
         Cct.config
-      end
-
-      def exec!
-        raise NotImplementedError
       end
     end
   end

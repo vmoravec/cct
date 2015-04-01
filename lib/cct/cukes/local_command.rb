@@ -1,73 +1,49 @@
 module Cct
   class LocalCommand
+    attr_reader :log
+
     def initialize
+      @log = BaseLogger.new("LOCAL")
     end
 
-    def exec! command_name, options={}
-    end
-  end
-
-  class OldLocalCommand
-    attr_reader :logger, :config, :bin_path, :env, :params
-    attr_reader :command_name
-
-    def initialize command_name, options={}
-      @command_name
-      @params   = options[:params].to_s.split || []
-      @env      = env || {}
-      @bin_path = options[:bin_path]
-      @config   = config
-      set_up_logger(options)
-    end
-
-    def run options={}
-      status = :success
-      sudo   = options[:sudo] ? 'sudo' : ''
-      params.concat(options[:params]) if options[:params]
-
-      command = "#{sudo} #{export(env)} #{bin_path ? bin_path : command_name} #{params.join(' ')}".strip
-      logger.info("Executing command `#{command}`")
-
+    def exec! command_name, *args
+      command = "#{command_name} #{args.join(" ")}".strip
+      log.info("Running command `#{command}`")
+      result = ""
       IO.popen(command, :err=>[:child, :out]) do |lines|
         lines.each do |line|
-          case line
-          when /warn|cannot/i
-            logger.warn(line.chomp)
-          when /error/i
-            logger.error(line.chomp)
-            status = :error
-          else
-            logger.info(line.chomp)
-          end
+          result << line
+          next unless log.debug?
+
+          log_command_output(line)
         end
       end
 
-      unless $?.success?
-        logger.error("Command `#{command} ` failed with exit status #{$?.exitstatus}")
-        status = :error
+      if $?.success?
+        log.info("Command `#{command}` succeeded")
+        log.debug("Command result:\n#{result}")
+        return result
+      else
+        log.error("Command `#{command}` failed with exit status #{$?.exitstatus}")
       end
-
-      options.merge(status: status)
     rescue Errno::ENOENT => e
-      logger.error("Command `#{command_name}` not found")
+      message = "Command `#{command_name}` not found"
+      log.error(message)
+      raise LocalCommandFailed, message
+    rescue => e
+      log.error(e.message)
+      raise LocalCommandFailed, e.message
     end
 
-    private
-
-    def export values=[]
-      return "" if values.empty?
-
-      env = values.map {|key, value| "#{key}=#{value}" }.join(" ")
-      logger.info("Using environment variables #{env}")
-      env
-    end
-
-    def set_up_logger options
-      return if logger
-
-      @logger = options[:logger] || Cct.logger
-      logger.formatter = Logger::FORMATTER_SIMPLE
-      logger.progname = command_name
+    def log_command_output line
+      case line
+      when /warn|cannot/i
+        log.warn(line.chomp)
+      when /error/i
+        log.error(line.chomp)
+      else
+        log.debug(line.chomp)
+      end
     end
   end
 end

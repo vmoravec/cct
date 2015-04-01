@@ -8,7 +8,7 @@ task :console do
 
   self.extend(Module.new {
     def cloud
-      Cct::Cukes::TestCloud.new
+      Cct::Cukes::World.new
     end
   })
 
