@@ -32,12 +32,12 @@ module Cct
 
     def load_nodes!
       crowbar.nodes.each_pair do |name, attrs|
-        node_config = find_name_in_config || default_node_config
+        node_config = find_in_config(name) || default_node_config
       end
       @loaded = true
     end
 
-    def find_node_in_config name
+    def find_in_config name
       #TODO
       config.find {|node| node["name"] == name }
     end
