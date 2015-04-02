@@ -2,6 +2,10 @@ module Cct
   class Nodes
     CROWBAR_NODE = "crowbar"
 
+    extend Forwardable
+
+    def_delegators :@nodes, :map, :first, :each, :last, :find, :[]
+
     attr_reader :nodes
     private :nodes
 
@@ -32,6 +36,10 @@ module Cct
 
     def load_nodes!
       crowbar.nodes.each_pair do |name, attrs|
+        if name == AdminNode::NAME
+          nodes << AdminNode.new
+          next
+        end
         node_details = crowbar.node(name)
         known_config = find_in_config(name)
         if known_config
@@ -46,18 +54,17 @@ module Cct
     end
 
     def find_in_config name
-      known = config.find {|node| node["name"] == name }
-      return known["ssh"] if known
+      config.find {|node| node["name"] == name }
     end
 
     def default_node_config
       conf = config.find {|node| node["name"].nil? }
-      if conf.nil? || !config.is_a?(Hash)
+      if conf.nil? || !conf.is_a?(Hash)
         raise ConfigurationError, "Default configuration for nodes not found"
       elsif conf["ssh"].nil? || !conf["ssh"].is_a?(Hash)
         raise ConfigurationError, "Node configuration for ssh not found"
       end
-      conf["ssh"]
+      conf
     end
   end
 end

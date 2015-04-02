@@ -50,6 +50,7 @@ module Cct
     end
 
     def test_ssh!
+      attempts = 0
       Net::SSH::Transport::Session.new(
         options.ip,
         timeout: options.extended.timeout,
@@ -60,7 +61,13 @@ module Cct
     rescue Timeout::Error, Errno::ETIMEDOUT, Errno::ECONNREFUSED => e
       raise SshConnectionError.new(
         ip: options.ip,
-        message: e.message)
+        message: e.message
+      )
+    rescue Net::SSH::HostKeyMismatch => e
+      attempts += 1
+      e.remember_host!
+      retry unless attempts > 1
+      raise
     end
 
     private
