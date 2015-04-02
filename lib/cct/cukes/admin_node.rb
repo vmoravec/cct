@@ -1,6 +1,6 @@
 module Cct
   class AdminNode < Node
-    NAME = "crowbar"
+    NAME = "admin"
 
     attr_reader :api, :log
 

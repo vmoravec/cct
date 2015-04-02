@@ -7,7 +7,7 @@ verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
 
 Cct.setup(Dir.pwd, verbose)
 
-log = Cct::BaseLogger.new("CUCUMBER", verbose)
+log = Cct::BaseLogger.new("CUCUMBER", verbose: verbose)
 
 log.info "Starting cucumber testsuite..."
 log.info "`cucumber #{ARGV.join(" ")}`"

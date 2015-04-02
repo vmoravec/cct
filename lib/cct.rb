@@ -22,7 +22,7 @@ module Cct
       @root = Pathname.new(root_dir.to_s)
       @config = Config.new
       @user = LocalUser.new
-      @logger = BaseLogger.new(LOG_TAG, verbose?, root.join("log", LOG_FILENAME)).base
+      @logger = BaseLogger.new(LOG_TAG, verbose: verbose?, path: root.join("log", LOG_FILENAME)).base
     end
 
     def verbose?

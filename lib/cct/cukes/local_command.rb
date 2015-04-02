@@ -1,5 +1,7 @@
 module Cct
   class LocalCommand
+    Result = Struct.new(:success?, :output, :exit_code)
+
     attr_reader :log
 
     def initialize
@@ -9,23 +11,22 @@ module Cct
     def exec! command_name, *args
       command = "#{command_name} #{args.join(" ")}".strip
       log.info("Running command `#{command}`")
-      result = ""
+      result = Result.new(false, "", 1000)
       IO.popen(command, :err=>[:child, :out]) do |lines|
         lines.each do |line|
-          result << line
+          result.output << line
           next unless log.debug?
 
           log_command_output(line)
         end
       end
+      log.debug("Command output:\n#{result.output}")
+      result[:success?] = $?.success?
+      result.exit_code = $?.exitstatus
 
-      if $?.success?
-        log.info("Command `#{command}` succeeded")
-        log.debug("Command result:\n#{result}")
-        return result
-      else
-        log.error("Command `#{command}` failed with exit status #{$?.exitstatus}")
-      end
+      return result if result.success?
+      log.error("Command `#{command}` failed with exit status #{result.exit_code}")
+
     rescue Errno::ENOENT => e
       message = "Command `#{command_name}` not found"
       log.error(message)
@@ -36,13 +37,13 @@ module Cct
     end
 
     def log_command_output line
-      case line
+      case line.chomp
       when /warn|cannot/i
-        log.warn(line.chomp)
+        log.warn(line)
       when /error/i
-        log.error(line.chomp)
+        log.error(line)
       else
-        log.debug(line.chomp)
+        log.debug(line)
       end
     end
   end

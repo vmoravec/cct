@@ -6,6 +6,8 @@ module Cct
       port: 22
     )
 
+    Result = Struct.new(:success?, :output, :exit_code, :host)
+
     attr_reader :session, :options, :log
 
     def initialize opts={}
@@ -17,7 +19,17 @@ module Cct
 
     def exec! command, *params
       connect!
-      session.exec!("#{command} #{params.join(" ")}")
+      result = Result.new(false, "", 1000, options.ip)
+      session.open_channel do |channel|
+        channel.exec("#{command} #{params.join(" ").strip}") do |ch, succ|
+          channel.on_data {|_,data| result.output << data }
+          channel.on_extended_data {|_,_,data| result.output << data }
+          channel.on_request("exit-status") {|_,data| result.exit_code = data.read_long }
+        end
+      end
+      session.loop
+      result[:success?] = result.exit_code.zero?
+      result
     end
 
     def connect!

@@ -1,18 +1,6 @@
 module Cct
   class Node
-    module Commands
-      # Ping with 5 seconds timeout and a single attempt
-      def ping!
-        command = "ping -q -c 1 -W 5 #{ip}"
-        result  = `#{command}`
-        if $?.exitstatus.nonzero?
-          raise PingError.new(command, result)
-        end
-        result
-      end
-    end
-
-    include Commands
+    include CommonCommands::Remote
 
     extend Forwardable
 
@@ -25,22 +13,12 @@ module Cct
     def initialize options={}
       set_node_attributes(options)
       @admin ||= false
-      @command ||= RemoteCommand.new(extract_attributes)
+      @command = RemoteCommand.new(extract_attributes)
       validate_attributes
     end
 
     def admin?
       @admin
-    end
-
-    private
-
-    def set_node_attributes options
-      return if options.empty?
-
-      @ip = options['ip'] || options[:ip]
-      @name ||= (options['name'] || options[:name])
-      set_ssh_attributes(options['ssh'] || options[:ssh])
     end
 
     def extract_attributes
@@ -51,6 +29,16 @@ module Cct
         password: password,
         port: port
       }
+    end
+
+    private
+
+    def set_node_attributes options
+      return if options.empty?
+
+      @ip = options['ip'] || options[:ip]
+      @name ||= (options['name'] || options[:name])
+      set_ssh_attributes(options['ssh'] || options[:ssh])
     end
 
     def set_ssh_attributes options={}

@@ -7,10 +7,14 @@ module Cct
 
     attr_reader :name, :base
 
-    def initialize name, verbose=false, path=nil
+    def initialize name, verbose: false, path: nil, stdout: false
       @name = name
       if path
         @base = Logger.new(path, File::WRONLY | File::APPEND | File::CREAT)
+        base.progname = name
+        base.formatter = LogFormatters::SIMPLE
+      elsif stdout
+        @base = Logger.new(STDOUT)
         base.progname = name
         base.formatter = LogFormatters::SIMPLE
       else

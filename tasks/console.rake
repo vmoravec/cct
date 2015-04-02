@@ -4,6 +4,7 @@ task :console do
   require 'cct/cukes/world'
 
   ARGV.clear
+  Cct.instance_variable_set(:@logger, Cct::BaseLogger.new('console', stdout: true).base)
   log.info "Starting console (irb session)" 
 
   self.extend(Module.new {
