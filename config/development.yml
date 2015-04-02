@@ -1,17 +1,22 @@
 ---
 admin_node:
-  remote:
-    ip: CAN'T BE BLANK
+  ip: CAN'T BE BLANK
+  ssh:
+    user: root
+    password:
+    port: 22
+
+  api:
+    user: crowbar
+    password: CAN'T BE BLANK
+    port: 3000
+    ssl: false
+
+nodes:
+  - name:
     ssh:
       user: root
       password:
-      port: 22
-
-    api:
-      user: crowbar
-      password: CAN'T BE BLANK
-      port: 3000
-      ssl: false
 
 gateway:
   ip:
