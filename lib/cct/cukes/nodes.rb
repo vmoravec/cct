@@ -32,14 +32,22 @@ module Cct
 
     def load_nodes!
       crowbar.nodes.each_pair do |name, attrs|
-        node_config = find_in_config(name) || default_node_config
+        node_details = crowbar.node(name)
+        known_config = find_in_config(name)
+        if known_config
+          nodes << Node.new(known_config.merge(ip: node_details["ipaddress"]))
+          next
+        end
+
+        node_config = default_node_config
+        nodes << Node.new(node_config.merge(ip: node_details["ipaddress"], name: name))
       end
       @loaded = true
     end
 
     def find_in_config name
-      #TODO
-      config.find {|node| node["name"] == name }
+      known = config.find {|node| node["name"] == name }
+      return known["ssh"] if known
     end
 
     def default_node_config
