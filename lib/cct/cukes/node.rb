@@ -24,7 +24,6 @@ module Cct
     def extract_attributes
       { ip: ip,
         user: user,
-        target: name,
         name: name,
         password: password,
         port: port

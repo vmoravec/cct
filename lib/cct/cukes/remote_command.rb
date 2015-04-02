@@ -41,7 +41,6 @@ module Cct
       raise SshConnectionError.new(
         ip: options.ip,
         message: e.message,
-        target: options.target,
         timeout: options.extended.timeout
       )
     end
@@ -61,7 +60,6 @@ module Cct
     rescue Timeout::Error, Errno::ETIMEDOUT, Errno::ECONNREFUSED => e
       raise SshConnectionError.new(
         ip: options.ip,
-        target: options.target,
         message: e.message)
     end
 
@@ -70,7 +68,6 @@ module Cct
     def construct_options opts
       options.ip = opts['ip'] || opts[:ip]
       options.user = opts['user'] || opts[:user]
-      options.target = opts['target'] || opts[:target]
       options.extended = EXTENDED_OPTIONS
       options.extended.logger = log
       options.extended.port = opts['port'] || opts[:port] if opts['port'] || opts[:port]
@@ -89,8 +86,7 @@ module Cct
       errors = []
       errors.push("missing ip") unless options.ip
       errors.push("missing user") unless options.user
-      errors.push("missing target") unless options.target
-      errors.unshift("Invalid options#{" for target '#{options.target}'" if options.target}") unless errors.empty?
+      errors.unshift("Invalid options: ") unless errors.empty?
       raise ValidationError.new(self, errors) unless errors.empty?
     end
   end

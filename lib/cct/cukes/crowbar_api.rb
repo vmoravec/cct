@@ -1,15 +1,19 @@
 module Cct
   class CrowbarApi
-    LOG_TAG = "CROWBAR"
+    LOG_TAG   = "CROWBAR"
+    MIME_TYPE = "application/json"
 
     ROUTES = {
-      nodes:     "/nodes.json",
-      barclamps: "/crowbar.json",
-      dashboard: "/dashboard.json"
+      nodes:     "/nodes",
+      barclamps: "/crowbar",
+      dashboard: "/dashboard"
     }
 
-    # Dynamicaly define instance methods for crowbar API from
-    # the list above for convenience
+    # For convenience define instance methods for crowbar API from
+    # the ROUTES hash above; all will be GET methods as we don't modify anything
+    # In case of need of a POST method, construct it manually and don't forget
+    # to add :post into the def_delegators declaration where it's missing on purpose
+    # Other routes are defined manually below as instance methods as usual
     ROUTES.each_pair do |route, fragment|
       define_method(route) { get(fragment).body }
     end
@@ -22,9 +26,9 @@ module Cct
 
     def initialize options={}
       @log = BaseLogger.new(LOG_TAG)
-      config = options["remote"]["api"]
+      config = options["api"]
       config[:url] = config["ssl"] ? "https://" : "http://"
-      config[:url] << options["remote"]["ip"] << ":#{config["port"]}"
+      config[:url] << options["ip"] << ":#{config["port"]}"
 
       @connection = Faraday.new(url: config[:url] ) do |builder|
         builder.request(:digest, config['user'], config['password'])
@@ -44,6 +48,10 @@ module Cct
 
     def routes
       ROUTES
+    end
+
+    def node name
+      get("#{route(:nodes)}/#{name}").body
     end
 
     def test!
@@ -71,6 +79,7 @@ module Cct
     end
 
     def call env
+      env[:request_headers]["Accept"] = CrowbarApi::MIME_TYPE
       logger.info("#{env[:method].upcase} #{env[:url]}")
       logger.debug(curl_output(env[:request_headers], env[:body]).inspect)
       super

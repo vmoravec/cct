@@ -20,13 +20,13 @@ World(StepHelpers)
 
 Before do |scenario|
   log.info "Feature '#{scenario.feature}'"
-  log.info "Running scenario '#{scenario.name}' in location `#{scenario.location}`"
+  log.info "Running scenario '#{scenario.name}' found in `#{scenario.location}`"
 end
 
 After do |scenario|
-  message = "Scenario '#{scenario.name}' #{scenario.failed? ? 'failed' : 'succeeded'}"
-  log.info(message)  if scenario.passed?
-  log.error(message) if scenario.failed?
+  message = "Scenario '#{scenario.name}' "
+  log.info(message  + "passed")  if scenario.passed?
+  log.error(message + "failed")  if scenario.failed?
 end
 
 at_exit do
