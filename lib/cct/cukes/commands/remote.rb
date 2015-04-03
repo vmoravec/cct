@@ -6,8 +6,8 @@ module Cct
         result.output
       end
 
-      def rpm_installed? package_name
-        exec!("rpm", "-q #{package_name}").success?
+      def rpm_q package_name
+        exec!("rpm", "-q #{package_name}")
       end
     end
   end
