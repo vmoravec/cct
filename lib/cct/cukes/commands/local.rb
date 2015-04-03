@@ -12,7 +12,7 @@ module Cct
       end
 
       def ssh_handshake! node
-        remote = RemoteCommand.new(node.extract_attributes)
+        remote = RemoteCommand.new(node.attributes)
         remote.test_ssh!
       end
     end

@@ -19,7 +19,7 @@ module Cct
     private
 
     def set_node_attributes options
-      options.empty? ? super(config) : super
+      options.empty? ? super(config) : super(config.merge(options))
     end
   end
 end

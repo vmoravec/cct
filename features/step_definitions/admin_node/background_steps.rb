@@ -9,3 +9,8 @@ end
 Given(/^I can reach the crowbar API$/) do
   crowbar.test!
 end
+
+Given(/^the admin node is in "([^"]*)" state$/) do |ready|
+  admin_node.crowbar.status == ready
+end
+

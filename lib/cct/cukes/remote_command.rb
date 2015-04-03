@@ -73,8 +73,10 @@ module Cct
       )
     rescue Net::SSH::HostKeyMismatch => e
       attempts += 1
+      log.error("Mismatch of host keys, #{attempts}. attempt, fixing and going to retry now..")
       e.remember_host!
       retry unless attempts > 1
+      log.error("Mismatch of host keys, #{attempts}. attempt, failing..")
       raise
     end
 

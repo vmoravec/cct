@@ -4,7 +4,7 @@ module Cct
 
     extend Forwardable
 
-    def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size
+    def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size, :<<
 
     attr_reader :nodes
     private :nodes
@@ -22,8 +22,9 @@ module Cct
       @loaded
     end
 
-    def load!
-      return if loaded?
+    def load! force=false
+      return load_nodes! if force
+      return nodes if loaded?
 
       load_nodes!
     end
@@ -40,21 +41,63 @@ module Cct
 
     def load_nodes!
       crowbar.nodes.each_pair do |name, attrs|
+        details = crowbar.node(name)
+        puts name
         if name == AdminNode::NAME
-          nodes << AdminNode.new
+          load_admin(name, attrs, details)
           next
         end
-        node_details = crowbar.node(name)
-        known_config = find_in_config(name)
-        if known_config
-          nodes << Node.new(known_config.merge(ip: node_details["ipaddress"]))
-          next
-        end
-
-        node_config = default_node_config
-        nodes << Node.new(node_config.merge(ip: node_details["ipaddress"], name: name))
+        next if load_known_config(name, attrs, details)
+        load_default_config(name, attrs, details)
       end
       @loaded = true
+      nodes
+    end
+
+    def load_admin name, attrs, node_details
+      admin_node = nodes.find {|n| n.name == AdminNode::NAME}
+      if admin_node
+        return admin_node.reload! unless admin_node.loaded?
+        return admin_node if admin_node.loaded?
+      end
+      nodes << AdminNode.new(
+        crowbar: {
+          api: crowbar,
+          base: attrs,
+          extended: node_details
+        }
+      )
+    end
+
+    def load_known_config name, attrs, node_details
+      known_config = find_in_config(name)
+      if known_config
+        nodes << Node.new(
+          known_config.merge(
+            ip: node_details["ipaddress"],
+            crowbar: {
+              api: crowbar,
+              base: attrs,
+              extended: node_details
+            }
+          )
+        )
+      end
+    end
+
+    def load_default_config name, attrs, node_details
+      node_config = default_node_config
+      nodes << Node.new(
+        node_config.merge(
+          ip: node_details["ipaddress"],
+          name: name,
+          crowbar: {
+           api: crowbar,
+           base: attrs,
+           extended: node_details
+          }
+        )
+      )
     end
 
     def find_in_config name

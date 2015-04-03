@@ -26,8 +26,6 @@ module Cct
 
       include Commands::Local
 
-      attr_reader :cloud
-
       def initialize
         @cloud = TestCloud.new
         @local_command = LocalCommand.new
