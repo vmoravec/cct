@@ -15,13 +15,14 @@ module Cct
   LOG_FILENAME = "cct.log"
 
   class << self
-    attr_reader :root, :user, :logger, :config
+    attr_reader :root, :user, :logger, :config, :hostname
 
     def setup root_dir, verbose=false
       @verbose = verbose
       @root = Pathname.new(root_dir.to_s)
       @config = Config.new
       @user = LocalUser.new
+      @hostname = `hostname -f`.strip rescue "(uknown)"
       @logger = BaseLogger.new(LOG_TAG, verbose: verbose?, path: root.join("log", LOG_FILENAME)).base
     end
 

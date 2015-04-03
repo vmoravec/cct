@@ -19,16 +19,24 @@ module Cct
 
     def exec! command, *params
       connect!
+      full_command = "#{command} #{params.join(" ")}".strip
       result = Result.new(false, "", 1000, options.ip)
       session.open_channel do |channel|
-        channel.exec("#{command} #{params.join(" ").strip}") do |ch, succ|
+        channel.exec(full_command) do |_, _|
+          channel.on_close do
+            log.info("Running command `#{full_command}` on remote host #{options.ip}")
+          end
           channel.on_data {|_,data| result.output << data }
           channel.on_extended_data {|_,_,data| result.output << data }
-          channel.on_request("exit-status") {|_,data| result.exit_code = data.read_long }
+          channel.on_request("exit-status") {|_,data| result.exit_code = data.read_long}
         end
       end
       session.loop
       result[:success?] = result.exit_code.zero?
+      if !result.success?
+        log.error(result.output)
+        raise RemoteCommandFailed.new(result)
+      end
       result
     end
 

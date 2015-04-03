@@ -1,6 +1,6 @@
 module Cct
   class Node
-    include CommonCommands::Remote
+    include Commands::Remote
 
     extend Forwardable
 

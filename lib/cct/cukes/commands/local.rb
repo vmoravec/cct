@@ -1,5 +1,5 @@
 module Cct
-  module CommonCommands
+  module Commands
     module Local
       # Ping with 5 seconds timeout and a single attempt
       def ping! node
@@ -14,16 +14,6 @@ module Cct
       def ssh_handshake! node
         remote = RemoteCommand.new(node.extract_attributes)
         remote.test_ssh!
-      end
-    end
-
-    module Remote
-      def read_file path
-        exec!("cat", path)
-      end
-
-      def rpm? package_name
-        exec!("rpm", "-q #{package_name}")
       end
     end
   end

@@ -23,8 +23,19 @@ module Cct
     end
   end
 
+  class RemoteCommandFailed < StandardError
+    def initialize result
+      super("#{result.output}host: #{result.host}")
+    end
+  end
+
+  class LocalCommandFailed < StandardError
+    def initialize result
+      super("#{result.output.strip}\nhost: #{result.host}")
+    end
+  end
+
   class CrowbarApiError < StandardError; end
   class HttpConnectionFailed < StandardError; end
-  class LocalCommandFailed < StandardError; end
   class ConfigurationError < StandardError; end
 end

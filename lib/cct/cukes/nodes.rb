@@ -4,7 +4,7 @@ module Cct
 
     extend Forwardable
 
-    def_delegators :@nodes, :map, :first, :each, :last, :find, :[]
+    def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size
 
     attr_reader :nodes
     private :nodes
@@ -30,6 +30,10 @@ module Cct
 
     def inspect
       nodes.inspect
+    end
+
+    def exept node
+      nodes.select {|n| n.name != node.name}
     end
 
     private

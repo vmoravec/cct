@@ -10,7 +10,8 @@ require "cct/cukes/errors"
 require "cct/cukes/crowbar_api"
 require "cct/cukes/local_command"
 require "cct/cukes/remote_command"
-require "cct/cukes/common_commands"
+require "cct/cukes/commands/local"
+require "cct/cukes/commands/remote"
 require "cct/cukes/node"
 require "cct/cukes/admin_node"
 require "cct/cukes/nodes"
@@ -23,7 +24,7 @@ module Cct
 
       def_delegators :@cloud, :admin_node, :crowbar, :nodes
 
-      include CommonCommands::Local
+      include Commands::Local
 
       attr_reader :cloud
 
@@ -38,6 +39,10 @@ module Cct
 
       def config
         Cct.config
+      end
+
+      def env param
+        ENV[param.to_s]
       end
     end
   end
