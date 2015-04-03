@@ -1,0 +1,13 @@
+namespace :feature do
+  feature_name "<%= feature_name %>"
+
+  namespace :<%= task_name %> do
+    desc "First feature task"
+    feature_task :first, tags: :@first
+
+    feature_task :all
+  end
+
+  desc "Verification of '<%= feature_name %>' feature"
+  task :<%= task_name %> => "<%= task_name %>:all"
+end
