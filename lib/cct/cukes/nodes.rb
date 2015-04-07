@@ -40,7 +40,7 @@ module Cct
     end
 
     def control_node
-      return control_node if control_node
+      return @control_node if @control_node
 
       self.load!
       response = crowbar.get("/crowbar/nova/1.0/default")
