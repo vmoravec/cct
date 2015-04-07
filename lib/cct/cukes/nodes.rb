@@ -2,7 +2,7 @@ module Cct
   class Nodes
     extend Forwardable
 
-    def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size
+    def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size, :<<
 
     attr_reader :nodes
     private :nodes
