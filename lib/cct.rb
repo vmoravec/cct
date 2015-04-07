@@ -13,21 +13,29 @@ require "cct/dsl"
 module Cct
   LOG_TAG = "CCT"
   LOG_FILENAME = "cct.log"
+  LOG_DIR = "log"
 
   class << self
-    attr_reader :root, :user, :logger, :config, :hostname
+    attr_reader :root, :user, :logger, :config, :hostname, :log_path
 
-    def setup root: __dir__, logger: nil, verbose: false
+    def setup root_dir, logger: nil, verbose: false, log_path: nil
       @verbose = verbose
-      @root = Pathname.new(root_dir.to_s)
+      @root = Pathname.new(root_dir)
       @config = Config.new
       @user = LocalUser.new
-      @hostname = `hostname -f &2>1`.strip rescue "(uknown)"
-      @logger = logger || BaseLogger.new(LOG_TAG, verbose: verbose?, path: root.join("log", LOG_FILENAME)).base
+      @hostname = `hostname -f 2>&1`.strip rescue "(uknown)"
+      @log_path = log_path || root.join(LOG_DIR, LOG_FILENAME)
+      @logger = logger || BaseLogger.new(
+        LOG_TAG, verbose: verbose, path: @log_path
+      ).base
     end
 
     def verbose?
       @verbose
+    end
+
+    def update_logger base_logger
+      @logger = base_logger.base
     end
   end
 end

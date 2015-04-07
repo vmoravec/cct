@@ -1,7 +1,5 @@
 module Cct
   class Nodes
-    CROWBAR_NODE = "crowbar"
-
     extend Forwardable
 
     def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size, :<<
@@ -42,7 +40,6 @@ module Cct
     def load_nodes!
       crowbar.nodes.each_pair do |name, attrs|
         details = crowbar.node(name)
-        puts name
         if name == AdminNode::NAME
           load_admin(name, attrs, details)
           next
