@@ -6,7 +6,7 @@ module Cct
 
     def_delegators :@command, :exec!, :connected?, :connect!, :test_ssh!
     def_delegators :@crowbar_proxy, :status, :state, :alias, :fqdn, :domain,
-                                    :info, :loaded?
+                                    :data, :loaded?
 
     attr_reader :admin, :name, :ip, :user, :password, :port
 
@@ -15,6 +15,7 @@ module Cct
     def initialize options={}
       set_node_attributes(options)
       @admin ||= false
+      @loaded = false
       @command = RemoteCommand.new(attributes)
       @crowbar_proxy = CrowbarProxy.new(options[:crowbar])
       validate_attributes
@@ -91,7 +92,7 @@ module Cct
     class CrowbarProxy
       attr_reader :crowbar
 
-      attr_reader :alias, :state, :status, :description, :loaded, :info, :hostname,
+      attr_reader :alias, :state, :status, :description, :loaded, :data, :hostname,
                   :fqdn, :domain
 
       alias_method :loaded?, :loaded
@@ -116,7 +117,7 @@ module Cct
 
       def inspect
         "<#{self.class}##{object_id} hostname=#{hostname} alias=#{self.alias} state=#{state} status=#{status} " +
-        "description=#{description} domain=#{domain} fqdn=#{fqdn} info={...#{info.keys.size} pairs...} >"
+        "description=#{description} domain=#{domain} fqdn=#{fqdn} data={...#{data.keys.size} pairs...} >"
       end
 
       private
@@ -133,7 +134,7 @@ module Cct
       def set_extended_data data
         return if data.nil? || !data.is_a?(Hash)
 
-        @info = data
+        @data = data
         @hostname = data["hostname"]
         @fqdn = data["fqdn"]
         @domain = data["domain"]

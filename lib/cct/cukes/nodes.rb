@@ -2,12 +2,12 @@ module Cct
   class Nodes
     extend Forwardable
 
-    def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size, :<<
+    def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size
 
     attr_reader :nodes
     private :nodes
 
-    attr_reader :crowbar, :config
+    attr_reader :crowbar, :config, :control_node
 
     def initialize crowbar_api
       @crowbar = crowbar_api
@@ -35,9 +35,37 @@ module Cct
       nodes.select {|n| n.name != node.name}
     end
 
+    def admin_node
+      nodes.find {|node| node.name = AdminNode::NAME }
+    end
+
+    def control_node
+      return control_node if control_node
+
+      self.load!
+      response = crowbar.get("/crowbar/nova/1.0/default")
+      if !response.success?
+        fail CrowbarApiError,
+          "Failed request at #{response.env[:url]} while getting control node details"
+      end
+
+      control_node_url =
+        response.body["deployment"]["nova"]["elements"]["nova-multi-controller"].first
+      return unless control_node_url
+
+      control_node_name = control_node_url.split(".").first
+      @control_node = nodes.find {|node| node.name == control_node_name}
+    end
+
+    def clear
+      nodes.clear
+      @loaded = false
+    end
+
     private
 
     def load_nodes!
+      clear
       crowbar.nodes.each_pair do |name, attrs|
         details = crowbar.node(name)
         if name == AdminNode::NAME

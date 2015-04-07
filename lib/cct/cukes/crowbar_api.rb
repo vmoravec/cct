@@ -9,11 +9,6 @@ module Cct
       dashboard: "/dashboard"
     }
 
-    # For convenience define instance methods for crowbar API from
-    # the ROUTES hash above; all will be GET methods as we don't modify anything
-    # In case of need of a POST method, construct it manually and don't forget
-    # to add :post into the def_delegators declaration where it's missing on purpose
-    # Other routes are defined manually below as instance methods as usual
     ROUTES.each_pair do |route, fragment|
       define_method(route) { get(fragment).body }
     end

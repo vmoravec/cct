@@ -26,7 +26,7 @@ module Cct
       @hostname = `hostname -f 2>&1`.strip rescue "(uknown)"
       @log_path = log_path || root.join(LOG_DIR, LOG_FILENAME)
       @logger = logger || BaseLogger.new(
-        LOG_TAG, verbose: verbose, path: @log_path
+        LOG_TAG, verbose: verbose?, path: @log_path
       ).base
     end
 
