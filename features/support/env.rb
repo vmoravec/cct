@@ -5,7 +5,7 @@ require_relative "step_helpers"
 
 verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
 
-Cct.setup(Dir.pwd, verbose)
+Cct.setup(Dir.pwd, verbose: verbose)
 
 log = Cct::BaseLogger.new("CUCUMBER", verbose: verbose)
 

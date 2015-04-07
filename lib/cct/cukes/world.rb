@@ -22,7 +22,7 @@ module Cct
     class World
       extend Forwardable
 
-      def_delegators :@cloud, :admin_node, :crowbar, :nodes
+      def_delegators :@cloud, :admin_node, :crowbar, :nodes, :control_node
 
       include Commands::Local
 

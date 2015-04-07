@@ -25,6 +25,10 @@ task :console do
     def nodes
       cloud.nodes
     end
+
+    def control_node
+      cloud.nodes.control_node
+    end
   })
 
   IRB.start(__FILE__)

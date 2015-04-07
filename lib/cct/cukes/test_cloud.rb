@@ -10,6 +10,10 @@ module Cct
         @nodes = Nodes.new(crowbar)
         nodes << admin_node
       end
+
+      def control_node
+        nodes.control_node
+      end
     end
   end
 end

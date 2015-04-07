@@ -19,7 +19,7 @@ module Cct
     attr_reader :root, :user, :logger, :config, :hostname, :log_path
 
     def setup root_dir, logger: nil, verbose: false, log_path: nil
-      @verbose = verbose
+      @verbose = verbose == true
       @root = Pathname.new(root_dir)
       @config = Config.new
       @user = LocalUser.new
