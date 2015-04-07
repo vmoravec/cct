@@ -17,13 +17,13 @@ module Cct
   class << self
     attr_reader :root, :user, :logger, :config, :hostname
 
-    def setup root_dir, verbose=false
+    def setup root: __dir__, logger: nil, verbose: false
       @verbose = verbose
       @root = Pathname.new(root_dir.to_s)
       @config = Config.new
       @user = LocalUser.new
-      @hostname = `hostname -f`.strip rescue "(uknown)"
-      @logger = BaseLogger.new(LOG_TAG, verbose: verbose?, path: root.join("log", LOG_FILENAME)).base
+      @hostname = `hostname -f &2>1`.strip rescue "(uknown)"
+      @logger = logger || BaseLogger.new(LOG_TAG, verbose: verbose?, path: root.join("log", LOG_FILENAME)).base
     end
 
     def verbose?
