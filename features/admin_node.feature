@@ -24,7 +24,7 @@ Feature: Admin node
     Given the following packages are installed:
       | Package name:                        |
       | suse-cloud-release                   |
-      | crowbar                             |
+      | crowbar                              |
       | yast2-crowbar                        |
       | cloud-init                           |
       | crowbar-barclamp-ceilometer          |
@@ -57,6 +57,10 @@ Feature: Admin node
       | crowbar-barclamp-tempest             |
       | crowbar-barclamp-trove               |
       | crowbar-barclamp-updater             |
+    And all dependencies of installed packages are satisfied
 
   @services
   Scenario: Essential services enabled and active
+    Given the following services are available
+      | Service name                         |
+    And all of them are enabled and running
