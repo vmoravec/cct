@@ -1,5 +1,5 @@
 require "cct"
-require "cct/cukes/world"
+require "cct/cloud/world"
 
 require_relative "step_helpers"
 
@@ -13,7 +13,7 @@ log.info "Starting cucumber testsuite..."
 log.info "`cucumber #{ARGV.join(" ")}`"
 
 World do
-  Cct::Cukes::World.new
+  Cct::Cloud::World.new
 end
 
 World(StepHelpers)

@@ -1,7 +1,7 @@
 desc "Start console"
 task :console do
   require 'irb'
-  require 'cct/cukes/world'
+  require 'cct/cloud/world'
 
   ARGV.clear
   Cct.update_logger(Cct::BaseLogger.new('console', stdout: true))
@@ -11,7 +11,7 @@ task :console do
   # It's very handy when testing things and playing with stuff
   self.extend(Module.new {
     def cloud
-      @cloud ||= Cct::Cukes::World.new
+      @cloud ||= Cct::Cloud::World.new
     end
 
     def crowbar

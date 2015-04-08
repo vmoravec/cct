@@ -15,7 +15,6 @@ module Cct
     def initialize options={}
       set_node_attributes(options)
       @admin ||= false
-      @loaded = false
       @command = RemoteCommand.new(attributes)
       @crowbar_proxy = CrowbarProxy.new(options[:crowbar])
       validate_attributes
@@ -98,6 +97,7 @@ module Cct
       alias_method :loaded?, :loaded
 
       def initialize options
+        @loaded = false
         return if options.nil?
 
         @crowbar = options[:api]

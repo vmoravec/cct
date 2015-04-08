@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cct (0.0.1)
+    cct (0.5.0)
       awesome_print
       bundler (~> 1.6)
       cucumber (~> 2.0.0.rc.5)
