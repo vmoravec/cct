@@ -35,7 +35,7 @@ module Cct
       result[:success?] = result.exit_code.zero?
       if !result.success?
         log.error(result.output)
-        raise RemoteCommandFailed.new(result)
+        raise RemoteCommandFailed.new(full_command, result)
       end
       result
     end

@@ -7,3 +7,8 @@ Given(/^the following packages are installed:$/) do |table|
     end
   end
 end
+
+Given(/^all dependencies of installed packages are satisfied$/) do
+  admin_node.exec!("zypper", "verify --no-recommends")
+end
+

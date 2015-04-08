@@ -1,5 +1,7 @@
 module Cct
   class Nodes
+    CONTROL_NODE_ROUTE = "/crowbar/nova/1.0/default"
+
     extend Forwardable
 
     def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size, :<<
@@ -43,10 +45,10 @@ module Cct
       return @control_node if @control_node
 
       self.load!
-      response = crowbar.get("/crowbar/nova/1.0/default")
+      response = crowbar.get(CONTROL_NODE_ROUTE)
       if !response.success?
         fail CrowbarApiError,
-          "Failed request at #{response.env[:url]} while getting control node details"
+          "Failed at #{response.env[:url]} while requesting controller node details"
       end
 
       control_node_url =

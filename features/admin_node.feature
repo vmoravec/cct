@@ -61,6 +61,8 @@ Feature: Admin node
 
   @services
   Scenario: Essential services enabled and active
-    Given the following services are available
+    Given the following services are available on the admin node
       | Service name                         |
-    And all of them are enabled and running
+      | chef-server                          |
+      | rabbitmq-server                      |
+    And these services are enabled and running on the admin node

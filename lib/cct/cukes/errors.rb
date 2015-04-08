@@ -24,14 +24,14 @@ module Cct
   end
 
   class RemoteCommandFailed < StandardError
-    def initialize result
-      super("#{result.output}host: #{result.host}")
+    def initialize command, result
+      super("`#{command}` failed.\n#{result.output}Host: #{result.host}")
     end
   end
 
   class LocalCommandFailed < StandardError
     def initialize result
-      super("#{result.output.strip}\nhost: #{result.host}")
+      super("#{result.output.strip}\nHost: #{result.host}")
     end
   end
 
