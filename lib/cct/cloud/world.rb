@@ -1,3 +1,4 @@
+require "cct/cloud/crowbar_api"
 require "cct/cloud/node"
 require "cct/cloud/admin_node"
 require "cct/cloud/nodes"

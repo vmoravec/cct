@@ -1,6 +1,7 @@
 Given(/^I got the controller controller node discovered$/) do
   # It's enough just to call the method, it fails by default if the
-  # request for controller node data was not successful
+  # request for controller node data was not successful - which means
+  # the control node is not reachable for us to test
   control_node
 end
 

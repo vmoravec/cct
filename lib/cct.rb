@@ -20,7 +20,6 @@ require "cct/commands/local"
 require "cct/commands/remote"
 require "cct/local_command"
 require "cct/remote_command"
-require "cct/crowbar_api"
 
 module Cct
   LOG_TAG = "CCT"

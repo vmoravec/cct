@@ -51,6 +51,9 @@ module Cct
           "Failed at #{response.env[:url]} while requesting controller node details"
       end
 
+      # FIXME: In case there are several controller nodes, take the first one
+      #        This strategy is not perfect but it's enough sofar
+      #        as it's the typical setup of deployment
       control_node_url =
         response.body["deployment"]["nova"]["elements"]["nova-multi-controller"].first
       return unless control_node_url
