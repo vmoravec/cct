@@ -1,13 +1,14 @@
 # cct - Cucumber Cloud Testsuite
 
   The `master` branch contains the testsuites for SUSE Cloud 5.
-  Testsuites for other versions of cloud will be available in repository branches.
+  Testsuites for other versions of cloud will be available in respective branches.
 
 ## Topics
 
   [Installation](#installation)  
   [Dependencies](#dependencies)  
   [Usage](#usage)  
+  [How-To's](#howtos)
   [Configuration](#configuration)  
   [Code](#code) missing  
   [Tasks](#tasks) missing  
@@ -17,7 +18,7 @@
 ## Quick start
 
   1.  Check [system dependencies](#dependencies)
-  2.  `git clone git@github.com:vmoravec/cct`
+  2.  `git clone git@github.com:suse-cloud/cct`
   3.  `cd cct && bundle install`
   4.  Add missing data into `config/development.yml` file
   5.  `rake feature:admin`
@@ -25,51 +26,62 @@
 
 ## Installation
 
-  Make sure you have installed all [dependencies](#Dependencies)
+  Make sure you have installed all [dependencies](#dependencies)
 
-     git clone git@github.com:vmoravec/cct
+  After you have cloned the repository, install the required rubygems:
 
      bundle install
 
   All rubygems will be installed into the directory `vendor/bundle` within the repo.
 
   This is the default setup, if you use one of Ruby version managers like `RVM`,
-  you might want to create a new gemset and override the bundle config with:
+  you might want to create a new gemset and override the bundle config
+  in `.bundle/config` with:
 
      bundle install --system
+
 
 ## Dependencies
 
     zypper in rubygem-bundler ruby-devel
     zypper in gcc make
 
-  List of required rubygems can be found in file `cct.gemspec` .
+  List of required rubygems can be found in file `cct.gemspec` and in `Gemfile`.
 
-## Crash course
 
-#### Run a feature
+## How-To's
+
+#### Make use of `rake console`
+
+  Once you have entered configuration data for the admin node, it's handy
+  to get some live data from the deployed cloud within an ruby's irb session.
+
+  `rake console` will give you access to admin node, control node, crowbar API
+  and some other useful stuff used in the cucumber step definitions.
+
+  To make it more verbose, call it with `rake console --verbose`
+
+#### Write a new feature
+
+#### Write a new scenario
+
+#### Write a step definition
+
+#### Use commands in the step definitions
+
+#### Add new command for the step definitions
+
+#### Run a single feature
 
     rake feature:FEATURE_NAME
 
-#### Run a test/scenario
+#### Run a scenario
 
-    rake featuer:FEATURE_NAME:SCENARIO_NAME
+    rake feature:FEATURE_NAME:SCENARIO_NAME
 
 #### Rake task is your friend
 
     rake help
-
-  `rake` is the only way to run the tests and other commands. All files with tasks
-  are located in the directory `tasks/` and have suffix `.rake`
-  All are loaded automatically. Just
-  put `your_new.rake` file into the directory and add your tasks.
-
-  A single file usually contains several tasks within some well chosen namespace.
-
-  In general there is 2 kinds of tasks:
-
-    * regular rake tasks => for managing testsuite and providing help 
-    * feature rake task  => for running cucumber features
 
 
 #### Add new feature
@@ -104,6 +116,17 @@
     /home/path/to/code/cct/Rakefile:6:in `<top (required)>'
 
   the rubygems installed in path `vendor/bundle` are not visible to `rake`.
+
+  `rake` is the only way to run the tests and other commands. All files with tasks
+  are located in the directory `tasks/` and have suffix `.rake`
+  All are loaded automatically.
+
+  A single file usually contains several tasks within some well chosen namespace.
+
+  In general there is 2 kinds of tasks:
+
+    * regular rake tasks => for managing various stuff and providing help 
+    * feature rake task  => for running cucumber features and scenarios
 
 #### Useful commands
 
