@@ -14,9 +14,6 @@ namespace :feature do
     desc "Test crowbar API"
     feature_task :api, tags: :@api
 
-    desc "Smoke tests for admin feature"
-    feature_task :smoke, tags: :@smoke
-
     feature_task :all
   end
 

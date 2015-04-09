@@ -10,8 +10,6 @@
   [Usage](#usage)  
   [How-To's](#how-tos)  
   [Configuration](#configuration)  
-  [Code](#code) missing  
-  [Tasks](#tasks) missing  
   [Features](#features)  
 
 
@@ -49,108 +47,6 @@
   List of required rubygems can be found in file `cct.gemspec` and in `Gemfile`.
 
 
-## How-To's
-
-#### Make use of `rake console`
-
-  Once you have entered configuration data for the admin node, it's handy
-  to get some live data from the deployed cloud within an ruby's irb session.
-
-  `rake console` will give you access to admin node, control node, crowbar API
-  and some other useful stuff used in the cucumber step definitions.
-
-  To make it more verbose, call it with `rake console --verbose`
-
-#### Write a new feature
-
-  There are two requirements for a new feature:
-
-  * new cucumber feature file in path `features/` that must have `.feature` extension  
-  * new rake task file in path `tasks/` with `.rake` extension  
-
-  There is also a dedicated `rake` task available for creating both of them:
-
-    `rake add:feature name='Awesome Stuff' task='awesome_stuff'`  
-
-  Look into the directory `templates/` where templates for both files are stored.
-  Try to keep the name of the `rake` task short but still expressive.
-
-#### Write a new scenario
-
-  Every cucumber feature is composed of one or more scenarios. A scenaro consists
-  of steps that describe what is being tested.
-
-  A scenario is a concept based on *Givens*, *Whens* and *Thens*.
-
-  The purpose of __Given__ is to put the system in a known state or to find out
-  whether the system is in state ready for testing.
-
-  The purpose of __When__ is to describe the key action the actor (system or user)
-  performs.
-
-  The purpose of __Then__ step is to observe outcomes. The observations
-  should be related to the feature description.
-
-  Beside these you can use __And__ and __But__ keywords to make the scenario
-  more descriptive or specific.
-
-
-#### Write a step definition
-
-  Once the scenario is written, you should adapt the respective feature rake task
-  to let it run via `rake` (more on this [here](#todo).
-  When the steps does not match any already existing step
-  definitions the scenario will be marked as *undefined* with this notice:
-
-  ```
-  You can implement step definitions for undefined steps with these snippets:
-
-  Given(/^I have my system in the okay state$/) do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  ```
-  Now you copy the text above starting with `Given`, go to the directory
-  `features/step_definitions/YOUR_FEATURE`, create a new file with suffix `_step.rb`
-  matching the name of current scenario where you insert the copied text from above.
-
-  The last step is to replace the `pending` method with your test implementation.
-  More about that you can find in the section about
-  [commands in step definitions](#todo) .
-
-
-
-#### Run scenario or feature with a rake task
-
-#### What commands to use in the step definitions
-
-#### Add new command for the step definitions
-
-#### Run a single feature
-
-    rake feature:FEATURE_NAME
-
-#### Run a scenario
-
-    rake feature:FEATURE_NAME:SCENARIO_NAME
-
-#### Rake task is your friend
-
-    rake help
-
-
-#### Add new feature
-
-    rake add:feature
-
-#### Add new test
-
-    rake add:test
-
-#### Add new code to `lib/`
-
-    TODO
-
-
 ## Usage
 
      bundle exec rake help
@@ -160,8 +56,7 @@
      alias rake="bundle exec rake"
 
   might be useful. The command `bundle exec` takes care about locating and loading
-  the correct rubygems from the pre-configured path in `vendor/bundle` that is present
-  at `.bundle/config`.
+  the correct rubygems from the pre-configured path as set by `.bundle/config`.
 
   If you get an error like
 
@@ -194,6 +89,133 @@
   Run unit tests for code inside `lib` directory:
 
      rake spec
+
+
+## How-To's
+
+#### Make use of `rake console`
+
+  Once you have entered configuration data for the admin node, it's handy
+  to get some live data from the deployed cloud within an ruby's irb session.
+
+  `rake console` will give you access to admin node, control node, crowbar API
+  and some other useful stuff used in the cucumber step definitions.
+
+  To make it more verbose, call it with `rake console --verbose`
+
+#### Write a new feature
+
+  There are two requirements for a new feature:
+
+  * new cucumber feature file in path `features/` that must have `.feature` extension  
+  * new rake task file in path `tasks/` with `.rake` extension  
+
+
+  There is also a dedicated `rake` task available for creating both of them:
+
+    `rake add:feature name='Awesome Stuff' task='awesome_stuff'`  
+
+  Look into the directory `templates/` where templates for both files are stored.
+  Try to keep the name of the `rake` task short but still expressive.
+
+#### Write a new scenario
+
+  Every cucumber feature is composed of one or more scenarios. A scenaro consists
+  of its name and steps that describe what is being tested.
+
+  A scenario is a concept based on *Givens*, *Whens* and *Thens*.
+
+  The purpose of __Given__ is to put the system in a known state or to find out
+  whether the system is in state ready for testing.
+
+  The purpose of __When__ is to describe the key action the actor (system or user)
+  performs.
+
+  The purpose of __Then__ step is to observe outcomes. The observations
+  should be related to the feature description.
+
+  Beside these you can use __And__ and __But__ keywords to make the scenario
+  more descriptive or specific.
+
+  Don't forget to add a *tag* above the scenario name in the form of
+  a single word that expresses the scenario name, like `@packages` . This tag
+  will be used inside of a feature rake task to call that single scenario only.
+
+
+#### Write a step definition
+
+  Once the scenario is written, you should adapt the respective feature rake task
+  to let it run via `rake` (more on this [here](#run-a-single-scenario-with-a-rake)).
+  When the steps does not match any already existing step
+  definition the scenario will be marked as *undefined* with this notice:
+
+  ```
+  You can implement step definitions for undefined steps with these snippets:
+
+  Given(/^I have my system in the okay state$/) do
+    pending # Write code here that turns the phrase above into concrete actions
+  end
+  ```
+  Now you copy the text above starting with `Given`, go to the directory
+  `features/step_definitions/YOUR_FEATURE`, create a new file with name matching
+  the scenario name and with suffix `_steps.rb`. Insert the copied text from above.
+
+  The last step is to replace the `pending` method with your test implementation.
+  More about that you can find in the section about
+  [commands in step definitions](#what-commands-to-use-in-step-definitions) .
+
+
+
+#### Run a single scenario with a rake
+
+  To be able to run a single scenario, you need to mark it with a `@tag`. Then
+  in rake you must implement a specific task that will call the feature with that
+  tag name. The whole thing might look like this:
+
+  ```
+  namespace :feature do
+    feature_name "Admin node"
+
+    namespace :admin do
+      desc "Test NTP Server availability"
+      feature_task :ntp, tags: :@ntp
+    end
+  end
+  ```
+  This look for the feature with name `Admin node`, defines a `rake` task with name
+  `:ntp` within the namespace `:admin`. To call this task you need to type:
+  ```
+  rake feature:admin:ntp
+  ```
+
+#### What commands to use in step definitions
+
+#### Add new command for the step definitions
+
+#### Run a single feature
+
+    rake feature:FEATURE_NAME
+
+#### Run a scenario
+
+    rake feature:FEATURE_NAME:SCENARIO_NAME
+
+#### Rake task is your friend
+
+    rake help
+
+
+#### Add new feature
+
+    rake add:feature
+
+#### Add new test
+
+    rake add:test
+
+#### Add new code to `lib/`
+
+    TODO
 
 ## Configuration
 
