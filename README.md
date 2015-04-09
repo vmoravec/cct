@@ -8,7 +8,7 @@
   [Installation](#installation)  
   [Dependencies](#dependencies)  
   [Usage](#usage)  
-  [How-To's](#howtos)
+  [How-To's](#how-tos)  
   [Configuration](#configuration)  
   [Code](#code) missing  
   [Tasks](#tasks) missing  
@@ -63,9 +63,40 @@
 
 #### Write a new feature
 
+  There are two requirements for a new feature:
+
+  * new cucumber feature file in path `features/` that must have `.feature` extension
+  * new rake task file in path `tasks/` with `.rake` extension
+
+  There is also a dedicated `rake` task available for creating both of them:
+
+    rake add:feature name='Awesome Stuff' task='awesome_stuff'
+
+  Look into the directory `templates/` where templates for both files are stored.
+  Try to keep the name of the `rake` task short but still expressive.
+
 #### Write a new scenario
 
+  Every cucumber feature is composed of one or more scenarios. A scenaro consists
+  of steps that describe what is being tested.
+
+  A scenario is a concept based on Givens, Whens and Thens.
+  The purpose of __Given__ is to put the system in a known state or to find out
+  whether the system is in state ready for testing.
+
+  The purpose of __When__ is to describe the key action the actor (system or user)
+  performs.
+
+  The purpose of __Then__ step is to observe outcomes. The observations
+  should be related to the feature description.
+
+  Beside these, you can use __And__ and __But__ keywords to make the scenario
+  more descriptive or specific.
+
+
 #### Write a step definition
+
+  Once the scenario is written
 
 #### Use commands in the step definitions
 
@@ -223,8 +254,10 @@
     rake feature:admin:ntp   # Test NTP Server availability on admin node
     rake feature:admin:os    # Check operating system support for admin node
 
+#### Disclaimer
 
-
+  This documenation contains information and formulations available on 
+  [cucumber github wiki](https://github.com/cucumber/cucumber/wiki). 
 
 
 ## Contributing
