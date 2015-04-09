@@ -165,7 +165,7 @@
 
 
 
-#### Run a single scenario with a rake
+#### Run a single scenario with `rake`
 
   To be able to run a single scenario, you need to mark it with a `@tag`. Then
   in rake you must implement a specific task that will call the feature with that
@@ -189,6 +189,33 @@
   rake feature:admin:ntp
   ```
 
+#### Run a single feature as a whole with `rake`
+
+  There needs to be a standalone `rake` task implemented to make a feature run
+  complete. It's done by a separate task without description like this:
+
+  ```ruby
+  namespace :feature do
+    feature_name "Controller node"
+
+    namespace :controller do
+      desc "Essential system requirements"
+        feature_task :system, tags: :@system
+        feature_task :all
+      end
+
+      desc "Complete verification of 'Controller node' feature"
+      task :controller => "controller:all"
+    end
+  ```
+
+  Now call the whole feature with:
+
+  ```
+    rake feature:controller
+  ```
+
+
 #### What commands to use in step definitions
 
   The commands available in the step definitions are defined by code in the
@@ -211,40 +238,35 @@
   step or scenario specific code placed here, the right place for new commands is in
   `lib/cct/commands/`.
 
-  Currently available commands are these:
-    * local commands  
+  Currently available __local__ commands are these:  
 
-    `exec!` accepts 1+ parameters; expects a command name with arguments
-    `ping!` accepts a node instance
-    `ssh_hadnshake!` expects a node instance
+  `exec!` expects a command name with arguments as parameter
+  `ping!` expects a node instance as parameter
+  `ssh_hadnshake!` expects a node instance as parameter
 
+  Commands to call __remotely__ on the node instances:  
+
+  `exec!` expects a command name with arguments as parameter
+  `read_file` expects a path on the remote machine as parameter
+  `rpm_q` expects a package name as parameter
+
+  Both `exec!` commands return a struct object with three attributes: `output`,
+  `success?` and `exit_code`. 
+
+  If the execution of the `exec!` command has failed, an exception is thrown.
+  You should not rescue these exceptions as it's important to see and log the
+  source of the primary problem.
 
 #### Add new command for the step definitions
 
-#### Run a single feature
+  The rule of thumb is when you use a remote or local command on more than 3 places,
+  let's it implement as a predefined command within the `lib/cct/commands` .
 
-    rake feature:FEATURE_NAME
-
-#### Run a scenario
-
-    rake feature:FEATURE_NAME:SCENARIO_NAME
-
-#### Rake task is your friend
-
-    rake help
-
-
-#### Add new feature
-
-    rake add:feature
-
-#### Add new test
-
-    rake add:test
 
 #### Add new code to `lib/`
 
-    TODO
+  If you find a bug or you want to propose an improvement, please create a pull request.
+  Every new code for the `lib/` directory must have `rspec` unit tests.
 
 ## Configuration
 
