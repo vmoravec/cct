@@ -107,9 +107,8 @@
 
   There are two requirements for a new feature:
 
-  * new cucumber feature file in path `features/` that must have `.feature` extension  
-  * new rake task file in path `tasks/` with `.rake` extension  
-
+    * new cucumber feature file in path `features/` that must have `.feature` extension  
+    * new rake task file in path `tasks/` with `.rake` extension  
 
   There is also a dedicated `rake` task available for creating both of them:
 
@@ -172,7 +171,7 @@
   in rake you must implement a specific task that will call the feature with that
   tag name. The whole thing might look like this:
 
-  ```
+  ```ruby
   namespace :feature do
     feature_name "Admin node"
 
@@ -182,13 +181,43 @@
     end
   end
   ```
+
   This look for the feature with name `Admin node`, defines a `rake` task with name
   `:ntp` within the namespace `:admin`. To call this task you need to type:
+
   ```
   rake feature:admin:ntp
   ```
 
 #### What commands to use in step definitions
+
+  The commands available in the step definitions are defined by code in the
+  file `features/support/env.rb` :
+
+  ```ruby
+  World do
+    Cct::Cloud::World.new
+  end
+  ```
+  The actual ruby code is available in `lib/cct/cloud/world.rb`
+
+  Helper commands are also loaded by this:
+
+  ```ruby
+  World(StepHelpers)
+  ```
+
+  The code is available in `features/support/step_helpers.rb`. There should be only
+  step or scenario specific code placed here, the right place for new commands is in
+  `lib/cct/commands/`.
+
+  Currently available commands are these:
+    * local commands  
+
+    `exec!` accepts 1+ parameters; expects a command name with arguments
+    `ping!` accepts a node instance
+    `ssh_hadnshake!` expects a node instance
+
 
 #### Add new command for the step definitions
 
