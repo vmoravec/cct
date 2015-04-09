@@ -189,7 +189,7 @@
   rake feature:admin:ntp
   ```
 
-#### Run a single feature as a whole with `rake`
+#### Run a complete feature with `rake`
 
   There needs to be a standalone `rake` task implemented to make a feature run
   complete. It's done by a separate task without description like this:
@@ -208,12 +208,14 @@
       task :controller => "controller:all"
     end
   ```
-
   Now call the whole feature with:
 
   ```
     rake feature:controller
   ```
+
+  We created a new task without any specific `@tags`, that means everything what
+  is found within the feature file is run.
 
 
 #### What commands to use in step definitions
@@ -240,15 +242,15 @@
 
   Currently available __local__ commands are these:  
 
-  `exec!` expects a command name with arguments as parameter
-  `ping!` expects a node instance as parameter
-  `ssh_hadnshake!` expects a node instance as parameter
+  `exec!` expects a command name with arguments as parameter  
+  `ping!` expects a node instance as parameter  
+  `ssh_hadnshake!` expects a node instance as parameter  
 
   Commands to call __remotely__ on the node instances:  
 
-  `exec!` expects a command name with arguments as parameter
-  `read_file` expects a path on the remote machine as parameter
-  `rpm_q` expects a package name as parameter
+  `exec!` expects a command name with arguments as parameter  
+  `read_file` expects a path on the remote machine as parameter  
+  `rpm_q` expects a package name as parameter  
 
   Both `exec!` commands return a struct object with three attributes: `output`,
   `success?` and `exit_code`. 
