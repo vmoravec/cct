@@ -65,12 +65,12 @@
 
   There are two requirements for a new feature:
 
-  * new cucumber feature file in path `features/` that must have `.feature` extension
-  * new rake task file in path `tasks/` with `.rake` extension
+  * new cucumber feature file in path `features/` that must have `.feature` extension  
+  * new rake task file in path `tasks/` with `.rake` extension  
 
   There is also a dedicated `rake` task available for creating both of them:
 
-    rake add:feature name='Awesome Stuff' task='awesome_stuff'
+    `rake add:feature name='Awesome Stuff' task='awesome_stuff'`  
 
   Look into the directory `templates/` where templates for both files are stored.
   Try to keep the name of the `rake` task short but still expressive.
@@ -80,7 +80,8 @@
   Every cucumber feature is composed of one or more scenarios. A scenaro consists
   of steps that describe what is being tested.
 
-  A scenario is a concept based on Givens, Whens and Thens.
+  A scenario is a concept based on *Givens*, *Whens* and *Thens*.
+
   The purpose of __Given__ is to put the system in a known state or to find out
   whether the system is in state ready for testing.
 
@@ -90,15 +91,37 @@
   The purpose of __Then__ step is to observe outcomes. The observations
   should be related to the feature description.
 
-  Beside these, you can use __And__ and __But__ keywords to make the scenario
+  Beside these you can use __And__ and __But__ keywords to make the scenario
   more descriptive or specific.
 
 
 #### Write a step definition
 
-  Once the scenario is written
+  Once the scenario is written, you should adapt the respective feature rake task
+  to let it run via `rake` (more on this [here](#todo).
+  When the steps does not match any already existing step
+  definitions the scenario will be marked as *undefined* with this notice:
 
-#### Use commands in the step definitions
+  ```
+  You can implement step definitions for undefined steps with these snippets:
+
+  Given(/^I have my system in the okay state$/) do
+    pending # Write code here that turns the phrase above into concrete actions
+  end
+  ```
+  Now you copy the text above starting with `Given`, go to the directory
+  `features/step_definitions/YOUR_FEATURE`, create a new file with suffix `_step.rb`
+  matching the name of current scenario where you insert the copied text from above.
+
+  The last step is to replace the `pending` method with your test implementation.
+  More about that you can find in the section about
+  [commands in step definitions](#todo) .
+
+
+
+#### Run scenario or feature with a rake task
+
+#### What commands to use in the step definitions
 
 #### Add new command for the step definitions
 
