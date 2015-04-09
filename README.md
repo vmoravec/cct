@@ -301,6 +301,26 @@
     rake git:ignore file=config/development.yml
 
 
+#### Nodes' configuration
+
+  The `development.yml` config file contains this section:
+
+  ```yaml
+  nodes:
+    - name:
+      ssh:
+        user: root
+        password:
+  ```
+  Here you can configure the ssh credentials for the respective nodes
+  (beside admin node that is configured in its own section).
+
+  If you keep the `name` attribute empty, all nodes will get the same configuration
+  data specified in the `ssh` object.
+
+  Usually the only thing you might want to change is the `password` attribute.
+
+
 #### Custom config files
 
   If you think you might need to add more configuration files, add them into the
