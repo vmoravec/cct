@@ -347,6 +347,13 @@
 
   These are merged with the data after all configuration files have been loaded.
 
+#### Turn off the fancy colors!
+
+  If you don't like the colored cucumber output or for some reason you want to
+  have it off, provide a bash variable `colorsoff` to the `rake` command:
+
+  `rake feature:admin colorsoff=true`
+
 
 ## Features
 
