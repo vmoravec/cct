@@ -327,8 +327,10 @@
   `config/` directory, they will be ignored by git. To make the testsuite load them
   for you, add this line to the `config/development.yml` file:
 
-    autoload_config_files:
-     - your_file.yml
+  ```yaml
+  autoload_config_files:
+   - your_file.yml
+  ```
 
   The config files are loaded in the order as specified in the list. Don't forget
   that if you have the same sections in your config files, the last loaded file wins.
@@ -374,7 +376,7 @@
 
 #### Disclaimer
 
-  This documenation contains information and formulations available on 
+  This file contains information and formulations as found on
   [cucumber github wiki](https://github.com/cucumber/cucumber/wiki). 
 
 
