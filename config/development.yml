@@ -17,13 +17,3 @@ nodes:
     ssh:
       user: root
       password:
-
-gateway:
-  ip:
-  user:
-  password:
-
-timeout:
-  ssh: 2
-  http: 1
-
