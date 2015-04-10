@@ -48,5 +48,9 @@ module Cct
     def update_logger base_logger
       @logger = base_logger.base
     end
+
+    def load_tasks!
+      Dir.glob(root.to_s + '/tasks/**/*.rake').each { |task| load(task) }
+    end
   end
 end

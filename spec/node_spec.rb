@@ -1,5 +1,5 @@
 require_relative "spec_helper"
-require "cct/cukes/world"
+require "cct/cloud/world"
 
 module Cct
   describe Node do
