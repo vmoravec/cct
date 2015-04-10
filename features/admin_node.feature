@@ -1,3 +1,4 @@
+@admin
 Feature: Admin node
   As a cloud administrator
   I want to validate the admin node installation and configuration

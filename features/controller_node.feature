@@ -1,3 +1,4 @@
+@controller
 Feature: Controller node
   As an administrator
   I want to make sure the controller node is configured and running
