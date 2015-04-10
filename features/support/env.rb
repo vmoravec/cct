@@ -7,7 +7,7 @@ verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
 
 Cct.setup(Dir.pwd, verbose: verbose)
 
-Cucumber::Term::ANSIColor.coloring = false unless ENV['colorsoff'].nil?
+Cucumber::Term::ANSIColor.coloring = false unless ENV['nocolors'].nil?
 
 log = Cct::BaseLogger.new("CUCUMBER", verbose: verbose)
 

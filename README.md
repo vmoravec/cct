@@ -66,7 +66,7 @@
 
   the rubygems installed in path `vendor/bundle` are not visible to `rake`.
 
-  `rake` is the only way to run the tests and other commands. All files with tasks
+  `rake` is the preferred way to run the tests and other commands. All files with tasks
   are located in the directory `tasks/` and have suffix `.rake`
   All are loaded automatically.
 
@@ -95,8 +95,8 @@
 
 #### Make use of `rake console`
 
-  Once you have entered configuration data for the admin node, it's handy
-  to get some live data from the deployed cloud within an ruby's irb session.
+  Once you have added your configuration for the admin node, it's handy
+  to get some live data from the deployed cloud in an ruby's irb session.
 
   `rake console` will give you access to admin node, control node, crowbar API
   and some other useful stuff used in the cucumber step definitions.
@@ -105,17 +105,21 @@
 
 #### Write a new feature
 
-  There are two requirements for a new feature:
+  There is a dedicated `rake` task available for creating all the necessaries:
+
+    `rake add:feature name='Awesome Stuff' task='awesome_stuff'`  
+
+
+  Try to keep the name of the `rake` task short but still expressive. Multiple
+  words must be combined with underscore.
+
+  Two new files will be created for a new feature:
 
     * new cucumber feature file in path `features/` that must have `.feature` extension  
     * new rake task file in path `tasks/` with `.rake` extension  
 
-  There is also a dedicated `rake` task available for creating both of them:
+  Look into the directory `templates/` where the templates for both files are stored.
 
-    `rake add:feature name='Awesome Stuff' task='awesome_stuff'`  
-
-  Look into the directory `templates/` where templates for both files are stored.
-  Try to keep the name of the `rake` task short but still expressive.
 
 #### Write a new scenario
 
@@ -139,6 +143,9 @@
   Don't forget to add a *tag* above the scenario name in the form of
   a single word that expresses the scenario name, like `@packages` . This tag
   will be used inside of a feature rake task to call that single scenario only.
+
+  If you are still not sure how to write a scenario, better look at the existing
+  features and make your own judgment.
 
 
 #### Write a step definition
@@ -167,9 +174,9 @@
 
 #### Run a single scenario with `rake`
 
-  To be able to run a single scenario, you need to mark it with a `@tag`. Then
+  To be able to run a single scenario, you need to mark it with a unique `@tag`. Then
   in rake you must implement a specific task that will call the feature with that
-  tag name. The whole thing might look like this:
+  `@tag`. A `rake` task for a feature might look like this:
 
   ```ruby
   namespace :feature do
@@ -182,7 +189,7 @@
   end
   ```
 
-  This look for the feature with name `Admin node`, defines a `rake` task with name
+  It looks up the feature with name `Admin node`, creates a `rake` task with name
   `:ntp` within the namespace `:admin`. To call this task you need to type:
 
   ```
@@ -201,9 +208,10 @@
     namespace :controller do
       desc "Essential system requirements"
         feature_task :system, tags: :@system
-        feature_task :all
+        feature_task :all # Define it here like this
       end
 
+      # One task to rule them all
       desc "Complete verification of 'Controller node' feature"
       task :controller => "controller:all"
     end
@@ -215,12 +223,12 @@
   ```
 
   We created a new task without any specific `@tags`, that means everything what
-  is found within the feature file is run.
+  is found within the feature is run.
 
 
 #### What commands to use in step definitions
 
-  The commands available in the step definitions are defined by code in the
+  The ruby commands available in the step definitions are defined by code in the
   file `features/support/env.rb` :
 
   ```ruby
@@ -262,7 +270,8 @@
 #### Add new command for the step definitions
 
   The rule of thumb is when you use a remote or local command on more than 3 places,
-  let's it implement as a predefined command within the `lib/cct/commands` .
+  let's it implement as a predefined command within the `lib/cct/commands`.
+  Don't forget to add unit test to the new command.
 
 
 #### Add new code to `lib/`
@@ -313,7 +322,7 @@
         password:
   ```
   Here you can configure the ssh credentials for the respective nodes
-  (beside admin node that is configured in its own section).
+  (beside admin node which is configured in its own section).
 
   If you keep the `name` attribute empty, all nodes will get the same configuration
   data specified in the `ssh` object.
@@ -349,10 +358,10 @@
 
 #### Turn off the fancy colors!
 
-  If you don't like the colored cucumber output or for some reason you want to
-  have it off, provide a bash variable `colorsoff` to the `rake` command:
+  If you don't like the colored cucumber output or for some other reason you want to
+  have it off, provide a bash variable `nocolors` to the `rake` command:
 
-  `rake feature:admin colorsoff=true`
+  `rake feature:admin nocolors=true`
 
 
 ## Features
