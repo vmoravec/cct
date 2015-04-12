@@ -1,6 +1,5 @@
-# Use this file for your configuration data after removing the ".example" suffix.
-# This file will be merged then automatically with with the default.yml config;
-# sections entered here will overwrite the defaults.
+# Copy this file and rename it to 'development.yml'. The data entered there
+# will be merged automatically with the defaults from 'default.yml' file.
 #
 # Example:
 #
