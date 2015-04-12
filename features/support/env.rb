@@ -4,12 +4,13 @@ require "cct/cloud/world"
 require_relative "step_helpers"
 
 verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
+log_path = ENV["cct_log_path"]
 
-Cct.setup(Dir.pwd, verbose: verbose)
+Cct.setup(Dir.pwd, verbose: verbose, log_path: log_path)
 
 Cucumber::Term::ANSIColor.coloring = false unless ENV['nocolors'].nil?
 
-log = Cct::BaseLogger.new("CUCUMBER", verbose: verbose)
+log = Cct::BaseLogger.new("CUCUMBER", verbose: verbose, path: log_path)
 
 log.info "Starting cucumber testsuite..."
 log.info "`cucumber #{ARGV.join(" ")}`"
