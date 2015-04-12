@@ -38,6 +38,7 @@ module Cct
       @logger = logger || BaseLogger.new(
         LOG_TAG, verbose: verbose?, path: @log_path
       ).base
+      self
     end
 
     def verbose?
