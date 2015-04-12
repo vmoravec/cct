@@ -8,6 +8,24 @@ admin_node:
     version: 11
     patchlevel: 3
 
+  ip: CAN'T BE BLANK
+  ssh:
+    user: root
+    password:
+    port: 22
+
+  api:
+    user: crowbar
+    password: CAN'T BE BLANK
+    port: 3000
+    ssl: false
+
+nodes:
+  - name:
+    ssh:
+      user: root
+      password:
+
 timeout:
   ssh: 5
   http: 5
