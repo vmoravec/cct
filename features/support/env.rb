@@ -6,6 +6,8 @@ require_relative "step_helpers"
 verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
 log_path = ENV["cct_log_path"]
 
+puts "Log path set to #{log_path || 'default'}"
+
 Cct.setup(Dir.pwd, verbose: verbose, log_path: log_path)
 
 Cucumber::Term::ANSIColor.coloring = false unless ENV['nocolors'].nil?
