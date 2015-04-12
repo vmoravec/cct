@@ -1,6 +1,5 @@
 require "forwardable"
 require "etc"
-require "logger"
 require "pathname"
 require "net/ssh"
 require "ostruct"
@@ -50,6 +49,8 @@ module Cct
     end
 
     def load_tasks!
+      require "cucumber"
+      require "cucumber/rake/task"
       Dir.glob(root.to_s + '/tasks/**/*.rake').each { |task| load(task) }
     end
   end

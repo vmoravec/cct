@@ -1,3 +1,5 @@
+require 'logger'
+
 module Cct
   class BaseLogger
     extend Forwardable

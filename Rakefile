@@ -3,7 +3,6 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 
 require "cct"
-require "cucumber/rake/task"
 require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
