@@ -3,14 +3,16 @@ require "cct/cloud/world"
 
 require_relative "step_helpers"
 
+# Guess verbosity from the cli params
 verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
+
+# Set the log path on the fly when need to redirect the log output (e.g. matrix)
 log_path = ENV["cct_log_path"]
-puts "my login is #{ENV["vmoravec"]}"
-puts "Log path set to #{log_path || 'default'}"
+
+# Turn off the colored output if it was requested
+Cucumber::Term::ANSIColor.coloring = false unless ENV['nocolors'].nil?
 
 Cct.setup(Dir.pwd, verbose: verbose, log_path: log_path)
-
-Cucumber::Term::ANSIColor.coloring = false unless ENV['nocolors'].nil?
 
 log = Cct::BaseLogger.new("CUCUMBER", verbose: verbose, path: log_path)
 
