@@ -4,8 +4,8 @@ module Cct
 
     attr_reader :log
 
-    def initialize tag=nil
-      @log = BaseLogger.new(tag || "LOCAL")
+    def initialize tag=nil, logger: nil
+      @log = logger || BaseLogger.new(tag || "LOCAL")
     end
 
     def exec! command_name, *args
