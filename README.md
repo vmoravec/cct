@@ -352,7 +352,7 @@
   Additionally, you can provide configuration data in `json` or `yaml` format to
   every `rake` command like this:
 
-    rake feature:admin config='{"admin_node":{"remote":{"ip":"192.168.199:10"}}}'
+    rake feature:admin cct_config='{"admin_node":{"remote":{"ip":"192.168.199:10"}}}'
 
   These are merged with the data after all configuration files have been loaded.
 

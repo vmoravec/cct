@@ -38,7 +38,7 @@ module Cct
     private
 
     def load_env_config
-      env_config = ENV["config"]
+      env_config = ENV["cct_config"]
       return if env_config.to_s.empty?
 
       env_config = YAML.load(env_config)

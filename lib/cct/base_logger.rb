@@ -7,11 +7,12 @@ module Cct
     def_delegators :@base, :level, :level=, :progname, :progname=, :debug?, :info?,
                            :error?, :fatal?
 
-    attr_reader :name, :base
+    attr_reader :name, :base, :path
 
     def initialize name, verbose: false, path: nil, stdout: false
       @name = name
       if path
+        @path = path
         @base = Logger.new(path, File::WRONLY | File::APPEND | File::CREAT)
         base.progname = name
         base.formatter = LogFormatters::SIMPLE
