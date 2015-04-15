@@ -22,7 +22,7 @@ module Cct
       else
         @base = Cct.logger
       end
-      base.level = Cct.verbose? ? Logger::DEBUG : Logger::INFO
+      base.level = verbose ? Logger::DEBUG : Logger::INFO
     end
 
     def info message
