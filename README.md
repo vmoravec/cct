@@ -152,6 +152,7 @@
 
   Once the scenario is written, you should adapt the respective feature rake task
   to let it run via `rake` (more on this [here](#run-a-single-scenario-with-a-rake)).
+
   When the steps does not match any already existing step
   definition the scenario will be marked as *undefined* with this notice:
 
@@ -267,6 +268,12 @@
   You should not rescue these exceptions as it's important to see and log the
   source of the primary problem.
 
+  Additionally, you can use built-in matchers of `rspec` unit test framework.
+  There is a big variety of the matchers for various situations, you rather look
+  at them at [rspec matchers docs](https://www.relishapp.com/rspec/rspec-expectations/docs/built-in-matchers) .
+  Here is a bit more detailed doc about how to [customize the matchers](http://www.relishapp.com/rspec/rspec-expectations/v/3-2/docs).
+
+
 #### Add new command for the step definitions
 
   The rule of thumb is when you use a remote or local command on more than 3 places,
@@ -291,23 +298,22 @@
   By default the testsuite contains two configuration files:
 
      config/default.yml
-     config/development.yml
+     config/development.yml.example
 
   The first one, `config/default.yml` contains general information about the product,
-  used by the features and test cases in the testsuite. You should not need to alter
-  this data at all. If you think they need to be changed, create a pull request.
+  used by the features and test cases in the testsuite. You don't alter
+  this data for your custom configuration. If you think they need to be changed, create a pull request.
 
-  The second one, `config/development.yml` is a template configuration file you
-  might use for testing your cloud instance. You will need to add some data to let
+  The second one, `config/development.yml.example` is a template configuration file you
+  might use for testing your cloud instance. You may uncomment and use the template data, however
+  they might not match your expactations. Feel free to change the data as needed to make
   the testsuite detect your cloud:
 
     * ip address for the admin node
     * password for the admin node HTTP API
     * SSH password for the admin node unless you use key based authentication
 
-  To let git ignore the updated `config/development.yml` file, run
-
-    rake git:ignore file=config/development.yml
+  All configuration files but the `default.yml` file are ignored by git.
 
 
 #### Nodes' configuration
