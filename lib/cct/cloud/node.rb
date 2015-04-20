@@ -15,6 +15,7 @@ module Cct
     def initialize options={}
       set_node_attributes(options)
       @admin ||= false
+      @environment ||= {}
       @command = RemoteCommand.new(attributes)
       @crowbar_proxy = CrowbarProxy.new(options[:crowbar])
       validate_attributes

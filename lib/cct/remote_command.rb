@@ -20,7 +20,7 @@ module Cct
     def exec! command, *params
       connect!
       params = params.flatten
-      environment = set_environment(params) if params.last.is_a?(Hash)
+      environment = params.last.is_a?(Hash) ? set_environment(params) : ""
       full_command = "#{command} #{params.join(" ")}".strip
       result = Result.new(false, "", 1000, options.ip)
       session.open_channel do |channel|
