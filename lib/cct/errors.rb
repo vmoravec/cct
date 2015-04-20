@@ -10,6 +10,7 @@ module Cct
   class ValidationError < StandardError
     def initialize klass, messages=[]
       message = "for #{klass} "
+      message << messages.shift
       message << messages.join(", ")
       super(message)
     end

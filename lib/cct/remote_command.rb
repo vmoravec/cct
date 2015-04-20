@@ -19,16 +19,22 @@ module Cct
 
     def exec! command, *params
       connect!
+      params = params.flatten
+      environment = set_environment(params) if params.last.is_a?(Hash)
       full_command = "#{command} #{params.join(" ")}".strip
       result = Result.new(false, "", 1000, options.ip)
       session.open_channel do |channel|
-        channel.exec(full_command) do |_, _|
+        if !environment.empty?
+          log.info("Setting up remote environment variables: #{environment}")
+          channel.exec("export #{environment}")
+        end
+        channel.exec(full_command) do |p, d|
           channel.on_close do
             log.info("Running command `#{full_command}` on remote host #{options.ip}")
           end
-          channel.on_data {|_,data| result.output << data }
+          channel.on_data {|p,data| result.output << data }
           channel.on_extended_data {|_,_,data| result.output << data }
-          channel.on_request("exit-status") {|_,data| result.exit_code = data.read_long}
+          channel.on_request("exit-status") {|p,data| result.exit_code = data.read_long}
         end
       end
       session.loop
@@ -82,9 +88,17 @@ module Cct
 
     private
 
+    def set_environment params
+      options = params.pop if params.last.is_a?(Hash)
+      return "" if options.nil?
+
+      options.map {|env| "#{env[0]}=#{env[1]}" }.join(" ")
+    end
+
     def construct_options opts
       options.ip = opts['ip'] || opts[:ip]
       options.user = opts['user'] || opts[:user]
+      options.environment = opts['env'] || opts['environment'] || opts [:env] || {}
       options.extended = EXTENDED_OPTIONS
       options.extended.logger = log
       options.extended.port = opts['port'] || opts[:port] if opts['port'] || opts[:port]

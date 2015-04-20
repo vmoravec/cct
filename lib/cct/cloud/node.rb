@@ -4,11 +4,11 @@ module Cct
 
     extend Forwardable
 
-    def_delegators :@command, :exec!, :connected?, :connect!, :test_ssh!
+    def_delegators :@command, :connected?, :connect!, :test_ssh!
     def_delegators :@crowbar_proxy, :status, :state, :alias, :fqdn, :domain,
                                     :data, :loaded?
 
-    attr_reader :admin, :name, :ip, :user, :password, :port
+    attr_reader :admin, :name, :ip, :user, :password, :port, :environment
 
     private :admin
 
@@ -18,6 +18,11 @@ module Cct
       @command = RemoteCommand.new(attributes)
       @crowbar_proxy = CrowbarProxy.new(options[:crowbar])
       validate_attributes
+    end
+
+    def exec! command, *params
+      params << environment unless environment.empty?
+      @command.exec!(command, params)
     end
 
     def crowbar reload: false
@@ -39,7 +44,7 @@ module Cct
     def inspect
       "<#{self.class}##{object_id} name=#{name} alias=#{self.alias} ip=#{ip} " +
       "user=#{user} connected?=#{connected?} status=#{status} state=#{state} " +
-      "fqdn=#{fqdn} domain=#{domain} >"
+      "fqdn=#{fqdn} domain=#{domain} environment=#{environment}>"
     end
 
     def attributes
@@ -68,6 +73,7 @@ module Cct
 
       @ip = options['ip'] || options[:ip]
       @name ||= (options['name'] || options[:name])
+      @environment = options['environment'] || options[:environment]
       set_ssh_attributes(options['ssh'] || options[:ssh])
     end
 
