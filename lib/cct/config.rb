@@ -28,6 +28,10 @@ module Cct
       abort "Your current config does not include root element '#{config_value}'"
     end
 
+    def fetch value, default
+      content[value] || default
+    end
+
     def merge! filename
       filename << EXT unless filename.to_s.match(/.#{EXT}$/)
       config_file = dir.join(filename)

@@ -14,7 +14,8 @@ require "cct/base_logger"
 require "cct/core_ext"
 require "cct/local_user"
 require "cct/config"
-require "cct/dsl"
+require "cct/rake/dsl"
+require "cct/cucumber_task"
 require "cct/commands/local"
 require "cct/commands/remote"
 require "cct/local_command"
@@ -40,6 +41,8 @@ module Cct
       ).base
       self
     end
+
+    alias_method :log, :logger
 
     def verbose?
       @verbose

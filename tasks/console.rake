@@ -5,7 +5,7 @@ task :console do
 
   ARGV.clear
   Cct.update_logger(Cct::BaseLogger.new('console', stdout: true))
-  log.info "Starting console (irb session)" 
+  cct.log.info "Starting console (irb session)" 
 
   # This brings various methods into the main scope of the IRB session;
   # It's very handy when testing things and playing with stuff
