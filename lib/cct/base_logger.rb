@@ -2,6 +2,10 @@ require 'logger'
 
 module Cct
   class BaseLogger
+    def self.main
+      Cct
+    end
+
     extend Forwardable
 
     def_delegators :@base, :level, :level=, :progname, :progname=, :debug?, :info?,
@@ -21,7 +25,7 @@ module Cct
         base.progname = name
         base.formatter = LogFormatters::SIMPLE
       else
-        @base = Cct.logger
+        @base = self.class.main.logger
       end
       base.level = verbose ? Logger::DEBUG : Logger::INFO
     end
