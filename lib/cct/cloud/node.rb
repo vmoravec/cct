@@ -15,6 +15,7 @@ module Cct
     def initialize options={}
       set_node_attributes(options)
       @admin ||= false
+      @controller ||= false
       @environment ||= {}
       @command = RemoteCommand.new(attributes)
       @crowbar_proxy = CrowbarProxy.new(options[:crowbar])
@@ -40,6 +41,10 @@ module Cct
 
     def admin?
       @admin
+    end
+
+    def controller?
+      @controller
     end
 
     def inspect
@@ -123,8 +128,9 @@ module Cct
       end
 
       def inspect
-        "<#{self.class}##{object_id} hostname=#{hostname} alias=#{self.alias} state=#{state} status=#{status} " +
-        "description=#{description} domain=#{domain} fqdn=#{fqdn} data={...#{data.keys.size} pairs...} >"
+        "<#{self.class}##{object_id} hostname=#{hostname} alias=#{self.alias} "        +
+        "state=#{state} status=#{status} description=#{description} domain=#{domain} " +
+        "fqdn=#{fqdn} data={...#{data.keys.size} pairs...} >"
       end
 
       private

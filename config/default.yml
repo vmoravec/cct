@@ -20,12 +20,6 @@ admin_node:
     port: 3000
     ssl: false
 
-nodes:
-  - name:
-    ssh:
-      user: root
-      password:
-
 timeout:
   ssh: 5
   http: 5

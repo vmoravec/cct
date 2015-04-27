@@ -12,7 +12,7 @@ task :console do
   self.extend(Module.new {
     extend Forwardable
 
-    def_delegators :@cloud, :exec!, :env
+    def_delegators :@cloud, :exec!, :env, :config
 
     def cloud
       @cloud ||= Cct::Cloud::World.new
@@ -31,7 +31,7 @@ task :console do
     end
 
     def control_node
-      cloud.nodes.control_node
+      cloud.control_node
     end
 
     methods = [:admin_node, :control_node, :nodes, :crowbar, :config, :exec!, :env, :cloud]

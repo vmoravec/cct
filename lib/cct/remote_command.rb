@@ -17,18 +17,13 @@ module Cct
       validate_options
     end
 
-    def exec! command, *params
+    def exec! command, params=[]
       connect!
-      params = params.flatten
-      environment = params.last.is_a?(Hash) ? set_environment(params) : ""
+      environment = set_environment(params)
       full_command = "#{command} #{params.join(" ")}".strip
       result = Result.new(false, "", 1000, options.ip)
       session.open_channel do |channel|
-        if !environment.empty?
-          log.info("Setting up remote environment variables: #{environment}")
-          channel.exec("export #{environment}")
-        end
-        channel.exec(full_command) do |p, d|
+        channel.exec("#{environment}#{full_command}") do |p, d|
           channel.on_close do
             log.info("Running command `#{full_command}` on remote host #{options.ip}")
           end
@@ -51,12 +46,19 @@ module Cct
 
       @session = Net::SSH.start(options.ip, options.user, options.extended.to_h)
       true
-    rescue Timeout::Error => e
+    rescue Timeout::Error, Errno::ETIMEDOUT, Errno::ECONNREFUSED => e
       raise SshConnectionError.new(
         ip: options.ip,
         message: e.message,
         timeout: options.extended.timeout
       )
+    rescue Net::SSH::HostKeyMismatch => e
+      attempts += 1
+      log.error("Mismatch of host keys, #{attempts}. attempt, fixing and going to retry now..")
+      e.remember_host!
+      retry unless attempts > 1
+      log.error("Mismatch of host keys, #{attempts}. attempt, failing..")
+      raise
     end
 
     def connected?
@@ -90,9 +92,13 @@ module Cct
 
     def set_environment params
       options = params.pop if params.last.is_a?(Hash)
-      return "" if options.nil?
+      return "" if options.nil? || options[:environment].nil?
 
-      options.map {|env| "#{env[0]}=#{env[1]}" }.join(" ")
+      source_files = options[:environment].delete(:source) || []
+      export_env = options[:environment].map {|env| "#{env[0]}=#{env[1]} " }.join.strip
+      export_env.prepend("export ") unless export_env.empty?
+      source_env = source_files.map {|f| "source #{f}; "}.join
+      source_env + export_env
     end
 
     def construct_options opts

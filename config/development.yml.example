@@ -14,3 +14,9 @@
 #     password: linux
 #     port: 3000
 #     ssl: false
+#
+# nodes:
+#   - name:
+#     ssh:
+#       user: root
+#       password:

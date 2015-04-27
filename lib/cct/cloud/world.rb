@@ -2,13 +2,14 @@ require "cct/cloud/crowbar_api"
 require "cct/cloud/node"
 require "cct/cloud/admin_node"
 require "cct/cloud/nodes"
+require "cct/cloud/control_node"
 
 module Cct
   module Cloud
     class World
       include Commands::Local
 
-      attr_reader :admin_node, :crowbar, :nodes
+      attr_reader :admin_node, :control_node, :crowbar, :nodes
 
       def initialize
         @admin_node = AdminNode.new
@@ -16,11 +17,10 @@ module Cct
         admin_node.crowbar_proxy = Node::CrowbarProxy.new(api: crowbar)
         @nodes = Nodes.new(crowbar)
         nodes << admin_node
+        @control_node = ControlNode.new(nodes)
+        control_node.crowbar_proxy = Node::CrowbarProxy.new(api: crowbar)
+        nodes << control_node
         @local_command = LocalCommand.new
-      end
-
-      def control_node
-        nodes.control_node
       end
 
       def exec! command_name, *params

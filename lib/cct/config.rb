@@ -25,7 +25,7 @@ module Cct
     def [](config_value)
       return content[config_value] if content[config_value]
 
-      abort "Your current config does not include root element '#{config_value}'"
+      raise "Your current config does not include root element '#{config_value}'"
     end
 
     def fetch value, default

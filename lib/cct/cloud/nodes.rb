@@ -1,7 +1,5 @@
 module Cct
   class Nodes
-    CONTROL_NODE_ROUTE = "/crowbar/nova/1.0/default"
-
     extend Forwardable
 
     def_delegators :@nodes, :map, :first, :each, :last, :find, :[], :size, :<<
@@ -9,7 +7,7 @@ module Cct
     attr_reader :nodes
     private :nodes
 
-    attr_reader :crowbar, :config, :control_node
+    attr_reader :crowbar, :config
 
     def initialize crowbar_api
       @crowbar = crowbar_api
@@ -39,27 +37,6 @@ module Cct
 
     def admin_node
       nodes.find {|node| node.name = AdminNode::NAME }
-    end
-
-    def control_node
-      return @control_node if @control_node
-
-      self.load!
-      response = crowbar.get(CONTROL_NODE_ROUTE)
-      if !response.success?
-        fail CrowbarApiError,
-          "Failed at #{response.env[:url]} while requesting controller node details"
-      end
-
-      # FIXME: In case there are several controller nodes, take the first one
-      #        This strategy is not perfect but it's enough sofar
-      #        as it's the typical setup of deployment
-      control_node_url =
-        response.body["deployment"]["nova"]["elements"]["nova-multi-controller"].first
-      return unless control_node_url
-
-      control_node_name = control_node_url.split(".").first
-      @control_node = nodes.find {|node| node.name == control_node_name}
     end
 
     def clear
