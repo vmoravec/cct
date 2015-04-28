@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "bundler", "~> 1.6"
   spec.add_dependency "rspec", "~> 3.2.0"
   spec.add_dependency "net-ssh"
+  spec.add_dependency "net-ssh-gateway"
   spec.add_dependency "awesome_print"
   spec.add_dependency "faraday"
   spec.add_dependency "faraday-digestauth"

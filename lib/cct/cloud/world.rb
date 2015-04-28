@@ -1,8 +1,8 @@
 require "cct/cloud/crowbar_api"
 require "cct/cloud/node"
 require "cct/cloud/admin_node"
-require "cct/cloud/nodes"
 require "cct/cloud/control_node"
+require "cct/cloud/nodes"
 
 module Cct
   module Cloud
@@ -15,11 +15,9 @@ module Cct
         @admin_node = AdminNode.new
         @crowbar = CrowbarApi.new(admin_node.config)
         admin_node.crowbar_proxy = Node::CrowbarProxy.new(api: crowbar)
+        @control_node = ControlNode.new(crowbar: crowbar, gateway: admin_node)
         @nodes = Nodes.new(crowbar)
-        nodes << admin_node
-        @control_node = ControlNode.new(nodes)
-        control_node.crowbar_proxy = Node::CrowbarProxy.new(api: crowbar)
-        nodes << control_node
+        nodes << control_node << admin_node
         @local_command = LocalCommand.new
         @log = logger if logger
       end

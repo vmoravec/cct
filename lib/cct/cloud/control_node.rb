@@ -1,58 +1,49 @@
 module Cct
-  class ControlNode
+  class ControlNode < Node
     LOG_TAG = "CONTROL_NODE"
     CONTROL_NODE_ROUTE = "/crowbar/nova/1.0/default"
     ENV_FILE = "/root/.openrc"
 
-    extend Forwardable
+    attr_reader :gateway
+    attr_reader :name, :fqdn, :state, :status, :description
+    attr_reader :config, :command
 
-    def_delegators :@control_node, :exec!, :connected?, :connect!, :test_ssh!,
-                                   :admin?, :name, :ip, :user, :password, :port,
-                                   :environment, :attributes
-
-    def_delegators :@crowbar_proxy, :status, :state, :alias, :fqdn, :domain,
-                                    :data, :loaded?
-
-    attr_reader :log, :nodes, :control_node
-
-    attr_accessor :crowbar_proxy
-
-    alias_method :crowbar, :crowbar_proxy
-
-    def initialize nodes
-      @nodes = nodes
+    def initialize options
+      @loaded = false
+      @controller = true
+      @config = Cct.config["control_node"]
       @log = BaseLogger.new(LOG_TAG)
+      @user = config["user"]
+      @password = config["password"]
+      @port = config["port"]
+      @environment = {}
+      @crowbar = options[:crowbar]
+      @gateway = options[:gateway]
+      @command = Net::SSH::Gateway.new(
+        gateway.attributes["ip"],
+        gateway.attributes["user"],
+        password: gateway["password"],
+        port: gateway["port"]
+      )
     end
 
-    def exec! command, *params
-      self.load! unless control_node
-      params << {environment: {source: [ENV_FILE]}}
-      control_node.exec!(command, *params)
-    end
-
-    def inspect
-      if control_node
-        control_node.inspect
-      else
-        "<#{self.class}##{object_id} not loaded yet>"
+    def exec! com
+      self.load!
+      options = {port: port}
+      options.merge!(password: password) unless password.to_s.empty?
+      command.ssh(ip, user, options) do |ssh|
+        puts ssh.exec!(com)
       end
     end
 
-    def controller?
-      true
+    def loaded?
+      @loaded
     end
 
-    def config
-      config = Cct.config.fetch("control_node", {})
-      config = Cct.config.fetch("nodes", {}) if config.empty?
-      config
-    end
+    def load! force: false
+      return if loaded? && !force
 
-    def load!
-      return @control_node if @control_node
-
-      nodes.load!
-      response = nodes.crowbar.get(CONTROL_NODE_ROUTE)
+      response = crowbar.get(CONTROL_NODE_ROUTE)
       if !response.success?
         fail CrowbarApiError,
           "Failed at #{response.env[:url]} while requesting controller node details"
@@ -60,15 +51,25 @@ module Cct
 
       # FIXME: In case there are several controller nodes, take the first one
       #        This strategy is not perfect but it's enough sofar
-      #        as it's the typical setup of deployment
+      #        as it's the typical setup
       controller_fqdn =
         response.body["deployment"]["nova"]["elements"]["nova-multi-controller"].first
-      return unless controller_fqdn
+      raise "Failed to get FQDN for controller node" unless controller_fqdn
 
-      control_node_name = controller_fqdn.split(".").first
-      @control_node = nodes.find do |node|
-        node.name == control_node_name || node.name == controller_fqdn
-      end
+      @fqdn = controller_fqdn
+      @name = fqdn.split(".").first
+      @description = response["description"]
+      data = crowbar.nodes[name]
+      @alias = data["alias"]
+      @state = data["state"]
+      @status = data["status"]
+      data = crowbar.node(name)
+      @data = data
+      @ip = data["ipaddress"]
+      @hostname = data["hostname"]
+      @doamin = data["domain"]
+      validate_attributes
+      @loaded = true
     end
   end
 end

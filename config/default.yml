@@ -8,7 +8,7 @@ admin_node:
     version: 11
     patchlevel: 3
 
-  ip: CAN'T BE BLANK
+  ip: CAN'T BE BLANK # IP or FQDN allowed
   ssh:
     user: root
     password:
@@ -19,6 +19,12 @@ admin_node:
     password: CAN'T BE BLANK
     port: 3000
     ssl: false
+
+control_node:
+  ssh:
+    user: root
+    password:
+    port: 22
 
 timeout:
   ssh: 5

@@ -3,20 +3,27 @@
 #
 # Example:
 #
-# admin_node:
-#   ip: 192.168.175.10
-#   ssh:
-#     user: root
-#     password: linux
-#     port: 22
-#   api:
-#     user: crowbar
-#     password: linux
-#     port: 3000
-#     ssl: false
+#admin_node:
+#  ip: 192.168.175.10
+#  ssh:
+#    user: root
+#    password: linux
+#    port: 22
 #
-# nodes:
-#   - name:
-#     ssh:
-#       user: root
-#       password:
+#  api:
+#    user: crowbar
+#    password: linux
+#    port: 3000
+#    ssl: false
+#
+#control_node:
+#  ssh:
+#    user: root
+#    password: linux
+#    port: 22
+#
+#nodes:
+#  - name:
+#    ssh:
+#      user: root
+#      password: linux

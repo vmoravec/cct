@@ -9,6 +9,7 @@ module Cct
       dashboard: "/dashboard"
     }
 
+    # Creates methods from the ROUTES.keys above
     ROUTES.each_pair do |route, fragment|
       define_method(route) { get(fragment).body }
     end
