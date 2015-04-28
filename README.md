@@ -375,6 +375,7 @@
   same configuration for `ssh` part.
 
   Usually the only thing you might want to change is the `password` attribute.
+  For the `name` attribute you can use either a hostname or a FQDN.
 
 
 #### Custom config files
