@@ -66,7 +66,7 @@ module Cct
       return unless control_node_url
 
       control_node_name = control_node_url.split(".").first
-      @control_node = nodes.find {|node| node.name == control_node_name}
+      @control_node = nodes.find {|node| node.name == control_node_name || control_node_url }
     end
   end
 end
