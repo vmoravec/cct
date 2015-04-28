@@ -330,8 +330,12 @@
   Here you can configure the ssh credentials for the respective nodes
   (beside admin node which is configured in its own section).
 
-  If you keep the `name` attribute empty, all nodes will get the same configuration
-  data specified in the `ssh` object.
+  If you want to add a configuration for some specific node, please copy
+  the whole section beggining with `name` and keep the default one untouched.
+
+  At least one section should keep the `name` attribute empty, this setup is
+  considered as default and will be used for the rest of nodes who share the
+  same configuration for `ssh` part.
 
   Usually the only thing you might want to change is the `password` attribute.
 
