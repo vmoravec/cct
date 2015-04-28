@@ -2,6 +2,7 @@ require "cct"
 require "cct/cloud/world"
 
 require_relative "step_helpers"
+require_relative "feature_helpers"
 
 # Guess verbosity from the cli params
 verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
@@ -20,10 +21,14 @@ log.info "Starting cucumber testsuite..."
 log.info "`cucumber #{ARGV.join(" ")}`"
 
 World do
-  Cct::Cloud::World.new
+  Cct::Cloud::World.new(log)
 end
 
-World(StepHelpers)
+World(
+  StepHelpers,
+  FeatureHelpers
+)
+
 
 Before do |scenario|
   log.info "Feature '#{scenario.feature}'"

@@ -9,9 +9,9 @@ module Cct
     class World
       include Commands::Local
 
-      attr_reader :admin_node, :control_node, :crowbar, :nodes
+      attr_reader :admin_node, :control_node, :crowbar, :nodes, :log
 
-      def initialize
+      def initialize logger=nil
         @admin_node = AdminNode.new
         @crowbar = CrowbarApi.new(admin_node.config)
         admin_node.crowbar_proxy = Node::CrowbarProxy.new(api: crowbar)
@@ -21,6 +21,7 @@ module Cct
         control_node.crowbar_proxy = Node::CrowbarProxy.new(api: crowbar)
         nodes << control_node
         @local_command = LocalCommand.new
+        @log = logger if logger
       end
 
       def exec! command_name, *params
