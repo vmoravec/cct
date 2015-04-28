@@ -27,6 +27,7 @@ World(StepHelpers)
 
 Before do |scenario|
   log.info "Feature '#{scenario.feature}'"
+  filter_scenario_config_by(scenario.tags)
   log.info "Running scenario '#{scenario.name}' found in `#{scenario.location}`"
 end
 

@@ -7,6 +7,7 @@ module Cct
     EXT = '.yml'
     DEFAULT_FILE = 'default.yml'
     DEVELOPMENT_FILE = 'development.yml'
+    FEATURES_DIR = "features"
 
     attr_reader :content
 
@@ -18,6 +19,7 @@ module Cct
       @dir = Cct.root.join(DIR)
       @files = []
       @content = load_default_config
+      load_features_config
       load_devel_config
       load_env_config
     end
@@ -34,7 +36,7 @@ module Cct
 
     def merge! filename
       filename << EXT unless filename.to_s.match(/.#{EXT}$/)
-      config_file = dir.join(filename)
+      config_file = filename.is_a?(String) ? dir.join(filename) : filename.expand_path.to_s
       files << config_file
       @content = content.deep_merge!(load_content(config_file))
     end
@@ -47,6 +49,16 @@ module Cct
 
       env_config = YAML.load(env_config)
       content.deep_merge!(env_config)
+    end
+
+    def load_features_config
+      config_dir = dir.join(FEATURES_DIR)
+      return unless Dir.exist?(config_dir)
+      return if config_dir.children.empty?
+
+      config_dir.children.each do |file|
+        merge!(file)
+      end
     end
 
     def load_devel_config
@@ -70,7 +82,7 @@ module Cct
         config_file << EXT unless config_file.to_s.match(/.#{EXT}$/)
         next if config_file.to_s.match(/\A#{DEFAULT_FILE}$/)
 
-        if !File.exist?(dir.join( config_file))
+        if !File.exist?(dir.join(config_file))
           abort "Configuration file #{config_file} does not exist".red
         end
 
