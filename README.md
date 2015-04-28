@@ -148,6 +148,43 @@
   features and make your own judgment.
 
 
+#### Use scenario configuration
+
+  If you find yourself writing similar scenarios with different configurations,
+  you might want to make use of scenario specific config values. You can put these
+  into `config/features/FEATURE_NAME.yml`
+
+  This file must have structure like this:
+
+  ```yaml
+  features:
+    admin:
+      ntp:
+        key_one: abcd
+        key_two: efcg
+  ```
+
+  You can access these config values either manually by
+  `config["features"]["admin"]["ntp"]["key_one"]` or by using a method with block:
+
+  ```ruby
+  # Put this into some step definition block
+  with_scenario_config do |config|
+    puts config["key_one"]
+    puts config["key_two"]
+  end
+  ```
+  If there configuration for this scenario is empty, the code within the block will
+  be not executed. (Maybe raising an exception like `ConfigurationNotFound` would be 
+  better?).
+
+  This configuration is loaded in a `Before` hook in `features/support/env.rb` and
+  is based on the `tags` used for the `feature` and `scenario`.
+
+  It works only when a `feature` has a __single tag__. At the scenario level the
+  first `tag` is used, the rest is ignored.
+
+
 #### Write a step definition
 
   Once the scenario is written, you should adapt the respective feature rake task
