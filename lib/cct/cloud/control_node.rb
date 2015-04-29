@@ -19,7 +19,7 @@ module Cct
       @environment = {}
       @crowbar = options[:crowbar]
       @gateway = options[:gateway]
-      @command = RemoteCommand.new(gateway: options[:gateway], validate: false)
+      @command = RemoteCommand.new(gateway: options[:gateway])
     end
 
     def exec! command_name, *params
@@ -63,8 +63,11 @@ module Cct
       @data = data
       @ip = data["ipaddress"]
       @hostname = data["hostname"]
-      @doamin = data["domain"]
+      @domain = data["domain"]
+
+      # call the super class validation method
       validate_attributes
+
       @loaded = true
     end
 

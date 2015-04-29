@@ -15,7 +15,7 @@ module Cct
         @admin_node = AdminNode.new
         @crowbar = CrowbarApi.new(admin_node.config)
         admin_node.crowbar_proxy = Node::CrowbarProxy.new(api: crowbar)
-        @control_node = ControlNode.new(crowbar: crowbar, gateway: admin_node)
+        @control_node = ControlNode.new(crowbar: crowbar, gateway: admin_node.attributes)
         @nodes = Nodes.new(crowbar)
         nodes << control_node << admin_node
         @local_command = LocalCommand.new

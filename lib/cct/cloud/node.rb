@@ -8,7 +8,7 @@ module Cct
     def_delegators :@crowbar_proxy, :status, :state, :alias, :fqdn, :domain,
                                     :data, :loaded?
 
-    attr_reader :admin, :name, :ip, :user, :password, :port, :environment
+    attr_reader :admin, :name, :ip, :user, :password, :port, :environment, :command
 
     private :admin
 

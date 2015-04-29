@@ -1,6 +1,5 @@
 module Cct
   class RemoteCommand
-    DEFAULT_TYPE = :direct
     TIMEOUT = 5
     EXTENDED_OPTIONS = OpenStruct.new(
       number_of_password_prompts: 0,
@@ -14,10 +13,10 @@ module Cct
 
     def initialize opts
       @gateway = opts[:gateway]
+      opts.merge!(gateway) if gateway
       @log = BaseLogger.new("SSH")
       @options = OpenStruct.new
       construct_options(opts)
-      validate = (opts[:validate].nil? ? true : opts[:validate])
       validate_options
     end
 
@@ -36,7 +35,7 @@ module Cct
           channel.on_request("exit-status") {|p,data| result.exit_code = data.read_long}
         end
       end
-      session.loop
+      session.loop unless gateway
       result[:success?] = result.exit_code.zero?
       if !result.success?
         log.error(result.output)
@@ -47,13 +46,14 @@ module Cct
 
     def connect!
       return true if connected?
-
+      handle_errors do
         @session =
           if gateway
             create_gateway_session
           else
             Net::SSH.start(options.ip, options.user, options.extended.to_h)
           end
+      end
       true
     end
 
@@ -71,7 +71,7 @@ module Cct
 
     def open_session_channel &block
       if gateway
-        session.ssh(target.ip, target.user, target.command_options) &block
+        session.ssh(target.ip, target.user, target.command_options).open_channel(&block)
       else
         session.open_channel(&block)
       end
@@ -79,10 +79,10 @@ module Cct
 
     def create_gateway_session
       Net::SSH::Gateway.new(
-        gateway.attributes["ip"],
-        gateway.attributes["user"],
-        password: gateway.attributes["password"],
-        port: gateway.attributes["port"],
+        gateway[:ip],
+        gateway[:user],
+        password: gateway[:password],
+        port: gateway[:port],
         timeout: detect_timeout
       )
     end
