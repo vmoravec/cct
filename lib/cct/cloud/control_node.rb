@@ -30,13 +30,12 @@ module Cct
     end
 
     def update_environment params
-      return unless params.last.is_a?(Hash)
+      options = params.last
+      options = params.last.is_a?(Hash) ? params.pop : Hash.new(environment:{})
+      raise "Key 'environment' is missing" unless options[:environment]
 
-      param = params.pop
-      raise "Only 'environment' key allowed in parameters" unless param[:environment]
-
-      source = update_source(param[:environment].delete(:source))
-      environment = {source: source}.merge(param[:environment] || {})
+      source = update_source(options[:environment].delete(:source))
+      environment = {source: source}.merge(options[:environment] || {})
       {environment: environment}
     end
 
