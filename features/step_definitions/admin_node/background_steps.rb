@@ -1,3 +1,7 @@
+Given(/^I got the admin node discovered$/) do
+  validate_admin!
+end
+
 Given(/^the admin node responds to a ping$/) do
   ping!(admin_node)
 end

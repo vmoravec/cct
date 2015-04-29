@@ -1,6 +1,7 @@
 module Cct
   class RemoteCommand
-    TIMEOUT = 10
+    DEFAULT_TYPE = :direct
+    TIMEOUT = 5
     EXTENDED_OPTIONS = OpenStruct.new(
       number_of_password_prompts: 0,
       port: 22
@@ -8,12 +9,15 @@ module Cct
 
     Result = Struct.new(:success?, :output, :exit_code, :host)
 
-    attr_reader :session, :options, :log
+    attr_reader :session, :options, :log, :gateway
+    attr_accessor :target
 
-    def initialize opts={}
+    def initialize opts
+      @gateway = opts[:gateway]
       @log = BaseLogger.new("SSH")
       @options = OpenStruct.new
       construct_options(opts)
+      validate = (opts[:validate].nil? ? true : opts[:validate])
       validate_options
     end
 
@@ -22,7 +26,7 @@ module Cct
       environment = set_environment(params)
       full_command = "#{command} #{params.join(" ")}".strip
       result = Result.new(false, "", 1000, options.ip)
-      session.open_channel do |channel|
+      open_session_channel do |channel|
         channel.exec("#{environment}#{full_command}") do |p, d|
           channel.on_close do
             log.info("Running command `#{full_command}` on remote host #{options.ip}")
@@ -44,21 +48,13 @@ module Cct
     def connect!
       return true if connected?
 
-      @session = Net::SSH.start(options.ip, options.user, options.extended.to_h)
+        @session =
+          if gateway
+            create_gateway_session
+          else
+            Net::SSH.start(options.ip, options.user, options.extended.to_h)
+          end
       true
-    rescue Timeout::Error, Errno::ETIMEDOUT, Errno::ECONNREFUSED => e
-      raise SshConnectionError.new(
-        ip: options.ip,
-        message: e.message,
-        timeout: options.extended.timeout
-      )
-    rescue Net::SSH::HostKeyMismatch => e
-      attempts += 1
-      log.error("Mismatch of host keys, #{attempts}. attempt, fixing and going to retry now..")
-      e.remember_host!
-      retry unless attempts > 1
-      log.error("Mismatch of host keys, #{attempts}. attempt, failing..")
-      raise
     end
 
     def connected?
@@ -66,14 +62,34 @@ module Cct
     end
 
     def test_ssh!
-      attempts = 0
-      Net::SSH::Transport::Session.new(
-        options.ip,
-        timeout: options.extended.timeout,
-        port: options.extended.port,
-        logger: log
+      handle_errors do
+        test_plain_ssh
+      end
+    end
+
+    private
+
+    def open_session_channel &block
+      if gateway
+        session.ssh(target.ip, target.user, target.command_options) &block
+      else
+        session.open_channel(&block)
+      end
+    end
+
+    def create_gateway_session
+      Net::SSH::Gateway.new(
+        gateway.attributes["ip"],
+        gateway.attributes["user"],
+        password: gateway.attributes["password"],
+        port: gateway.attributes["port"],
+        timeout: detect_timeout
       )
-      true
+    end
+
+    def handle_errors
+      attempts = 0
+      yield
     rescue Timeout::Error, Errno::ETIMEDOUT, Errno::ECONNREFUSED => e
       raise SshConnectionError.new(
         ip: options.ip,
@@ -88,7 +104,14 @@ module Cct
       raise
     end
 
-    private
+    def test_plain_ssh
+      Net::SSH::Transport::Session.new(
+        options.ip,
+        timeout: options.extended.timeout,
+        port: options.extended.port,
+        logger: log
+      )
+    end
 
     def set_environment params
       options = params.pop if params.last.is_a?(Hash)
@@ -112,7 +135,7 @@ module Cct
       options.extended.timeout = detect_timeout(opts)
     end
 
-    def detect_timeout opts
+    def detect_timeout opts={}
       timeout = TIMEOUT
       timeout = Cct.config['timeout']['ssh'] ? Cct.config['timeout']['ssh'] : timeout
       timeout = opts['timeout'] || opts[:timeout] || timeout

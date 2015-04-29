@@ -6,6 +6,7 @@ Feature: Controller node
 
   Background:
     Given I can reach the crowbar API
+    And I got the admin node discovered
     And I got the controller controller node discovered
     And the controller node responds to a ping
     And I can establish SSH connection to the controller node
