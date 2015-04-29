@@ -66,7 +66,9 @@ module Cct
       return unless controller_fqdn
 
       control_node_name = controller_fqdn.split(".").first
-      @control_node = nodes.find {|node| node.name == control_node_name || controller_fqdn }
+      @control_node = nodes.find do |node|
+        node.name == control_node_name || node.name == controller_fqdn
+      end
     end
   end
 end
