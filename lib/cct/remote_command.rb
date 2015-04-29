@@ -22,13 +22,14 @@ module Cct
 
     def exec! command, params=[]
       connect!
+      host_ip = gateway ? target.ip : options.ip
       environment = set_environment(params)
       full_command = "#{command} #{params.join(" ")}".strip
-      result = Result.new(false, "", 1000, options.ip)
+      result = Result.new(false, "", 1000, host_ip)
       open_session_channel do |channel|
         channel.exec("#{environment}#{full_command}") do |p, d|
           channel.on_close do
-            log.info("Running command `#{full_command}` on remote host #{options.ip}")
+            log.info("Running command `#{full_command}` on remote host #{host_ip}")
           end
           channel.on_data {|p,data| result.output << data }
           channel.on_extended_data {|_,_,data| result.output << data }
@@ -46,19 +47,24 @@ module Cct
 
     def connect!
       return true if connected?
+
       handle_errors do
         @session =
           if gateway
             create_gateway_session
           else
-            Net::SSH.start(options.ip, options.user, options.extended.to_h)
+            create_regular_session
           end
       end
       true
     end
 
     def connected?
-      session && !session.closed? ? true : false
+      if gateway
+        session && session.active? ? true :false
+      else
+        session && !session.closed? ? true : false
+      end
     end
 
     def test_ssh!
@@ -71,10 +77,16 @@ module Cct
 
     def open_session_channel &block
       if gateway
-        session.ssh(target.ip, target.user, target.command_options).open_channel(&block)
+        session.ssh(target.ip, target.user, target.command_options) do |session|
+          session.open_channel(&block)
+        end
       else
         session.open_channel(&block)
       end
+    end
+
+    def create_regular_session
+      Net::SSH.start(options.ip, options.user, options.extended.to_h)
     end
 
     def create_gateway_session
@@ -118,10 +130,12 @@ module Cct
       return "" if options.nil? || options[:environment].nil?
 
       source_files = options[:environment].delete(:source) || []
-      export_env = options[:environment].map {|env| "#{env[0]}=#{env[1]} " }.join.strip
+      export_env = options[:environment].map {|env| "#{env[0]}=#{env[1]} " }.join.strip << ";"
       export_env.prepend("export ") unless export_env.empty?
-      source_env = source_files.map {|f| "source #{f}; "}.join
-      source_env + export_env
+      source_env = source_files.map {|file| "source #{file}; "}.join
+      env = source_env + export_env
+      log.info("Updating environment with `#{env}`")
+      env
     end
 
     def construct_options opts
