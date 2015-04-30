@@ -28,4 +28,36 @@ module FeatureHelpers
   def tag_regex
     @regex ||= /@(.+)/
   end
+
+  def wait_for event, options
+    period, period_units = options[:max].split
+    sleep_period, sleep_units = options[:sleep].split if options[:sleep]
+    timeout_time = convert_to_seconds(period, period_units)
+    sleep_time = convert_to_seconds(sleep_period, sleep_units)
+    log.info("Setting timeout to '#{event}' to max #{options[:max]}")
+    timeout(timeout_time) do
+      yield
+      if options[:sleep]
+        log.info("Sleep for more #{options[:sleep]}")
+        sleep(sleep_time)
+      end
+    end
+  rescue Timeout::Error
+    message = "#{event} expired after #{period} #{period_units}"
+    log.error(message)
+    raise message
+  end
+
+  def convert_to_seconds period, units
+    case units
+    when /minute/
+      period.to_i * 60
+    when /second/
+      period.to_i
+    when nil
+      0
+    else
+      raise "Only minutes or seconds are allowed"
+    end
+  end
 end

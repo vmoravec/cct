@@ -1,8 +1,12 @@
+require "cct/commands/openstack"
+
 module Cct
   class ControlNode < Node
     LOG_TAG = "CONTROL_NODE"
     CONTROL_NODE_ROUTE = "/crowbar/nova/1.0/default"
     ENV_FILE = "/root/.openrc"
+
+    include Commands::Openstack
 
     attr_reader :gateway, :crowbar, :log
     attr_reader :name, :fqdn, :state, :status, :description
