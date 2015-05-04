@@ -19,7 +19,7 @@ module Cct
           OpenStruct.new(shell_parse(result))
         end
 
-        def create name, options
+        def create name, options={}
           OpenStruct.new(
             shell_parse(
               exec!(
