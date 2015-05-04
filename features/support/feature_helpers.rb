@@ -36,10 +36,12 @@ module FeatureHelpers
     sleep_time = convert_to_seconds(sleep_period, sleep_units)
     log.info("Setting timeout to '#{event}' to max #{options[:max]}")
     timeout(timeout_time) do
-      yield
-      if options[:sleep]
-        log.info("Sleep for more #{options[:sleep]}")
-        sleep(sleep_time)
+      (timeout_time / sleep_time).times do
+        yield
+        if options[:sleep]
+          log.info("Sleep for more #{options[:sleep]}")
+          sleep(sleep_time)
+        end
       end
     end
   rescue Timeout::Error
