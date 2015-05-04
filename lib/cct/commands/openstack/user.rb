@@ -26,11 +26,11 @@ module Cct
                 "create",
                 name,
                 "--format=shell",
-                "--password=#{options[:password]}",
-                "--email=#{options[:email]}",
-                "#{'--enable' if options[:enable]}",
-                "#{'--disable' if options[:disable]}",
-                "#{"--project=#{options[:project]}" if options[:project]}"
+                optional("--password", :password, options),
+                optional("--email",    :email,    options),
+                optional("--project",  :project,  options)
+                optional("--enable",   :enable,   options, type: :switch),
+                optional("--disable",  :disable,  options, type: :switch),
               ).output
             )
           )

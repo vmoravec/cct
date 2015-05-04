@@ -48,6 +48,13 @@ module Cct
           end
         end
 
+        def optional arg_name, key, params, type: nil
+          return "" unless params[key]
+          return arg_name if params[key] && type == :switch
+
+          "#{arg_name}=#{params[key]}"
+        end
+
         module ContextMethods
           attr_accessor :command
         end
