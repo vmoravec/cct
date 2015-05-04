@@ -38,7 +38,7 @@ module Cct
         end
 
         def delete id_or_name
-          exec!("delete", id_or_name).success?
+          exec!("delete", id_or_name)
         end
       end
     end
