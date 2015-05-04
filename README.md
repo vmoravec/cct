@@ -107,7 +107,7 @@
 
   There is a dedicated `rake` task available for creating all the necessaries:
 
-    `rake add:feature name='Awesome Stuff' task='awesome_stuff'`  
+    rake add:feature name='Awesome Stuff' task='awesome_stuff'  
 
 
   Try to keep the name of the `rake` task short but still expressive. Multiple
@@ -174,7 +174,7 @@
     puts config["key_two"]
   end
   ```
-  If there configuration for this scenario is empty, the code within the block will
+  If the configuration for this scenario is empty, the code within the block will
   be not executed. (Maybe raising an exception like `ConfigurationNotFound` would be 
   better?).
 
@@ -279,26 +279,38 @@
   Helper commands are also loaded by this:
 
   ```ruby
-  World(StepHelpers)
+  World(
+    StepHelpers
+    FeatureHelpers
+    ...
+  )
   ```
 
-  The code is available in `features/support/step_helpers.rb`. There should be only
+  The code is available in `features/support/*_helpers.rb`. There should be only
   step or scenario specific code placed here, the right place for new commands is in
   `lib/cct/commands/`.
 
-  Currently available __local__ commands are these:  
+  The main command available for executing local or remote `bash` is `exec!`.
+  You need to call it on the respective node object to let the code run
+  remotely:
 
-  `exec!` expects a command name with arguments as parameter  
-  `ping!` expects a node instance as parameter  
-  `ssh_hadnshake!` expects a node instance as parameter  
+  ```ruby
+  admin_node.exec! "crowbar ntp list"
+  control_node.exec! "cat", ".openrc"
+  ```
 
-  Commands to call __remotely__ on the node instances:  
+  The `exec!` command is available even for local code execution, it's what it
+  does when you call it without any receiver.
 
-  `exec!` expects a command name with arguments as parameter  
+  There are several useful commands implemented for common use, you will find 
+  them at `lib/cct/commands/remote.rb` :
+
+  There are available, for example, these (and more to come):
+
   `read_file` expects a path on the remote machine as parameter  
   `rpm_q` expects a package name as parameter  
 
-  Both `exec!` commands return a struct object with three attributes: `output`,
+  `exec!` commands returns a struct object with three attributes: `output`,
   `success?` and `exit_code`. 
 
   If the execution of the `exec!` command has failed, an exception is thrown.
@@ -309,6 +321,24 @@
   There is a big variety of the matchers for various situations, you rather look
   at them at [rspec matchers docs](https://www.relishapp.com/rspec/rspec-expectations/docs/built-in-matchers) .
   Here is a bit more detailed doc about how to [customize the matchers](http://www.relishapp.com/rspec/rspec-expectations/v/3-2/docs).
+
+
+#### Openstack client commands
+
+  For testing the cloud functionality we use the `python-openstackclient` interface,
+  more about that please look at [OpenStackClient docs](http://docs.openstack.org/developer/python-openstackclient/index.html).
+
+  These commands is available at the `control_node` object:
+  ```ruby
+  control_node.openstack.user.list          # returns list of users
+  control_node.openstack.image.list         # returns list of images
+  control_node.openstack.image.show "jeos1" # returns object with properties about the image
+  ```
+  The recommended way of making yourself familiar with those is `rake console`.
+
+  Please, don't use the specialized openstack components' commands
+  (like `keystone role-list` or `glance image-create`) as these are going
+  to be deprecated in some of the coming releases of Openstack. 
 
 
 #### Add new command for the step definitions
