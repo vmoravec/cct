@@ -39,13 +39,13 @@ module FeatureHelpers
       (timeout_time / sleep_time).times do
         yield
         if options[:sleep]
-          log.info("Sleep for more #{options[:sleep]}")
+          log.info("Waiting for '#{event}', sleeping for more #{options[:sleep]}")
           sleep(sleep_time)
         end
       end
     end
   rescue Timeout::Error
-    message = "#{event} expired after #{period} #{period_units}"
+    message = "#{event} expired after #{options[:max]}"
     log.error(message)
     raise message
   end
