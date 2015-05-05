@@ -64,12 +64,12 @@ module Cct
 
         def create name, options={}
           yield params
-          params.extract!(options).unshift("create", name, "--format=shell")
-          OpenStruct.new(shell_parse(exec!(params.shell).output))
+          params = ["create", name, "--format=shell"].concat(params.extract!(options))
+          OpenStruct.new(shell_parse(exec!(params).output))
         end
 
         def delete id_or_name
-          OpenStruct.new(shell_parse(exec!("delete", id_or_name).output))
+          exec!("delete", id_or_name)
         end
 
         def list
@@ -83,6 +83,8 @@ module Cct
         def show id_or_name
           OpenStruct.new(shell_parse(exec!("show", id_or_name, "--format=shell").output))
         end
+
+        private
 
         def csv_parse csv_data, header: false
           result = CSV.parse(csv_data)
