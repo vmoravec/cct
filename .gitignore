@@ -11,3 +11,5 @@
 /config
 /vendor
 /log
+*.swp
+*.swo
