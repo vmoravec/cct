@@ -57,7 +57,7 @@ module Cct
       return if config_dir.children.empty?
 
       config_dir.children.each do |file|
-        merge!(file)
+        merge!(file) if file.extname == ".yml"
       end
     end
 
