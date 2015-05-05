@@ -28,7 +28,7 @@ module Cct
                 "--format=shell",
                 optional("--password", :password, options),
                 optional("--email",    :email,    options),
-                optional("--project",  :project,  options)
+                optional("--project",  :project,  options),
                 optional("--enable",   :enable,   options, type: :switch),
                 optional("--disable",  :disable,  options, type: :switch),
               ).output
