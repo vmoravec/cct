@@ -88,6 +88,12 @@ module Cct
           OpenStruct.new(shell_parse(exec!("show", id_or_name, "--format=shell").output))
         end
 
+        def exist? id_or_name
+          show(id_or_name) and return true
+        rescue Cct::RemoteCommandFailed
+          return false
+        end
+
         private
 
         def csv_parse csv_data, header: false
