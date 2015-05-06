@@ -1,38 +1,13 @@
 Given(/^KVM source image exists$/) do
-
-  with_scenario_config {|c|
-    @image_name         = c["image_name"]
-    @image_source       = c["image_source"]
-    @properties         = c["properties"]
-  }
   control_node.remote_file_exists @image_source
 end
 
 Given(/^XEN HVM source image exists$/) do
-
-  with_scenario_config {|c|
-    @image_name         = c["image_name"]
-    @image_source       = c["image_source"]
-    @properties         = c["properties"]
-  }
   control_node.remote_file_exists @image_source
-
 end
 
 Given(/^XEN PV source image exists$/) do
-
-  with_scenario_config {|c|
-    @image_name         = c["image_name"]
-    @image_source       = c["image_source"]
-    @properties         = c["properties"]
-  }
   control_node.remote_file_exists @image_source
-
-end
-
-Given(/^glance image does not exist$/) do
-  images = control_node.openstack.image.list.map { |i| i.name}
-  expect(images).not_to include @image_name
 end
 
 When(/^I create new glance image based on jeos$/) do
@@ -64,6 +39,12 @@ Then(/^the status of the image is active$/) do
   end
 end
 
+Then(/^the image can be deleted$/) do
+  steps %{
+    When I delete the image
+    Then it is no longer listed
+  }
+end
 
 When(/^I delete the image$/) do
   control_node.openstack.image.delete @image_id
