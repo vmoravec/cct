@@ -1,45 +1,30 @@
 module Cct
   module Commands
     module Openstack
-      class Image
-        include NodeContext
-
+      class Image < Command
         self.command = "image"
 
-        def list
-          image_row = Struct.new(:id, :name)
-          result = exec!("list", "--format csv").output
-          csv_parse(result).map do |row|
-            image_row.new(*row)
+        def create name, options={}
+          super do |params|
+            # mandatory params
+            params.add container_format: "--container-format"
+            params.add disk_format:      "--disk-format"
+
+            # optional params
+            params.add :optional, copy_from: "--copy-from"
+            params.add :optional, location: "--location"
+            params.add :optional, public: "--public", param_type: :switch
+            params.add :optional, private: "--private", param_type: :switch
+
+            # properties: will be transformed into --property hypervisor_type=kvm
+            params.add :property, hypervisor_type: "hypervisor_type"
+            params.add :property, vm_mode: "vm_mode"
+
+            # fallback to all properties defined at once
+            params.add :properties, param_type: :properties
           end
         end
 
-        def show id_or_name
-          result = exec!("show", id_or_name, "--format shell").output
-          OpenStruct.new(shell_parse(result))
-        end
-
-        def create name, options
-          OpenStruct.new(
-            shell_parse(
-              exec!(
-                "create",
-                name,
-                "--format=shell",
-                "#{options[:properties]}",
-                "--container-format=#{options[:container_format]}",
-                "--disk-format=#{options[:disk_format]}",
-                "--copy-from=#{options[:copy_from]}",
-                "#{'--public' if options[:public]}",
-                "#{'--private' if options[:private]}"
-              ).output
-            )
-          )
-        end
-
-        def delete id_or_name
-          exec!("delete", id_or_name)
-        end
       end
     end
   end

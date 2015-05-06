@@ -63,16 +63,19 @@ module Cct
         end
 
         def create name, options={}
+          params.clear
           yield params
-          params = ["create", name, "--format=shell"].concat(params.extract!(options))
-          OpenStruct.new(shell_parse(exec!(params).output))
+          all_params = ["create", name, "--format=shell"].concat(params.extract!(options))
+          OpenStruct.new(shell_parse(exec!(all_params).output))
         end
 
         def delete id_or_name
+          params.clear
           exec!("delete", id_or_name)
         end
 
         def list
+          params.clear
           user_row = Struct.new(:id, :name)
           result = exec!("list", "--format=csv").output
           csv_parse(result).map do |row|
@@ -81,6 +84,7 @@ module Cct
         end
 
         def show id_or_name
+          params.clear
           OpenStruct.new(shell_parse(exec!("show", id_or_name, "--format=shell").output))
         end
 
@@ -100,11 +104,12 @@ module Cct
         end
 
         class Params
-          attr_reader :mandatory, :optional, :all
+          attr_reader :mandatory, :optional, :properties, :shell
 
           def initialize
             @mandatory = []
             @optional = []
+            @properties = []
             @shell = []
           end
 
@@ -114,56 +119,65 @@ module Cct
               mandatory.push(params)
             when :optional
               optional.push(params)
+            when :property, :properties
+              properties.push(params)
             else
               raise "Type '#{type}' for parameters not allowed"
             end
           end
 
           def extract! options
-            extract_mandatory(options)
-            extract_optional(options)
+            extract(:mandatory, options)
+            extract(:optional, options)
+            extract(:properties, options)
             shell
+          end
+
+          def clear
+            mandatory.clear
+            optional.clear
+            properties.clear
+            shell.clear
           end
 
           private
 
-          def extract_mandatory options
-            mandatory.each do |param|
+          def extract type, options
+            params = filter_params(type)
+            params.each do |param|
               param_type = param.delete(:param_type)
+              shell.push(options[:properties]) if param_type == :properties
+
               param.each_pair do |key, value|
-                raise "Parameter '#{key}' is mandatory" unless options[key]
+                if !options[key]
+                  next if type == :optional || type == :properties
+                  raise "Parameter '#{key}' is mandatory" if type == :mandatory
+                end
 
                 case param_type
                 when :switch
                   shell.push(value)
-                  next
                 else
-                  shell.push("#{key}=#{options[key]}")
+                  if type == :properties
+                    shell.push("--property #{value}=#{options[key]}") if options[key]
+                  else
+                    shell.push("#{value}=#{options[key]}")
+                  end
                 end
               end
             end
           end
 
-          def extract_optional options
-            optional.each do |param|
-              param_type = param.delete(:param_type)
-              param.each_pair do |key, value|
-                next unless options[key]
-
-                case param_type
-                when :switch
-                  shell.push(value)
-                  next
-                else
-                  shell.push("#{key}=#{options[key]}")
-                end
-              end
+          def filter_params type
+            case type
+              when :mandatory  then mandatory
+              when :optional   then optional
+              when :properties then properties
             end
           end
 
         end
       end
-
     end
   end
 end
