@@ -82,6 +82,15 @@ module Cct
         response.body["deployment"]["nova"]["elements"]["nova-multi-controller"].first
       raise "Failed to get FQDN for controller node" unless controller_fqdn
 
+      # For getting the controller fqdn in clustered environment
+      if controller_fqdn.start_with? "cluster:"
+        cluster_name = controller_fqdn.split(":")[1]
+        response = crowbar.get("/crowbar/pacemaker/1.0/#{cluster_name}")
+        controller_fqdn =
+          response.body["deployment"]["pacemaker"]["elements"]["pacemaker-cluster-member"].first
+        raise "Failed to get FQDN for controller node" unless controller_fqdn
+      end
+
       @fqdn = controller_fqdn
       @name = fqdn.split(".").first
       @description = response["description"]
