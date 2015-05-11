@@ -14,6 +14,17 @@ module Cct
           end
         end
 
+        def set name, options={}
+          super do |params|
+            params.add :optional, name:     "--name"
+            params.add :optional, project:  "--project"
+            params.add :optional, password: "--password"
+            params.add :optional, email:    "--email"
+            params.add :optional, enable:   "--enable",  param_type: :switch
+            params.add :optional, disable:  "--disable", param_type: :switch
+          end
+        end
+
       end
     end
   end
