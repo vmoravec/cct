@@ -1,13 +1,32 @@
-Given(/^KVM source image exists$/) do
+Given(/^source image of kvm type exists$/) do
+  my_config     = config["features"]["images"]["kvm"]
+  @image_name   = my_config["image_name"]
+  @image_source = my_config["image_source"]
+  @properties   = my_config["properties"]
   control_node.remote_file_exists @image_source
 end
 
-Given(/^XEN HVM source image exists$/) do
+Given(/^source image of xen_hvm type exists$/) do
+  my_config     = config["features"]["images"]["xen_hvm"]
+  @image_name   = my_config["image_name"]
+  @image_source = my_config["image_source"]
+  @properties   = my_config["properties"]
   control_node.remote_file_exists @image_source
 end
 
-Given(/^XEN PV source image exists$/) do
+Given(/^source image of xen_pv type exists$/) do
+  my_config     = config["features"]["images"]["xen_pv"]
+  @image_name   = my_config["image_name"]
+  @image_source = my_config["image_source"]
+  @properties   = my_config["properties"]
   control_node.remote_file_exists @image_source
+end
+
+Given(/^glance image does not exist$/) do
+  images = control_node.openstack.image.list.map { |i| i.name}
+  if images.include? @image_name
+    control_node.openstack.image.delete @image_name
+  end
 end
 
 When(/^I create new glance image based on jeos$/) do
@@ -33,7 +52,7 @@ end
 
 Then(/^the status of the image is active$/) do
   # it may take some time before the image turns active
-  wait_for "Checking that image status is active", max: "30 seconds", sleep: "2 seconds" do
+  wait_for "Checking that image status is active", max: "120 seconds", sleep: "2 seconds" do
     show = control_node.openstack.image.show(@image_id)
     break if show.status == "active"
   end
