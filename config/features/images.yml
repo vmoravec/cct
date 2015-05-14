@@ -1,0 +1,15 @@
+features:
+  images:
+    flags: ""
+    kvm:
+      image_name: jeos1
+      image_source: http://clouddata.cloud.suse.de/images/jeos-64.qcow2
+      properties: "--property hypervisor_type=kvm"
+    xen_hvm:
+      image_name: jeos2
+      image_source: http://clouddata.cloud.suse.de/images/jeos-64-hvm.qcow2
+      properties: "--property hypervisor_type=xen --property vm_mode=hvm"
+    xen_pv:
+      image_name: jeos3
+      image_source: http://clouddata.cloud.suse.de/images/jeos-64-pv.qcow2
+      properties: "--property hypervisor_type=xen --property vm_mode=xen"
