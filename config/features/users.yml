@@ -1,0 +1,5 @@
+features:
+  users:
+    user_name: test_user
+    user_pass: linux
+    project_name: openstack

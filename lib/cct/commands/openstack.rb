@@ -18,13 +18,18 @@ module Cct
 
         # @return [Openstack::Image] for accessing openstack.image subcommands
         attr_reader :image
-        # @return [Openstack::User] for accessing openstack.user subcommands
         attr_reader :user
+        attr_reader :project
+        attr_reader :network
+        attr_reader :role
 
         # @param [Cct::Node] as the receiver for the openstack client
         def initialize node
           @image = Openstack::Image.new(node)
           @user = Openstack::User.new(node)
+          @project = Openstack::Project.new(node)
+          @network = Openstack::Network.new(node)
+          @role = Openstack::Role.new(node)
         end
       end
 
@@ -69,15 +74,29 @@ module Cct
           OpenStruct.new(shell_parse(exec!(all_params).output))
         end
 
+        def add name, options={}
+          params.clear
+          yield params
+          all_params = ["add", name, "--format=shell"].concat(params.extract!(options))
+          OpenStruct.new(shell_parse(exec!(all_params).output))
+        end
+
+        def set name, options={}
+          params.clear
+          yield params
+          all_params = ["set", name].concat(params.extract!(options))
+          OpenStruct.new(shell_parse(exec!(all_params).output))
+        end
+
         def delete id_or_name
           params.clear
           exec!("delete", id_or_name)
         end
 
-        def list
+        def list *options
           params.clear
-          user_row = Struct.new(:id, :name)
-          result = exec!("list", "--format=csv").output
+          user_row = Struct.new(:id, :name, :subnets)
+          result = exec!("list", "--format=csv", options).output
           csv_parse(result).map do |row|
             user_row.new(*row)
           end
@@ -190,4 +209,7 @@ end
 
 require 'cct/commands/openstack/image'
 require 'cct/commands/openstack/user'
+require 'cct/commands/openstack/project'
+require 'cct/commands/openstack/network'
+require 'cct/commands/openstack/role'
 
