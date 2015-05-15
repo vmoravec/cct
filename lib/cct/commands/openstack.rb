@@ -95,10 +95,11 @@ module Cct
 
         def list *options
           params.clear
-          user_row = Struct.new(:id, :name, :subnets)
+          extended = options.last.is_a?(Hash) ? options.pop : {}
+          row = extended[:row] || Struct.new(:id, :name)
           result = exec!("list", "--format=csv", options).output
-          csv_parse(result).map do |row|
-            user_row.new(*row)
+          csv_parse(result).map do |csv_row|
+            row.new(*csv_row)
           end
         end
 
