@@ -22,11 +22,15 @@ module Cct
 
     def initialize options={}
       @log = BaseLogger.new(LOG_TAG)
-      config = options["api"].dup
-      config[:url] = config["ssl"] ? "https://" : "http://"
-      config[:url] << options["ip"] << ":#{config["port"]}"
+      config = options["api"].dup.merge!("ip" => options["ip"])
+      url =
+        if Cct.config.fetch("gate")
+          forward_crowbar_http(config)
+        else
+          use_direct_crowbar_data(config)
+        end
 
-      @connection = Faraday.new(url: config[:url]) do |builder|
+      @connection = Faraday.new(url: url) do |builder|
         builder.request  :url_encoded
         builder.request  :digest, config['user'], config['password']
         builder.request  :json
@@ -59,6 +63,32 @@ module Cct
     rescue Faraday::ConnectionFailed => e
       log.error(e.message)
       raise CrowbarApiError, e.message
+    end
+
+    private
+
+    def forward_crowbar_http api
+      gate = Cct.config.fetch("gate")
+      gate_options = {}
+      gate_options.merge!(password: gate["password"]) if gate["password"]
+      forward_options = [api["port"], api["ip"], api["port"]]
+      forward_options.unshift(gate["bind"]) if gate["bind"]
+      Thread.new do
+        Net::SSH.start(gate["fqdn"] || gate["ip"], gate["user"], gate_options) do |ssh|
+          ssh.forward.local(*forward_options)
+          ssh.loop { true }
+        end
+      end
+      sleep 0.5
+      "#{api_scheme(api["ssl"])}localhost:#{api['port']}"
+    end
+
+    def api_scheme ssl
+       ssl ? "https://" : "http://"
+    end
+
+    def use_direct_crowbar_data config
+      api_scheme(config["ssl"]) << config["ip"] << ":#{config["port"]}"
     end
   end
 

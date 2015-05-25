@@ -8,7 +8,8 @@ module Cct
     def_delegators :@crowbar_proxy, :status, :state, :alias, :fqdn, :domain,
                                     :data, :loaded?
 
-    attr_reader :admin, :name, :ip, :user, :password, :port, :environment, :command
+    attr_reader :admin, :name, :ip, :user, :password, :port, :environment, :command,
+                :keys
 
     private :admin
 
@@ -54,12 +55,15 @@ module Cct
     end
 
     def attributes
-      { ip: ip,
+      attrs = {
+        ip: ip,
         user: user,
         name: name,
         password: password,
         port: port
       }
+      attrs.merge!(keys: keys) if keys && !keys.empty?
+      attrs
     end
 
     def load!
@@ -85,10 +89,10 @@ module Cct
 
     def set_ssh_attributes options={}
       return if options.empty?
-
       @user = options['user'] || options[:user]
       @password = options['password'] || options[:password]
       @port = options['port'] || options[:port]
+      @keys = options["keys"] || options[:keys]
     end
 
     def validate_attributes

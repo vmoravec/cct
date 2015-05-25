@@ -18,12 +18,17 @@ module Cct
         @control_node = ControlNode.new(crowbar: crowbar, gateway: admin_node.attributes)
         @nodes = Nodes.new(crowbar)
         nodes << control_node << admin_node
-        @local_command = LocalCommand.new
+        @command =
+          if Cct.config.fetch("gate")
+            RemoteCommand.new(Cct.config["gate"].merge(proxy: false))
+          else
+            LocalCommand.new
+          end
         @log = logger if logger
       end
 
       def exec! command_name, *params
-        @local_command.exec!(command_name, params)
+        @command.exec!(command_name, params)
       end
 
       def config

@@ -30,7 +30,7 @@ module Cct
       raise "Your current config does not include root element '#{config_value}'"
     end
 
-    def fetch value, default
+    def fetch value, default=nil
       content[value] || default
     end
 

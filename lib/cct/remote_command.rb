@@ -8,12 +8,13 @@ module Cct
 
     Result = Struct.new(:success?, :output, :exit_code, :host)
 
-    attr_reader :session, :options, :log, :gateway
+    attr_reader :session, :options, :log, :gateway, :proxy
     attr_accessor :target
 
     def initialize opts
       @gateway = opts[:gateway]
       opts.merge!(gateway) if gateway
+      @proxy = opts[:proxy] || set_ssh_proxy
       @log = BaseLogger.new("SSH")
       @options = OpenStruct.new
       construct_options(opts)
@@ -75,6 +76,15 @@ module Cct
 
     private
 
+    def set_ssh_proxy
+      proxy =  Cct.config.fetch("gate")
+      return unless proxy
+
+      command = "ssh #{proxy["user"]}@#{proxy["fqdn"] || proxy["ip"]} nc %h #{proxy["port"] || '%p'}"
+      require "net/ssh/proxy/command"
+      Net::SSH::Proxy::Command.new(command)
+    end
+
     def open_session_channel &block
       if gateway
         session.ssh(target.ip, target.user, target.command_options) do |session|
@@ -90,12 +100,16 @@ module Cct
     end
 
     def create_gateway_session
+      options = {
+        password: gateway[:password],
+        port: gateway[:port],
+        timeout: detect_timeout,
+      }
+      options.merge!(proxy: proxy) if proxy
       Net::SSH::Gateway.new(
         gateway[:ip],
         gateway[:user],
-        password: gateway[:password],
-        port: gateway[:port],
-        timeout: detect_timeout
+        options
       )
     end
 
@@ -117,12 +131,13 @@ module Cct
     end
 
     def test_plain_ssh
-      Net::SSH::Transport::Session.new(
-        options.ip,
+      opts = {
         timeout: options.extended.timeout,
         port: options.extended.port,
-        logger: log
-      )
+        logger: log,
+      }
+      opts.merge!(proxy: proxy) if proxy
+      Net::SSH::Transport::Session.new(options.ip, opts)
     end
 
     def set_environment params
@@ -139,14 +154,16 @@ module Cct
     end
 
     def construct_options opts
-      options.ip = opts['ip'] || opts[:ip]
+      options.ip = opts['ip'] || opts[:ip] || opts["fqdn"] || opts[:fqdn]
       options.user = opts['user'] || opts[:user]
       options.environment = opts['env'] || opts['environment'] || opts [:env] || {}
-      options.extended = EXTENDED_OPTIONS
+      options.extended = EXTENDED_OPTIONS.dup
       options.extended.logger = log
       options.extended.port = opts['port'] || opts[:port] if opts['port'] || opts[:port]
       options.extended.password = opts['password'] || opts[:password]
       options.extended.timeout = detect_timeout(opts)
+      options.extended.proxy = proxy
+      options.extended.keys = opts["keys"] || opts[:keys] if opts[:keys] || opts["keys"]
     end
 
     def detect_timeout opts={}
