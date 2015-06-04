@@ -1,8 +1,9 @@
+#TODO Add forwarding of the crowbar SSH port
 desc "Forward remote cloud to localhost; use only if proxy configuration available"
 task :forward do
   ARGV.clear
   Cct.update_logger(Cct::BaseLogger.new('forward', stdout: true))
-  cct.log.info "Forwarding remote cloud to localhost..." 
+  cct.log.info "Forwarding remote cloud to localhost..."
   if Cct.config.fetch("proxy").nil?
     cct.log.error "No proxy identified, nothing to forward"
     abort "Exiting.."

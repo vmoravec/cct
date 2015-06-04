@@ -383,6 +383,14 @@
   All configuration files but the `default.yml` file are ignored by git.
 
 
+#### Proxy configuration
+
+  If your cloud instance is located on some remote machine behind firewall, you can
+  run tests there by updating the proxy section of the configuration file.
+  The `development.yml.example` file contains an example of how to do that.
+  However, it works only if you have set up SSH keys with that remote domain.
+
+
 #### Nodes' configuration
 
   The `development.yml` config file contains this section:
