@@ -77,7 +77,7 @@ module Cct
     private
 
     def set_ssh_proxy
-      proxy =  Cct.config.fetch("gate")
+      proxy =  Cct.config.fetch("proxy")
       return unless proxy
 
       command = "ssh #{proxy["user"]}@#{proxy["fqdn"] || proxy["ip"]} nc %h #{proxy["port"] || '%p'}"
