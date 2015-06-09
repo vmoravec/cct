@@ -7,11 +7,13 @@ module Cct
     attr_reader :feature
     attr_reader :tags
     attr_reader :formats
+    attr_reader :scope
 
     def initialize name, desc, options={}
       @name = name
       @desc = desc
       @feature = options[:feature]
+      @scope = options[:scope]
       fail "Feature name not defined" unless feature
 
       @tags = resolve_tags(options[:tags])
@@ -33,7 +35,7 @@ module Cct
     end
 
     def provide_formats
-      config = Cct.config.fetch("cucumber", nil)
+      config = Cct.config.fetch("cucumber")
       formats = []
       if config && config.is_a?(Hash) && config["formats"]
         formats.concat(config["formats"])
@@ -49,11 +51,17 @@ module Cct
         case format
         when String
           result << " --format #{format} "
-        when Array
-          name, out = format
-          result << " --format #{name} #{"--out #{out}"}"
+        when Hash
+          format.each_pair do |name, out|
+            extension =
+              case name
+              when "pretty" then ".feature"
+              when "json"   then ".json"
+              end
+            result << " --format #{name} #{"--out #{out}/#{scope}#{extension}"}"
+          end
         else
-          fail "Cucumber log format must be a string or a array"
+          fail "Cucumber log format must be a string or a hash"
         end
       end
       result
