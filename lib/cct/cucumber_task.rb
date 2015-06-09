@@ -51,7 +51,7 @@ module Cct
           result << " --format #{format} "
         when Array
           name, out = format
-          result << " --format #{name} #{"--out #{out}"
+          result << " --format #{name} #{"--out #{out}"}"
         else
           fail "Cucumber log format must be a string or a array"
         end
