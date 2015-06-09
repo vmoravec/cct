@@ -35,10 +35,10 @@ module Cct
     def provide_formats
       config = Cct.config.fetch("cucumber", nil)
       formats = []
-      if config && config.is_a?(Hash) && config["format"]
-        formats.concat(config["format"]) if config["format"].is_a?(Array)
+      if config && config.is_a?(Hash) && config["formats"]
+        formats.concat(config["formats"])
       end
-      formats << DEFAULT_FORMAT unless formats.include?(DEFAULT_FORMAT)
+      formats << DEFAULT_FORMAT if formats.empty?
       formats
     end
 
@@ -49,12 +49,11 @@ module Cct
         case format
         when String
           result << " --format #{format} "
-        when Hash
-          name = format.keys.first
-          values = format.values.first
-          result << " --format #{name} #{"--out #{values['out']}" if values['out']}"
+        when Array
+          name, out = format
+          result << " --format #{name} #{"--out #{out}"
         else
-          fail "Cucumber log format must be a string or a hash"
+          fail "Cucumber log format must be a string or a array"
         end
       end
       result
