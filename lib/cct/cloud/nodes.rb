@@ -13,7 +13,7 @@ module Cct
       @crowbar = crowbar_api
       @loaded = false
       @nodes = Array.new
-      @config = Cct.config["nodes"]
+      @config = Cct.config.fetch("nodes", {})
     end
 
     def loaded?
