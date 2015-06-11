@@ -19,8 +19,8 @@ module Cct
         @nodes = Nodes.new(crowbar)
         nodes << control_node << admin_node
         @command =
-          if Cct.config.fetch("gate")
-            RemoteCommand.new(Cct.config["gate"].merge(proxy: false))
+          if Cct.config.fetch("proxy")
+            RemoteCommand.new(Cct.config["proxy"].merge(proxy: false))
           else
             LocalCommand.new
           end

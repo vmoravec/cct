@@ -24,7 +24,7 @@ module Cct
       @log = BaseLogger.new(LOG_TAG)
       config = options["api"].dup.merge!("ip" => options["ip"])
       url =
-        if Cct.config.fetch("gate")
+        if Cct.config.fetch("proxy")
           forward_crowbar_http(config)
         else
           use_direct_crowbar_data(config)
@@ -68,13 +68,13 @@ module Cct
     private
 
     def forward_crowbar_http api
-      gate = Cct.config.fetch("gate")
-      gate_options = {}
-      gate_options.merge!(password: gate["password"]) if gate["password"]
+      proxy = Cct.config.fetch("proxy")
+      proxy_options = {}
+      proxy_options.merge!(password: proxy["password"]) if proxy["password"]
       forward_options = [api["port"], api["ip"], api["port"]]
-      forward_options.unshift(gate["bind"]) if gate["bind"]
+      forward_options.unshift(proxy["bind"]) if proxy["bind"]
       Thread.new do
-        Net::SSH.start(gate["fqdn"] || gate["ip"], gate["user"], gate_options) do |ssh|
+        Net::SSH.start(proxy["fqdn"] || proxy["ip"], proxy["user"], proxy_options) do |ssh|
           ssh.forward.local(*forward_options)
           ssh.loop { true }
         end

@@ -8,22 +8,16 @@ module Rake
       Rake::Task[task_name].invoke
     end
 
-    def feature_namespace name=nil, &block
-      if name
-        @feature_namespace = name
-        namespace name, &block
-      else
-        @feature_namespace
-      end
-    end
-
     def feature_name name=nil
       name ? @feature_name = name : @feature_name
     end
 
     def feature_task name, options={}
       rake_desc = Rake.application.last_description
-      Cct::CucumberTask.new(name, rake_desc, options.merge(feature: feature_name))
+      Cct::CucumberTask.new(name, rake_desc, options.merge(
+        feature: feature_name,
+        scope: Rake.application.current_scope.path_with_task_name(name)
+      ))
     end
 
     def before task, prerequisite=nil, *args, &block

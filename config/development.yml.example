@@ -3,6 +3,12 @@
 #
 # Example:
 #
+# Useful for running tests on remote cloud instance, e.g. behind firewall
+# Requires key based authentication with the proxy domain
+#proxy:
+#  fqdn: your.suse.cloud.remote
+#  user: username
+#
 #admin_node:
 #  ip: 192.168.175.10
 #  ssh:
