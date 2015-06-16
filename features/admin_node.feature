@@ -24,7 +24,7 @@ Feature: Admin node
   Scenario: Essential packages installed
     Given the following packages are installed:
       | Package name:                        |
-      | suse-cloud-release                   |
+      | suse-sle11-openstack-cloud-release   |
       | crowbar                              |
       | yast2-crowbar                        |
       | cloud-init                           |
