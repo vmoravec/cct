@@ -9,11 +9,11 @@ module Cct
     extend Forwardable
 
     def_delegators :@base, :level, :level=, :progname, :progname=, :debug?, :info?,
-                           :error?, :fatal?
+                           :error?, :fatal?, :warn?
 
     attr_reader :name, :base, :path
 
-    def initialize name, verbose: false, path: nil, stdout: false
+    def initialize name, verbose: false, path: nil, stdout: false, level: Logger::INFO
       @name = name
       if path
         @path = path
@@ -27,27 +27,34 @@ module Cct
       else
         @base = self.class.main.logger
       end
-      base.level = verbose ? Logger::DEBUG : Logger::INFO
+      base.level = verbose ? Logger::DEBUG : level
     end
 
     def info message
-      original_logger(:info, message)
+      original_logger(Logger::INFO, message)
     end
 
     def warn message
-      original_logger(:warn, message)
+      original_logger(Logger::WARN, message)
     end
 
     def error message
-      original_logger(:error, message)
+      original_logger(Logger::ERROR, message)
     end
 
     def fatal message
-      original_logger(:fatal, message)
+      original_logger(Logger::FATAL, message)
     end
 
     def debug message
-      original_logger(:debug, message)
+      original_logger(Logger::DEBUG, message)
+    end
+
+    def always message
+      original_level = base.level
+      base.level = Logger::INFO
+      info(message)
+      base.level = original_level
     end
 
     def add severity, message=nil, progname=nil, &block
@@ -57,8 +64,8 @@ module Cct
 
     private
 
-    def original_logger severity, message, &block
-      base.send(severity, name) { message }
+    def original_logger severity, message
+      base.add(severity, nil, name) { message }
     end
   end
 
