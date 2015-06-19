@@ -27,9 +27,3 @@
 #    user: root
 #    password: linux
 #    port: 22
-#
-#nodes:
-#  - name:
-#    ssh:
-#      user: root
-#      password: linux

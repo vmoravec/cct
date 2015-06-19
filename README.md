@@ -1,7 +1,9 @@
 # cct - Cucumber Cloud Testsuite
 
-  The `master` branch contains the testsuites for SUSE Cloud 5.
-  Testsuites for other versions of cloud will be available in respective branches.
+  This is the testsuite for SUSE Openstack Cloud.
+
+  The `master` branch contains the testsuite for yet to be released version 6 of SOC.
+  The testsuite for other versions of cloud are available in respective branches.
 
 ## Topics
 
@@ -18,8 +20,17 @@
   1.  Check [system dependencies](#dependencies)
   2.  `git clone git@github.com:suse-cloud/cct`
   3.  `cd cct && bundle install`
-  4.  Add missing data into `config/development.yml` file
+  4.  Add missing data into `config/development.yml` file (create one by copying
+      `config/development.yml.example` file)
   5.  `rake feature:admin`
+
+
+## Dependencies
+
+    zypper in rubygem-bundler ruby-devel
+    zypper in gcc make
+
+  List of required rubygems can be found in file `cct.gemspec` and in `Gemfile`.
 
 
 ## Installation
@@ -39,15 +50,10 @@
      bundle install --system
 
 
-## Dependencies
-
-    zypper in rubygem-bundler ruby-devel
-    zypper in gcc make
-
-  List of required rubygems can be found in file `cct.gemspec` and in `Gemfile`.
-
-
 ## Usage
+
+  `rake` is one way how to run the tests and everything else.
+  To get a list of commands you can use, type:
 
      bundle exec rake help
 
@@ -66,16 +72,17 @@
 
   the rubygems installed in path `vendor/bundle` are not visible to `rake`.
 
-  `rake` is the preferred way to run the tests and other commands. All files with tasks
-  are located in the directory `tasks/` and have suffix `.rake`
+  All files with tasks are located in the directory `tasks/` and have suffix `.rake`
   All are loaded automatically.
 
   A single file usually contains several tasks within some well chosen namespace.
 
-  In general there is 2 kinds of tasks:
-
-    * regular rake tasks => for managing various stuff and providing help 
-    * feature rake task  => for running cucumber features and scenarios
+  If you don't like `rake` you can still use the plain `cucumber` command.
+  Typing `bundle exec cucumber` will run all features. If you want to limit the testsuite to some
+  specific feature, put the path to the feature file after the command, like
+  `cucumber features/admin_node.feature`. In case you want to limit the test run to
+  a one or more scenarios, you must specify tags for those scenarios:
+  `cucumber features/admin_node.feature -t @services,@packages`.
 
 #### Useful commands
 
