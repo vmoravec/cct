@@ -27,7 +27,6 @@ Feature: Admin node
       | suse-sle11-openstack-cloud-release   |
       | crowbar                              |
       | yast2-crowbar                        |
-      | cloud-init                           |
       | crowbar-barclamp-ceilometer          |
       | crowbar-barclamp-ceph                |
       | crowbar-barclamp-cinder              |
