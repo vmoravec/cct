@@ -8,15 +8,15 @@ admin_node:
     version: 11
     patchlevel: 3
 
-  ip: CAN'T BE BLANK # IP or FQDN allowed
+  ip: localhost
   ssh:
     user: root
-    password:
+    password: linux
     port: 22
 
   api:
     user: crowbar
-    password: CAN'T BE BLANK
+    password: crowbar
     port: 3000
     ssl: false
 
