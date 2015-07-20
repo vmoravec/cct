@@ -14,7 +14,7 @@ PATH
       rspec (~> 3.2.0)
 
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     awesome_print (1.6.1)
     builder (3.2.2)
