@@ -1,8 +1,8 @@
 @admin
 Feature: Admin node
   As a cloud administrator
-  I want to validate the admin node installation and configuration
-  In order to make sure the node management is all set
+  I want to validate the admin node environment
+  In order to make sure the node management is working properly
 
   Background:
     Given the admin node responds to a ping
