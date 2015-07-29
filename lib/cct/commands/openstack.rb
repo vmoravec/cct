@@ -31,6 +31,10 @@ module Cct
           @network = Openstack::Network.new(node)
           @role = Openstack::Role.new(node)
         end
+
+        def actions
+          public_methods.sort - Object.methods
+        end
       end
 
       # Parent class to inherit from for all openstack client commands

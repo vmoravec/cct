@@ -42,6 +42,10 @@ module Cct
       raise CrowbarApiError, e.message
     end
 
+    def actions
+      public_methods.sort - Object.methods
+    end
+
     def route name
       ROUTES[name]
     end

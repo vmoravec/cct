@@ -40,6 +40,10 @@ module Cct
       @crowbar_proxy = proxy
     end
 
+    def actions
+      public_methods.sort - Object.methods
+    end
+
     def admin?
       @admin
     end
@@ -49,9 +53,9 @@ module Cct
     end
 
     def inspect
-      "<#{self.class}##{object_id} name=#{name} alias=#{self.alias} ip=#{ip} " +
+      "<#{self.class}##{object_id} name=#{name} ip=#{ip} " +
       "user=#{user} connected?=#{connected?} status=#{status} state=#{state} " +
-      "fqdn=#{fqdn} domain=#{domain} environment=#{environment}>"
+      "fqdn=#{fqdn} environment=#{environment}>"
     end
 
     def attributes

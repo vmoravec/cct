@@ -10,9 +10,8 @@ task :console do
   # This brings various methods into the main scope of the IRB session;
   # It's very handy when testing things and playing with stuff
   self.extend(Module.new {
-    extend Forwardable
-
-    def_delegators :@cloud, :exec!, :env, :config
+    WORLD = [:admin_node, :control_node, :nodes, :crowbar,
+             :config, :exec!, :openstack]
 
     def cloud
       @cloud ||= Cct::Cloud::World.new
@@ -34,9 +33,23 @@ task :console do
       cloud.control_node
     end
 
-    methods = [:admin_node, :control_node, :nodes, :crowbar, :config, :exec!, :env, :cloud]
+    def exec! *command
+      cloud.exec!(*command)
+    end
 
-    puts "Useful methods: #{methods.inspect}"
+    def config
+      cloud.config.content
+    end
+
+    def openstack
+      cloud.control_node.openstack
+    end
+
+    def world
+      WORLD
+    end
+
+    puts "Useful methods: #{WORLD.inspect}"
   })
 
   IRB.start(__FILE__)
