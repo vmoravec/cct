@@ -18,7 +18,7 @@ Feature: Admin node
   Scenario: NTP Server availability
     Given the NTP Server is running
     When I request server for estimated correct local date and time
-    Then I receive a response within the "5" seconds timeout
+    Then I receive a non-empty response
 
   @packages
   Scenario: Essential packages installed

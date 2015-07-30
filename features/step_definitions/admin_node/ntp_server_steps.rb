@@ -3,12 +3,10 @@ Given(/^the NTP Server is running$/) do
 end
 
 When(/^I request server for estimated correct local date and time$/) do
-  expect(exec!("/usr/sbin/sntp", "#{admin_node.ip}").output).to(
-    match(/\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}/)
-  )
+  @sntp_result = timeout(10) { exec!("/usr/sbin/sntp", "#{admin_node.ip}").output }
 end
 
-Then(/^I receive a response within the "([^"]*)" seconds timeout$/) do |to_seconds|
-  timeout(to_seconds.to_f) { exec!("/usr/sbin/sntp", "#{admin_node.ip}") }
+Then(/^I receive a non-empty response$/) do
+  expect(@sntp_result.length.nonzero?).to be_truthy
 end
 
