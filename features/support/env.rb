@@ -11,7 +11,7 @@ verbose = ARGV.grep(/(--verbose|-v)/).empty? ? false : true
 log_path = ENV["cct_log_path"]
 
 # Turn off the colored output if it was requested
-Cucumber::Term::ANSIColor.coloring = false unless ENV['nocolors'].nil?
+Cucumber::Term::ANSIColor.coloring = false unless ENV['nocolor'].nil?
 
 Cct.setup(Dir.pwd, verbose: verbose, log_path: log_path)
 

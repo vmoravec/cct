@@ -452,9 +452,9 @@
 #### Turn off the fancy colors!
 
   If you don't like the colored cucumber output or for some other reason you want to
-  have it off, provide a bash variable `nocolors` to the `rake` command:
+  have it off, provide a bash variable `nocolor` to the `rake` command:
 
-  `rake feature:admin nocolors=true`
+  `rake feature:admin nocolor=true`
 
 
 ## Features
