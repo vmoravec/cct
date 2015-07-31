@@ -3,7 +3,7 @@ Given(/^I got the controller controller node discovered$/) do
 end
 
 Given(/^the controller node responds to a ping$/) do
-  control_node.exec!("ping", "-q -c 1 -W 5 #{control_node.ip}")
+  admin_node.exec!("ping", "-q -c 1 -W 5 #{control_node.ip}")
 end
 
 Given(/^I can establish SSH connection to the controller node$/) do
