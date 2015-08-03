@@ -2,7 +2,7 @@
 Feature: OpenStack Identity
   As an administrator
   I want to make sure the Keystone component is configured and running
-  In order to provide authentification and authorization service to  other Openstack components
+  In order to provide authentification and authorization service to other Openstack components
 
   Background:
     Given project 'openstack' exists

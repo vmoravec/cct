@@ -26,7 +26,7 @@ module Cct
 
   class RemoteCommandFailed < StandardError
     def initialize command, result
-      super("`#{command}` failed.\n#{result.output}Host: #{result.host}")
+      super("`#{command}` failed.\nError: #{result.error}Output: #{result.output}Host: #{result.host}")
     end
   end
 

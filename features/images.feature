@@ -1,8 +1,7 @@
 @images
 Feature: OpenStack Image management
   As an administrator
-  I want to make sure that OpenStack Image management component
-  is working correctly
+  I want to make sure that OpenStack Image management component is working correctly
 
   Scenario Outline: Creating and deleting an image
     Given source image of <type> type exists

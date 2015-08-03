@@ -33,14 +33,16 @@ module Cct
       command.exec!(command_name, params.compact)
     end
 
+    # Expected are params in form of a hash
+    # Typical there will be two kinds of keys:
+    # * source => will refer to list of files you want to source
+    # * other keys => they will be grouped into the hash with key 'environment'
+    # @param Hash
     def update_environment params
-      options = params.last
-      options = params.last.is_a?(Hash) ? params.pop : Hash.new(environment:{})
-      raise "Key 'environment' is missing" unless options[:environment]
-
-      source = update_source(options[:environment].delete(:source))
-      environment = {source: source}.merge(options[:environment] || {})
-      {environment: environment}
+      options = params.last.is_a?(Hash) ? params.pop : {}
+      source = update_source(options.delete(:source))
+      environment = options
+      {environment: environment.merge(source: source)}
     end
 
     def update_source source

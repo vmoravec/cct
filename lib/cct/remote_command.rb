@@ -6,7 +6,7 @@ module Cct
       port: 22
     )
 
-    Result = Struct.new(:success?, :output, :exit_code, :host)
+    Result = Struct.new(:success?, :output, :error, :exit_code, :host)
 
     attr_reader :session, :options, :log, :gateway, :proxy
     attr_accessor :target
@@ -27,18 +27,18 @@ module Cct
       host_ip = gateway ? target.ip : options.ip
       environment = set_environment(params)
       full_command = "#{command} #{params.join(" ")}".strip
-      result = Result.new(false, "", 1000, host_ip)
+      result = Result.new(false, "", "", 1000, host_ip)
       open_session_channel do |channel|
         channel.exec("#{environment}#{full_command}") do |p, d|
           log.always("Running command `#{full_command}` on remote host #{host_ip}")
           channel.on_data {|p,data| result.output << data }
-          channel.on_extended_data {|_,_,data| result.output << data }
+          channel.on_extended_data {|_,_,data| result.error << data }
           channel.on_request("exit-status") {|p,data| result.exit_code = data.read_long}
         end
       end
       session.loop unless gateway
       result[:success?] = result.exit_code.zero?
-      if !result.success?
+      if !result.success? || result.error.length.nonzero?
         log.error(result.output)
         raise RemoteCommandFailed.new(full_command, result)
       end
@@ -146,8 +146,7 @@ module Cct
       return "" if options.nil? || options[:environment].nil?
 
       source_files = options[:environment].delete(:source) || []
-      export_env = options[:environment].map {|env| "#{env[0]}=#{env[1]} " }.join.strip << ";"
-      export_env.prepend("export ") unless export_env.empty?
+      export_env = options[:environment].map {|env| "export #{env[0]}=#{env[1]};" }.join.strip
       source_env = source_files.map {|file| "source #{file}; "}.join
       env = source_env + export_env
       log.always("Updating environment with `#{env}`")

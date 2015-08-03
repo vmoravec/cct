@@ -1,3 +1,7 @@
+Given(/^I got the admin node discovered$/) do
+  validate_admin!
+end
+
 Given(/^I got the controller controller node discovered$/) do
   control_node.load!
 end
