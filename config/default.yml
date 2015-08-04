@@ -1,5 +1,5 @@
 cloud:
-  version: 6
+  version: 5
   product: SUSE OpenStack Cloud
 
 admin_node:
