@@ -35,7 +35,7 @@ module Cct
         it "executes a command remotely" do
           expect(Net::SSH).to receive(:start).and_return(OpenStruct.new)
           expect(RemoteCommand::Result).to receive(:new).and_return(
-            RemoteCommand::Result.new(true, "Success", 0, options[:ip])
+            RemoteCommand::Result.new(true, "Success", "", 0, options[:ip])
           )
           command.connect!
           expect(command.session).not_to eq(nil)

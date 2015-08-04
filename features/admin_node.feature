@@ -24,7 +24,6 @@ Feature: Admin node
   Scenario: Essential packages installed
     Given the following packages are installed:
       | Package name:                        |
-      | suse-sle11-openstack-cloud-release   |
       | crowbar                              |
       | yast2-crowbar                        |
       | crowbar-barclamp-ceilometer          |
