@@ -3,7 +3,7 @@ module Cct
     module Local
       # Ping with 5 seconds timeout and a single attempt
       def ping! node
-        command = ["ping", "-q -c 1 -W 5 #{node.ip}"]
+        command = ["ping", "-q -c 5 -w 5 #{node.ip}"]
         result = exec!(*command)
         if result.exit_code.nonzero?
           raise PingError.new(command, result.output)
