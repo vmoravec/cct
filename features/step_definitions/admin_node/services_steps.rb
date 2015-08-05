@@ -11,11 +11,11 @@ Given(/these services are enabled and running on the admin node$/) do
     service_name = row.first
 
     expect(admin_node.exec!(
-      "chkconfig #{service_name}"
-    ).output).not_to match("unknown service")
+      "systemctl is-enabled #{service_name}"
+    ).output).to match("enabled")
 
     expect(admin_node.exec!(
-      "service #{service_name} status"
+      "systemctl status #{service_name}"
     ).output).to match("running")
   end
 end
