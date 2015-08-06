@@ -68,7 +68,12 @@ module Cct
         end
 
         def exec! subcommand, *params
-          node.exec!(Openstack::Client::COMMAND, self.class.command, subcommand, *params)
+          node.exec!(
+            Openstack::Client::COMMAND,
+            self.class.command,
+            subcommand,
+            "--insecure", # yes, we ignore server certificates in SSL enabled cloud
+            *params)
         end
 
         def create name, options={}
