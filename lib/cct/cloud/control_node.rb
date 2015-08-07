@@ -102,7 +102,7 @@ module Cct
       @status = data["status"]
       data = crowbar.node(name)
       @data = data
-      @ip = data["ipaddress"]
+      @ip = data["crowbar"]["network"]["admin"]["address"]
       @hostname = data["hostname"]
       @domain = data["domain"]
 
