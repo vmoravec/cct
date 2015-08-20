@@ -25,37 +25,13 @@ Feature: Admin node
     Given the following packages are installed:
       | Package name:                        |
       | crowbar                              |
+      | crowbar-core                         |
+      | crowbar-openstack                    |
+      | crowbar-ceph                         |
+      | crowbar-ha                           |
+      | crowbar-hyperv                       |
+      | crowbar-hyperv-data                  |
       | yast2-crowbar                        |
-      | crowbar-barclamp-ceilometer          |
-      | crowbar-barclamp-ceph                |
-      | crowbar-barclamp-cinder              |
-      | crowbar-barclamp-cisco-ucs           |
-      | crowbar-barclamp-crowbar             |
-      | crowbar-barclamp-database            |
-      | crowbar-barclamp-deployer            |
-      | crowbar-barclamp-dns                 |
-      | crowbar-barclamp-glance              |
-      | crowbar-barclamp-heat                |
-      | crowbar-barclamp-hyperv              |
-      | crowbar-barclamp-hyperv-data         |
-      | crowbar-barclamp-ipmi                |
-      | crowbar-barclamp-keystone            |
-      | crowbar-barclamp-logging             |
-      | crowbar-barclamp-network             |
-      | crowbar-barclamp-neutron             |
-      | crowbar-barclamp-nfs_client          |
-      | crowbar-barclamp-nova                |
-      | crowbar-barclamp-nova_dashboard      |
-      | crowbar-barclamp-ntp                 |
-      | crowbar-barclamp-openstack           |
-      | crowbar-barclamp-pacemaker           |
-      | crowbar-barclamp-provisioner         |
-      | crowbar-barclamp-rabbitmq            |
-      | crowbar-barclamp-suse-manager-client |
-      | crowbar-barclamp-swift               |
-      | crowbar-barclamp-tempest             |
-      | crowbar-barclamp-trove               |
-      | crowbar-barclamp-updater             |
     And all dependencies of installed packages are satisfied
 
   @services
