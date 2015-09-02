@@ -32,7 +32,14 @@ module Cct
     end
 
     def exept node
+      load!
       nodes.select {|n| n.name != node.name}
+    end
+
+    def find name: nil, fqdn: nil
+      load!
+      return nodes.find {|n| n.name == name } if name
+      return nodes.find {|n| n.fqdn == fqdn } if fqdn
     end
 
     def admin_node
