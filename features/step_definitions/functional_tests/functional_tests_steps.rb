@@ -30,10 +30,27 @@ When(/^the cirros test image has been activated$/) do
 end
 
 Then(/^all the funtional tests for the package pass$/) do
-  control_node.exec!(
-    "cd /var/lib/python-novaclient-test; python setup.py testr",
+  tests_dir = "/var/lib/python-novaclient-test"
+  env = {
     "OS_NOVACLIENT_EXEC_DIR" => "/usr/bin",
     "OS_TEST_PATH" => "novaclient/tests/functional"
+  }
+  tests_list = "tests_to_run"
+  excluded_tests = [
+    "test_admin_dns_domains" # Does not work with neutron which means always for us
+  ]
+
+  # filter out the excluded tests into a file first
+  control_node.exec!(
+    "cd #{tests_dir};
+    testr list-tests | grep -v \"#{excluded_tests.join("\|")}\" > #{tests_list}",
+    env
+  )
+
+  # run the tests finally
+  control_node.exec!(
+    "cd #{tests_dir}; python setup.py testr --testr-args \"--load-list #{tests_list}\"",
+    env
   )
 end
 
