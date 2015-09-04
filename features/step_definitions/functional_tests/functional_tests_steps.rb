@@ -27,7 +27,7 @@ Then(/^all the funtional tests for the package pass$/) do
   control_node.exec!(
     "/var/lib/novaclient/tests/functional/setup.py testr",
     "OS_NOVACLIENT_EXEC_DIR" => "/usr/bin",
-    "OS_TEST_PATH" => "novaclient/tests/functional"
+    "OS_TEST_PATH" => "/var/lib/novaclient/tests/functional"
   )
 end
 
