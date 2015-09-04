@@ -6,7 +6,7 @@ Feature: Openstack Clients Functional Tests
   Scenario: Nova Client tests
     Given the test package "python-novaclient-test" is installed on the controller node
     And the package "python-novaclient" is installed on the controller node
-    When the proper cirros test image has been created
+    And the proper cirros test image has been created
     And the cirros test image has been activated
     Then all the funtional tests for the package pass
 
