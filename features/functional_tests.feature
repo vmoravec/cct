@@ -6,7 +6,7 @@ Feature: Openstack Clients Functional Tests
   Scenario: Nova Client tests
     Given the test package "python-novaclient-test" is installed on the controller node
     And the package "python-novaclient" is installed on the controller node
-    When the proper cirros image has been detected
-    And the image has been cloned with name "cirros-test-image-uec"
-    Then all the tests for the package have been executed successfully
+    When the proper cirros image has been created
+    And the image has been activated
+    Then all the tests for the package have passed
 
