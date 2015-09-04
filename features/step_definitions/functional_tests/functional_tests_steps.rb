@@ -3,11 +3,10 @@ Given(/^the test package "([^"]*)" is installed on the controller node$/) do |te
 end
 
 Given(/^the package "([^"]*)" is installed on the controller node$/) do |client_package|
-  @client_rpm = client_package
   control_node.rpm_q(client_package)
 end
 
-When(/^the proper cirros image has been created$/) do
+When(/^the proper cirros test image has been created$/) do
   @test_image = control_node.openstack.image.create(
     "cirros-test-image-uec",
     copy_from: "http://clouddata.cloud.suse.de/images/cirros-0.3.3-x86_64-uec.tar.gz",
@@ -17,14 +16,14 @@ When(/^the proper cirros image has been created$/) do
   )
 end
 
-When(/^the image has been activated$/) do
+When(/^the cirros test image has been activated$/) do
   wait_for "Image status set 'active'", max: "60 seconds", sleep: "2 seconds" do
     image = control_node.openstack.image.show(@test_image.id)
     break if image.status == "active"
   end
 end
 
-Then(/^all the tests for the package have passed$/) do
+Then(/^all the funtional tests for the package pass$/) do
   control_node.exec!(
     "/var/lib/novaclient/tests/functional/setup.py testr",
     "OS_NOVACLIENT_EXEC_DIR" => "/usr/bin",
