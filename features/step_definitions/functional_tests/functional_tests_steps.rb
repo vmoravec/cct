@@ -20,36 +20,39 @@ Given(/^the proper cirros test image has been created$/) do
     disk_format: :raw,
     public: true
   )
-end
 
-When(/^the cirros test image has been activated$/) do
   wait_for "Image status set 'active'", max: "60 seconds", sleep: "2 seconds" do
     image = control_node.openstack.image.show(@test_image.id)
     break if image.status == "active"
   end
 end
 
-Then(/^all the funtional tests for the package pass$/) do
-  tests_dir = "/var/lib/python-novaclient-test"
+Then(/^all the funtional tests for the package "([^"]*)" pass$/) do |package_name|
+  tests_dir = "/var/lib/#{package_name}-test"
+  package_core_name = package_name.match(/python-(.+)/).captures.first
   env = {
     "OS_NOVACLIENT_EXEC_DIR" => "/usr/bin",
-    "OS_TEST_PATH" => "novaclient/tests/functional"
+    "OS_TEST_PATH" => "#{package_core_name}/tests/functional"
   }
-  tests_list = "tests_to_run"
-  excluded_tests = [
-    "test_admin_dns_domains" # Does not work with neutron which means always for us
-  ]
+  tests_to_run = "tests_to_run"
+  excluded_tests =
+    case package_name
+    when "python-novaclient"
+      [
+        "test_admin_dns_domains" # Does not work with neutron
+      ]
+    end
 
   # filter out the excluded tests into a file first
   control_node.exec!(
     "cd #{tests_dir};
-    testr list-tests | grep -v \"#{excluded_tests.join("\|")}\" > #{tests_list}",
+    testr list-tests | grep -v '#{excluded_tests.join("\|")}\' > #{tests_to_run}",
     env
   )
 
   # run the tests finally
   control_node.exec!(
-    "cd #{tests_dir}; python setup.py testr --testr-args \"--load-list #{tests_list}\"",
+    "cd #{tests_dir}; python setup.py testr --testr-args '--load-list #{tests_to_run}'",
     env
   )
 end
