@@ -16,7 +16,7 @@ admin_node:
   api:
     user: crowbar
     password: crowbar
-    port: 3000
+    port: 80
     ssl: false
 
 control_node:
