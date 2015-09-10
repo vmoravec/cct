@@ -10,6 +10,6 @@ namespace :features do
 
   desc "Run barclamp tests"
   task :barclamps do
-    invoke_task "feature:barclamp:database:postgres"
+    invoke_task "feature:barclamp:database"
   end
 end

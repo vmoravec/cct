@@ -3,8 +3,11 @@ namespace :feature do
 
   namespace :barclamp do
     namespace :database do
-      desc "Verify the postresql database server"
       feature_task :postgres, tags: :@postgresql
+
     end
+
+    desc "Verify the database resource"
+    task :database => :"database:postgres"
   end
 end
