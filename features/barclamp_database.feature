@@ -12,15 +12,7 @@ Feature: Test the database server resource
     Given the "postgresql" cookbook exists on the admin node
     And the barclamp proposal is using "postgresql" as sql engine
     When the node with database role has been detected successfully
+    And the service "postgresql.service" is enabled and running on the detected node
     Then I can establish connection to "postgresql" database server
-    And I can create a database called "cucumber_test"
-    And I can drop the database "cucumber_test" successfully
-
-  @mysql
-  Scenario: Database barclamp is deployed using mySql as backend
-    Given the "mysql" cookbook exists on the admin node
-    And the barclamp proposal is using "mysql" as sql engine
-    When the node with database role has been detected successfully
-    Then I can establish connection to "mysql" database server
     And I can create a database called "cucumber_test"
     And I can drop the database "cucumber_test" successfully
