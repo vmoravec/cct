@@ -27,7 +27,7 @@ Given(/^the proper cirros test image has been created$/) do
   end
 end
 
-Then(/^all the funtional tests for the package "([^"]*)" pass$/) do |package_name|
+Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_name|
   tests_dir = "/var/lib/#{package_name}-test"
   package_core_name = package_name.match(/python-(.+)/).captures.first
   env = {
