@@ -15,9 +15,9 @@ Given(/^the proper cirros test image has been created$/) do
 
   @test_image = control_node.openstack.image.create(
     test_image_name,
-    copy_from: "http://clouddata.cloud.suse.de/images/cirros-0.3.3-x86_64-uec.tar.gz",
+    copy_from: "http://clouddata.cloud.suse.de/images/cirros-0.3.3-x86_64-disk.img",
     container_format: :bare,
-    disk_format: :raw,
+    disk_format: :qcow2,
     public: true
   )
 
