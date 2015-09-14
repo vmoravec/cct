@@ -6,10 +6,12 @@ namespace :features do
     invoke_task "test:func:all"
     invoke_task "feature:users"
     invoke_task "feature:images"
+    invoke_task "feature:barclamps"
   end
 
   desc "Run barclamp tests"
   task :barclamps do
-
+    invoke_task "feature:barclamp:database"
+    invoke_task "feature:barclamp:rabbitmq"
   end
 end
