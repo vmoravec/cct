@@ -25,6 +25,12 @@ control_node:
     password:
     port: 22
 
+nodes:
+  - name:
+    ssh:
+      user: root
+      password: linux
+
 timeout:
   ssh: 5
   http: 5
