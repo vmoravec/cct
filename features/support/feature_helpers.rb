@@ -1,6 +1,27 @@
 module FeatureHelpers
   attr_reader :scenario_tag, :feature_tag
 
+  def ha_enabled?
+    pacemaker_negative_output = "No current configurations\n"
+    response = admin_node.exec!("crowbar pacemaker list").output
+    result = !!response.match(/\A#{pacemaker_negative_response}$/)
+    if block_given?
+      yield
+    else
+      result
+    end
+  end
+
+  def cluster_nodes_for name
+    return [] unless ha_enabled?
+
+    case name
+    when :database
+      response = JSON.parse(admin_node.exec!("crowbar database show default").output)
+      db["deployment"]["database"]["elements_expanded"]["database-server"]
+    end
+  end
+
   def filter_scenario_config_by scenario_tags
     @feature_tag, @scenario_tag = scenario_tags.map(&:name)
   end
