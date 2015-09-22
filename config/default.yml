@@ -32,6 +32,6 @@ nodes:
       password: linux
 
 timeout:
-  ssh: 5
+  ssh: 15
   http: 5
 
