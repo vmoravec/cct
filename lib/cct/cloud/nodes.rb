@@ -42,7 +42,7 @@ module Cct
     # @param element [String] Element name in the crowbar proposal json tree
     # @note Parameter :barclamp requires element to be specified
     # @return [Array] One or multiple node instances
-    def find name: nil, fqdn: nil, barclamp: nil, element: nil
+    def find name: nil, fqdn: nil, barclamp: nil, element: nil, proposal: "default"
       load!
       return nodes.select {|n| n.name == name } if name
       return nodes.select {|n| n.fqdn == fqdn } if fqdn
@@ -51,7 +51,7 @@ module Cct
         raise "Missing element for barclamp proposal" unless element
 
         proposal = JSON.parse(
-          admin_node.exec!("crowbar #{barclamp} show default").output
+          admin_node.exec!("crowbar #{barclamp} show #{proposal}").output
         )
 
         nodes_detected = []
