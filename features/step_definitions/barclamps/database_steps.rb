@@ -27,7 +27,10 @@ Then(/^I can create a database called "([^"]*)"$/) do |db|
   results = @db_nodes.map do |node|
     case @db_name
     when "postgresql"
-      node.exec!("PGPASSWORD=#{@password} psql -U db_maker -h #{node.fqdn} postgres -c 'CREATE DATABASE #{db}'")
+      node.exec!(
+        "PGPASSWORD=#{@password} psql -U db_maker -h #{node.fqdn} postgres -c 'CREATE DATABASE #{db}'",
+        capture_error: true
+      )
     end
   end
   expect(results).to succeed_at_least_once
@@ -37,7 +40,10 @@ Then(/^I can drop the database "([^"]*)" successfully$/) do |db|
   results = @db_nodes.map do |node|
     case @db_name
     when "postgresql"
-      node.exec!("PGPASSWORD=#{@password} psql -U db_maker -h #{node.fqdn} postgres -c 'DROP DATABASE #{db}'")
+      node.exec!(
+        "PGPASSWORD=#{@password} psql -U db_maker -h #{node.fqdn} postgres -c 'DROP DATABASE #{db}'",
+        capture_error: true
+      )
     end
   end
   expect(results).to succeed_at_least_once
