@@ -1,6 +1,6 @@
 require 'rspec/expectations'
 
-RSpec::Matchers.define :have_succeeded_at_least_once do
+RSpec::Matchers.define :succeed_at_least_once do
   match do |actual|
     succeeded = actual.select {|result| result.success? }
     succeeded.size.nonzero?
