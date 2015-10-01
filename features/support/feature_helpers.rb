@@ -1,6 +1,10 @@
 module FeatureHelpers
   attr_reader :scenario_tag, :feature_tag
 
+  def proposal name
+    JSON.parse(admin_node.exec!("crowbar #{name} show default").output)
+  end
+
   def filter_scenario_config_by scenario_tags
     @feature_tag, @scenario_tag = scenario_tags.map(&:name)
   end

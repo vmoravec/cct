@@ -36,14 +36,46 @@ module Cct
       nodes.select {|n| n.name != node.name}
     end
 
-    def find name: nil, fqdn: nil
+    # @param name [String] Hostname of a node
+    # @param fqdn [String] Fully qualified domain name
+    # @param barclamp [String] Name of a barclamp assigned to a node
+    # @param element [String] Element name in the crowbar proposal json tree
+    # @note Parameter :barclamp requires element to be specified
+    # @return [Array] One or multiple node instances
+    def find name: nil, fqdn: nil, barclamp: nil, element: nil, proposal: "default"
       load!
-      return nodes.find {|n| n.name == name } if name
-      return nodes.find {|n| n.fqdn == fqdn } if fqdn
+      return nodes.select {|n| n.name == name } if name
+      return nodes.select {|n| n.fqdn == fqdn } if fqdn
+
+      if barclamp
+        raise "Missing element for barclamp proposal" unless element
+
+        proposal = JSON.parse(
+          admin_node.exec!("crowbar #{barclamp} show #{proposal}").output
+        )
+
+        nodes_detected = []
+
+        clustered = proposal["deployment"][barclamp]["elements"][element].first.start_with?("cluster:")
+
+        if clustered
+          nodes_detected.push(
+            proposal["deployment"][barclamp]["elements_expanded"][element]
+          )
+        else
+          nodes_detected.push(
+            proposal["deployment"][barclamp]["elements"][element]
+          )
+        end
+
+        nodes_detected.flatten.compact.map do |node_fqdn|
+          nodes.find {|n| n.fqdn == node_fqdn }
+        end.compact
+      end
     end
 
     def admin_node
-      nodes.find {|node| node.name = AdminNode::NAME }
+      @admin_node ||= nodes.find {|node| node.name == AdminNode::NAME }
     end
 
     def clear
@@ -69,7 +101,6 @@ module Cct
     end
 
     def load_admin name, attrs, node_details
-      admin_node = nodes.find {|n| n.name == AdminNode::NAME}
       if admin_node
         return admin_node.reload! unless admin_node.loaded?
         return admin_node if admin_node.loaded?

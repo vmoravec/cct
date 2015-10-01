@@ -23,9 +23,9 @@ module Cct
       validate_attributes
     end
 
-    def exec! command, *params
+    def exec! command, *params, capture_error: false
       params << environment unless environment.empty?
-      @command.exec!(command, params)
+      @command.exec!(command, params, capture_error: capture_error)
     end
 
     def crowbar reload: false

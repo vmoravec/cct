@@ -21,7 +21,7 @@ module Cct
       validate_options
     end
 
-    def exec! command, params=[]
+    def exec! command, params=[], capture_error: false
       log.base.level = ::Logger::WARN
       connect!
       host_ip = gateway ? target.ip : options.ip
@@ -38,9 +38,9 @@ module Cct
       end
       session.loop unless gateway
       result[:success?] = result.exit_code.zero?
-      if !result.success? || result.error.length.nonzero?
+      if !result.success? || (result.error.length.nonzero? && !result.exit_code.zero?)
         log.error(result.output)
-        raise RemoteCommandFailed.new(full_command, result)
+        raise RemoteCommandFailed.new(full_command, result) unless capture_error
       end
       result
     ensure
