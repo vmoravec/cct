@@ -5,7 +5,7 @@ cloud:
 admin_node:
   os:
     name: SUSE Linux Enterprise Server 12
-    version: 12
+    version: 12-SP1
 
   ip: localhost
   ssh:
