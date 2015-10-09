@@ -119,7 +119,7 @@ module Cct
       if known_config
         nodes << Node.new(
           known_config.merge(
-            ip: node_details["ipaddress"],
+            ip: node_details["crowbar"]["network"]["admin"]["address"],
             crowbar: {
               api: crowbar,
               base: attrs,
@@ -134,7 +134,7 @@ module Cct
       node_config = default_node_config
       nodes << Node.new(
         node_config.merge(
-          ip: node_details["ipaddress"],
+          ip: node_details["crowbar"]["network"]["admin"]["address"],
           name: name,
           crowbar: {
            api: crowbar,
