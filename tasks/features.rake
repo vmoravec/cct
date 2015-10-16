@@ -3,10 +3,14 @@ namespace :features do
   task :base do
     invoke_task "feature:admin"
     invoke_task "feature:controller"
-    invoke_task "test:func:all"
     invoke_task "feature:users"
     invoke_task "feature:images"
     invoke_task "features:barclamps"
+  end
+
+  desc "Run functional client tests"
+  task :functional do
+    invoke_task "test:func:all"
   end
 
   desc "Run barclamp tests"
