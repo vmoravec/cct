@@ -80,8 +80,14 @@ module Cct
       # FIXME: In case there are several controller nodes, take the first one
       #        This strategy is not perfect but it's enough sofar
       #        as it's the typical setup
-      controller_fqdn =
-        response.body["deployment"]["nova"]["elements"]["nova-multi-controller"].first
+      controller_fqdn = nil
+      %w(nova-controller nova-multi-controller).each do |controller_role|
+        if response.body["deployment"]["nova"]["elements"].has_key? controller_role
+          controller_fqdn =
+            response.body["deployment"]["nova"]["elements"][controller_role].first
+          break
+        end
+      end
       raise "Failed to get FQDN for controller node" unless controller_fqdn
 
       # For getting the controller fqdn in clustered environment
