@@ -1,0 +1,8 @@
+{
+  "name": "cct",
+  "maintainer": "Vladimir Moravec - vmoravec@suse.com",
+  "framework": "cucumber",
+  "status": "active development",
+  "summary": "Cucumber cloud testsuite for SUSE OpenStack Cloud 5"
+}
+
