@@ -2,7 +2,7 @@ module Cct
   module Commands
     module Openstack
       class Image < Command
-        self.command = "image"
+        self.command = ["--os-image-api-version", "1", "image"]
 
         def create name, options={}
           super do |params|
