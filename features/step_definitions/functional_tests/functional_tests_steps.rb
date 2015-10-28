@@ -46,7 +46,7 @@ Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_na
   # filter out the excluded tests into a file first
   control_node.exec!(
     "cd #{tests_dir};
-    testr list-tests | grep -v '#{excluded_tests.join("\|")}\' > #{tests_to_run}",
+    testr list-tests | grep -v '#{excluded_tests.join('\|')}\' > #{tests_to_run}",
     env
   )
 
