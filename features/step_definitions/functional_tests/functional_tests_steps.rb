@@ -39,7 +39,14 @@ Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_na
     case package_name
     when "python-novaclient"
       [
-        "test_admin_dns_domains" # Does not work with neutron
+        "test_admin_dns_domains", # Does not work with neutron
+        "test_fixedip_get",       # This uses nova-network specific API
+        # FIXME: The following tests can be re-enabled once:
+        # https://bugs.launchpad.net/python-novaclient/+bug/1510975
+        # is fixed.
+        "test_server_ips",        # Relies on the default network called "private"
+        "test_instances",         # Requires the "first" network returned to be
+        "test_servers"            # non-external
       ]
     end
 
