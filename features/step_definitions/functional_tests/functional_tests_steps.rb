@@ -30,10 +30,17 @@ end
 Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_name|
   tests_dir = "/var/lib/#{package_name}-test"
   package_core_name = package_name.match(/python-(.+)/).captures.first
+  ssl_insecure =
+    case package_name
+    when "python-novaclient"
+      json_response = JSON.parse(admin_node.exec!("crowbar nova show default").output)
+      json_response["attributes"]["nova"]["ssl"]["insecure"]
+    end
   env = {
     "OS_NOVACLIENT_EXEC_DIR" => "/usr/bin",
     "OS_TEST_PATH" => "#{package_core_name}/tests/functional"
   }
+  env["OS_INSECURE"] = "true" if ssl_insecure
   tests_to_run = "tests_to_run"
   excluded_tests =
     case package_name
