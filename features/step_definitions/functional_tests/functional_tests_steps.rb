@@ -27,19 +27,59 @@ Given(/^the proper cirros test image has been created$/) do
   end
 end
 
+And(/^the authentication for the "([^"]*)" is established$/) do |package_name|
+  json_keystone = proposal("keystone")
+
+  auth_node = json_keystone["deployment"]["keystone"]["elements"]["keystone-server"].first
+  auth_protocol = json_keystone["attributes"]["keystone"]["api"]["protocol"]
+  auth_port = json_keystone["attributes"]["keystone"]["api"]["service_port"]
+  auth_version = json_keystone["attributes"]["keystone"]["api"]["version"]
+  auth_url = "#{auth_protocol}://#{auth_node}:#{auth_port}/v#{auth_version}"
+  admin_auth_port = json_keystone["attributes"]["keystone"]["api"]["admin_port"]
+  admin_auth_url = "#{auth_protocol}://#{auth_node}:#{admin_auth_port}/v#{auth_version}"
+
+  service_name = package_name.match(/python-(.+)/).captures.first
+  json_manila = proposal("manila")
+
+  auth_hash = {
+    username: json_manila["attributes"]["manila"]["service_user"],
+    password: json_manila["attributes"]["manila"]["service_password"],
+    tenant_name: "service",
+    auth_url: auth_url.to_s,
+    admin_username: json_keystone["attributes"]["keystone"]["admin"]["username"],
+    admin_password: json_keystone["attributes"]["keystone"]["admin"]["password"],
+    admin_tenant_name: json_keystone["attributes"]["keystone"]["admin"]["tenant"],
+    admin_auth_url: admin_auth_url.to_s,
+    share_type: "default"
+  }
+  conf_file = "/etc/#{service_name}/#{service_name}.conf"
+  auth_hash.each do |key, value|
+    control_node.exec!("crudini", "--set #{conf_file} DEFAULT #{key} #{value}")
+  end
+end
+
 Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_name|
   tests_dir = "/var/lib/#{package_name}-test"
   package_core_name = package_name.match(/python-(.+)/).captures.first
-  ssl_insecure =
-    case package_name
-    when "python-novaclient"
-      json_response = JSON.parse(admin_node.exec!("crowbar nova show default").output)
-      json_response["attributes"]["nova"]["ssl"]["insecure"]
-    end
-  env = {
-    "OS_NOVACLIENT_EXEC_DIR" => "/usr/bin",
-    "OS_TEST_PATH" => "#{package_core_name}/tests/functional"
-  }
+  ssl_insecure = false
+  case package_name
+  when "python-novaclient"
+    json_response = proposal("nova")
+    ssl_insecure = json_response["attributes"]["nova"]["ssl"]["insecure"]
+    env = {
+      OS_NOVACLIENT_EXEC_DIR: "/usr/bin"
+    }
+  when "python-manilaclient"
+    json_response = proposal("manila")
+    ssl_insecure = json_response["attributes"]["manila"]["ssl"]["insecure"]
+    env = {
+      OS_MANILA_EXEC_DIR: "/usr/bin",
+      OS_MANILACLIENT_CONFIG_FILE: "/etc/manilaclient/manilaclient.conf",
+      OS_MANILACLIENT_CONFIG_DIR: "/etc/manilaclient/",
+      OS_ENDPOINT_TYPE: "internalURL"
+    }
+  end
+  env["OS_TEST_PATH"] = "#{package_core_name}/tests/functional"
   env["OS_INSECURE"] = "true" if ssl_insecure
   tests_to_run = "tests_to_run"
   excluded_tests =
@@ -55,18 +95,36 @@ Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_na
         "test_instances",         # Requires the "first" network returned to be
         "test_servers"            # non-external
       ]
+    when "python-manilaclient"
+      [
+        "test_create_delete_share_type",                   # uses DHSS True (currently not default)
+        "test_list_with_debug_flag",                       # Similar to test_lists except for debug flag
+        "test_scheduler_stats",                            # Requires a backend named "mybackend"
+        "test_quotas",                                     # uses assertRaises but command does not fail. Needs correction upstream.
+        "test_share_server_list_by_user",                  # crowbar doesnt create share-servers
+        "test_add_remove_access_to_private_share_type",    # needs keystone v3 support
+        "test_shares_list_filter_by_share_server_as_user", # needs keystone v3 support
+        "test_shares_list_filter_by_project_id",           # needs keystone v3 support
+        "test_list_shares_by_project_id"                   # needs keystone v3 support
+        # Bug report: https://bugs.launchpad.net/python-manilaclient/+bug/1516562
+      ]
     end
 
-  # filter out the excluded tests into a file first
-  control_node.exec!(
-    "cd #{tests_dir};
-    testr list-tests | grep -v '#{excluded_tests.join('\|')}\' > #{tests_to_run}",
-    env
-  )
-
-  # run the tests finally
-  control_node.exec!(
-    "cd #{tests_dir}; python setup.py testr --testr-args '--load-list #{tests_to_run}'",
-    env
-  )
+  if excluded_tests.any?
+    # filter out the excluded tests into a file first
+    control_node.exec!(
+      "cd #{tests_dir};
+        testr list-tests | grep -v '#{excluded_tests.join('\|')}\' > #{tests_to_run}",
+      env
+    )
+    # run the tests finally
+    control_node.exec!(
+      "cd #{tests_dir}; python setup.py testr --testr-args '--load-list #{tests_to_run}'",
+      env
+    )
+  else
+    # run the tests finally
+    control_node.exec!(
+      "cd #{tests_dir}; python setup.py testr", env)
+  end
 end

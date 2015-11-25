@@ -9,3 +9,10 @@ Feature: Openstack Clients Functional Tests
     And the proper cirros test image has been created
     Then all the functional tests for the package "python-novaclient" pass
 
+  @manilaclient
+  Scenario: Manila Client tests
+    Given the test package "python-manilaclient-test" is installed on the controller node
+    And the package "python-manilaclient" is installed on the controller node
+    And the authentication for the "python-manilaclient" is established
+    Then all the functional tests for the package "python-manilaclient" pass
+
