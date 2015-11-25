@@ -23,8 +23,8 @@ module Cct
       validate_attributes
     end
 
-    def exec! command, *params, capture_error: false
-      params << environment unless environment.empty?
+    def exec! command, *params, capture_error: false, environment: {}
+      params << {environment: environment} unless environment.empty?
       @command.exec!(command, params, capture_error: capture_error)
     end
 
