@@ -9,6 +9,10 @@ Given(/^the following packages are installed:$/) do |table|
 end
 
 Given(/^all dependencies of installed packages are satisfied$/) do
-  admin_node.exec!("zypper", "verify --no-recommends")
+  admin_node.exec!(
+    "zypper", "--non-interactive",
+    "verify --no-recommends",
+    environment: {"ZYPP_LOCK_TIMEOUT" => 120}
+  )
 end
 
