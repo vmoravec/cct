@@ -149,7 +149,7 @@ module Cct
       export_env = options[:environment].map {|env| "export #{env[0]}=#{env[1]};" }.join.strip
       source_env = source_files.map {|file| "source #{file}; "}.join
       env = source_env + export_env
-      log.always("Updating environment with `#{env}`")
+      log.debug("Updating environment with `#{env}`")
       env
     end
 

@@ -5,7 +5,7 @@ module Cct
         self.command = "role"
 
         def add name, options={}
-          super do |params|
+          super(options.merge(args: [name])) do |params|
             params.add :optional, domain:  "--domain"
             params.add :optional, project: "--project"
             params.add :optional, user:    "--user"

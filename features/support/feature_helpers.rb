@@ -1,6 +1,5 @@
 module FeatureHelpers
   attr_reader :scenario_tag, :feature_tag
-
   def proposal barclamp, name: "default"
     JSON.parse(admin_node.exec!("crowbar #{barclamp} show #{name}").output)
   end

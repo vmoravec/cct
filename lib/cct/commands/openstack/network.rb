@@ -5,7 +5,9 @@ module Cct
         self.command = "network"
 
         def list *options
-          super(*(options << {row: Struct.new(:id, :name, :subnets)}))
+          super(
+            options << columns(Struct.new(:id, :name, :subnets))
+          )
         end
       end
     end

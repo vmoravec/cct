@@ -22,6 +22,11 @@ module Cct
         attr_reader :project
         attr_reader :network
         attr_reader :role
+        attr_reader :keypair
+        attr_reader :security_group
+        attr_reader :ip_floating
+        attr_reader :flavor
+        attr_reader :server
 
         # @param [Cct::Node] as the receiver for the openstack client
         def initialize node
@@ -30,6 +35,11 @@ module Cct
           @project = Openstack::Project.new(node)
           @network = Openstack::Network.new(node)
           @role = Openstack::Role.new(node)
+          @keypair = Openstack::Keypair.new(node)
+          @security_group = Openstack::SecurityGroup.new(node)
+          @ip_floating = Openstack::IpFloating.new(node)
+          @flavor = Openstack::Flavor.new(node)
+          @server = Openstack::Server.new(node)
         end
 
         def actions
@@ -57,37 +67,50 @@ module Cct
       class Command
         class << self
           attr_accessor :command
+          attr_accessor :subcommand
         end
 
-        attr_reader :node, :log, :params
+        attr_reader :node, :log, :params, :command, :subcommand, :parent
 
-        def initialize node
+        def initialize node, parent=nil
           @node = node
           @log = node.log
           @params = Params.new
+          #@command = self.class.command
+          @command =
+          if self.class.command.is_a?(Array)
+            self.class.command.join(" ")
+          else
+            self.class.command
+          end
+          @subcommand = self.class.subcommand.new(node, self) if self.class.subcommand
+          @parent = parent
         end
 
         def exec! subcommand, *params
+          parent_command = (parent && "#{parent.command} ") || ""
           node.exec!(
             Openstack::Client::COMMAND,
-            self.class.command,
+            parent_command << command,
             subcommand,
-            "--insecure", # yes, we ignore server certificates in SSL enabled cloud
-            *params)
+            *params,
+            "--insecure") # yes, we ignore server certificates in SSL enabled cloud
         end
 
         def create name, options={}
           params.clear
-          yield params
+          yield params if block_given?
           all_params = ["create", name, "--format=shell"].concat(params.extract!(options))
-          OpenStruct.new(shell_parse(exec!(all_params).output))
+          result = exec!(all_params).output
+          options[:dont_format_output] ? result : OpenStruct.new(shell_parse(result))
         end
 
-        def add name, options={}
+        def add options={}
           params.clear
-          yield params
-          all_params = ["add", name].concat(params.extract!(options))
-          OpenStruct.new(shell_parse(exec!(all_params).output))
+          yield params if block_given?
+          all_params = ["add #{options[:args].join(" ")} "].concat(params.extract!(options))
+          result = exec!(all_params.join(" ")).output
+          OpenStruct.new(shell_parse(result))
         end
 
         def set name, options={}
@@ -97,16 +120,18 @@ module Cct
           OpenStruct.new(shell_parse(exec!(all_params).output))
         end
 
-        def delete id_or_name
+        def delete id_or_name, options={}
           params.clear
-          exec!("delete", id_or_name)
+          yield params if block_given?
+          all_params = ["delete", id_or_name].concat(params.extract!(options))
+          exec!(all_params)
         end
 
-        def list *options
+        def list options=[]
           params.clear
           extended = options.last.is_a?(Hash) ? options.pop : {}
           row = extended[:row] || Struct.new(:id, :name)
-          result = exec!("list", "--format=csv", "-c ID", "-c Name", options).output
+          result = exec!("list #{extended[:args]}", "--format=csv", options).output
           csv_parse(result).map do |csv_row|
             row.new(*csv_row)
           end
@@ -123,7 +148,25 @@ module Cct
           return false
         end
 
+        def custom *args
+          options = args.last.is_a?(Hash) ? args.pop : {}
+          command = args.concat(params.extract!(options))
+          result = exec!(command)
+          case options[:format]
+          when :csv
+            csv_parse(result.output).flatten
+          when :shell
+            shell_parse(result.output)
+          else
+            result.output
+          end
+        end
+
         private
+
+        def columns struct
+          {row: struct}
+        end
 
         def csv_parse csv_data, header: false
           result = CSV.parse(csv_data)
@@ -132,10 +175,17 @@ module Cct
 
         def shell_parse shell_data
           shell_data.gsub("\"", "").split("\n").reduce({}) do |result, shell_pair|
+            next result if shell_pair.empty?
             attribute, value = shell_pair.split("=")
             result[attribute] = value
             result
           end
+        end
+
+        def method_missing name, *args, &block
+          super unless subcommand && name.to_s == subcommand.class.command
+
+          subcommand
         end
 
         class Params
@@ -196,7 +246,7 @@ module Cct
                   if type == :properties
                     shell.push("--property #{value}=#{options[key]}") if options[key]
                   else
-                    shell.push("#{value}=#{options[key]}")
+                    shell.push("#{value}=\"#{options[key]}\"")
                   end
                 end
               end
@@ -222,4 +272,10 @@ require 'cct/commands/openstack/user'
 require 'cct/commands/openstack/project'
 require 'cct/commands/openstack/network'
 require 'cct/commands/openstack/role'
+require 'cct/commands/openstack/keypair'
+require 'cct/commands/openstack/security_rule'
+require 'cct/commands/openstack/security_group'
+require 'cct/commands/openstack/ip_floating'
+require 'cct/commands/openstack/flavor'
+require 'cct/commands/openstack/server'
 
