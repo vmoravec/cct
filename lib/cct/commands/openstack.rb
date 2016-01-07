@@ -86,7 +86,7 @@ module Cct
         def add name, options={}
           params.clear
           yield params
-          all_params = ["add", name, "--format=shell"].concat(params.extract!(options))
+          all_params = ["add", name].concat(params.extract!(options))
           OpenStruct.new(shell_parse(exec!(all_params).output))
         end
 
