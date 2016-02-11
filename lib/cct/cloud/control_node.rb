@@ -60,6 +60,20 @@ module Cct
       new_source << ENV_FILE
     end
 
+    def get_hash_from_envfile
+      in_hash = {}
+      f = read_file(ENV_FILE)
+      f.each_line do |line|
+        next unless line.start_with?("export")
+        line.sub!("export", "").chomp!
+        key, value = line.split("=", 2)
+        key.strip!
+        value.strip!
+        in_hash[key] = value.tr_s!("'*'", "")
+      end
+      return in_hash
+    end
+
     def test_ssh!
       exec!("echo 'Test ssh!'")
     end
