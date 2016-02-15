@@ -50,6 +50,8 @@ And(/^the authentication for the "([^"]*)" is established$/) do |package_name|
     admin_password: json_keystone["attributes"]["keystone"]["admin"]["password"],
     admin_tenant_name: json_keystone["attributes"]["keystone"]["admin"]["tenant"],
     admin_auth_url: admin_auth_url.to_s,
+    insecure: json_keystone["attributes"]["keystone"]["ssl"]["insecure"] ||
+      json_manila["attributes"]["manila"]["ssl"]["insecure"],
     share_type: "default"
   }
   conf_file = "/etc/#{service_name}/#{service_name}.conf"
@@ -61,17 +63,20 @@ end
 Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_name|
   tests_dir = "/var/lib/#{package_name}-test"
   package_core_name = package_name.match(/python-(.+)/).captures.first
-  ssl_insecure = false
+
+  json_keystone = proposal("keystone")
+  ssl_insecure = json_keystone["attributes"]["keystone"]["ssl"]["insecure"]
+
   case package_name
   when "python-novaclient"
     json_response = proposal("nova")
-    ssl_insecure = json_response["attributes"]["nova"]["ssl"]["insecure"]
+    ssl_insecure ||= json_response["attributes"]["nova"]["ssl"]["insecure"]
     env = {
       OS_NOVACLIENT_EXEC_DIR: "/usr/bin"
     }
   when "python-manilaclient"
     json_response = proposal("manila")
-    ssl_insecure = json_response["attributes"]["manila"]["ssl"]["insecure"]
+    ssl_insecure ||= json_response["attributes"]["manila"]["ssl"]["insecure"]
     env = {
       OS_MANILA_EXEC_DIR: "/usr/bin",
       OS_MANILACLIENT_CONFIG_FILE: "/etc/manilaclient/manilaclient.conf",
