@@ -28,32 +28,24 @@ Given(/^the proper cirros test image has been created$/) do
 end
 
 And(/^the authentication for the "([^"]*)" is established$/) do |package_name|
-  json_keystone = proposal("keystone")
-
-  auth_node = json_keystone["deployment"]["keystone"]["elements"]["keystone-server"].first
-  auth_protocol = json_keystone["attributes"]["keystone"]["api"]["protocol"]
-  auth_port = json_keystone["attributes"]["keystone"]["api"]["service_port"]
-  auth_version = json_keystone["attributes"]["keystone"]["api"]["version"]
-  auth_url = "#{auth_protocol}://#{auth_node}:#{auth_port}/v#{auth_version}"
-  admin_auth_port = json_keystone["attributes"]["keystone"]["api"]["admin_port"]
-  admin_auth_url = "#{auth_protocol}://#{auth_node}:#{admin_auth_port}/v#{auth_version}"
-
-  service_name = package_name.match(/python-(.+)/).captures.first
+  openrc = control_node.get_hash_from_envfile
   json_manila = proposal("manila")
+  json_keystone = proposal("keystone")
 
   auth_hash = {
     username: json_manila["attributes"]["manila"]["service_user"],
     password: json_manila["attributes"]["manila"]["service_password"],
     tenant_name: "service",
-    auth_url: auth_url.to_s,
+    auth_url: openrc["OS_AUTH_URL"],
     admin_username: json_keystone["attributes"]["keystone"]["admin"]["username"],
     admin_password: json_keystone["attributes"]["keystone"]["admin"]["password"],
     admin_tenant_name: json_keystone["attributes"]["keystone"]["admin"]["tenant"],
-    admin_auth_url: admin_auth_url.to_s,
     insecure: json_keystone["attributes"]["keystone"]["ssl"]["insecure"] ||
       json_manila["attributes"]["manila"]["ssl"]["insecure"],
+    admin_auth_url: openrc["OS_AUTH_URL"],
     share_type: "default"
   }
+  service_name = package_name.match(/python-(.+)/).captures.first
   conf_file = "/etc/#{service_name}/#{service_name}.conf"
   auth_hash.each do |key, value|
     control_node.exec!("crudini", "--set #{conf_file} DEFAULT #{key} #{value}")
