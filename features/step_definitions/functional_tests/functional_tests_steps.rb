@@ -43,7 +43,8 @@ And(/^the authentication for the "([^"]*)" is established$/) do |package_name|
     insecure: json_keystone["attributes"]["keystone"]["ssl"]["insecure"] ||
       json_manila["attributes"]["manila"]["ssl"]["insecure"],
     admin_auth_url: openrc["OS_AUTH_URL"],
-    share_type: "default"
+    share_type: "default",
+    suppress_errors_in_cleanup: true
   }
   service_name = package_name.match(/python-(.+)/).captures.first
   conf_file = "/etc/#{service_name}/#{service_name}.conf"
