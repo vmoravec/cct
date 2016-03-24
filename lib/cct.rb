@@ -58,5 +58,9 @@ module Cct
       require "cucumber/rake/task"
       Dir.glob(root.to_s + '/tasks/**/*.rake').each { |task| load(task) }
     end
+
+    def running_on_admin_node?
+      File.exist?("/etc/crowbar.install.key")
+    end
   end
 end

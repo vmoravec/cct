@@ -23,12 +23,12 @@ module Cct
       @environment = {}
       @crowbar = options[:crowbar]
       @gateway = options[:gateway]
-      @command = RemoteCommand.new(gateway: options[:gateway])
+      set_command_options
+      @command = RemoteCommand.new(command_options.merge(skip_validation: [:ip]))
     end
 
     def exec! command_name, *params
       self.load!
-      set_command_target
       params << update_environment(params)
       command.exec!(command_name, params.compact)
     end
@@ -123,6 +123,7 @@ module Cct
       data = crowbar.node(name)
       @data = data
       @ip = data["crowbar"]["network"]["admin"]["address"]
+      command.options.ip = ip
       @hostname = data["hostname"]
       @domain = data["domain"]
 
@@ -134,19 +135,11 @@ module Cct
 
     private
 
-    def set_command_target
-      return if command.target
-
-      command.target = self
-      set_command_options
-    end
-
     def set_command_options
-      return if command_options
-
-      options = {port: port}
-      options.merge!(timeout: command.options.extended.timeout)
+      options = {port: port, user: user}
+      options.merge!(timeout: config["timeout"]) if config["timeout"]
       options.merge!(password: password) unless password.to_s.empty?
+      options.merge!(gateway: gateway) if gateway
       options.merge!(logger: log)
       @command_options = options
     end

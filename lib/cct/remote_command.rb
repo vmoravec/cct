@@ -9,22 +9,20 @@ module Cct
     Result = Struct.new(:success?, :output, :error, :exit_code, :host)
 
     attr_reader :session, :options, :log, :gateway, :proxy
-    attr_accessor :target
 
     def initialize opts
       @gateway = opts[:gateway]
-      opts.merge!(gateway) if gateway
       @proxy = opts[:proxy] || set_ssh_proxy
       @log = BaseLogger.new("SSH")
       @options = OpenStruct.new
       construct_options(opts)
-      validate_options
+      validate_options(opts[:skip_validation])
     end
 
     def exec! command, params=[], capture_error: false
       log.base.level = ::Logger::WARN
       connect!
-      host_ip = gateway ? target.ip : options.ip
+      host_ip = options.ip
       environment = set_environment(params)
       full_command = "#{command} #{params.join(" ")}".strip
       result = Result.new(false, "", "", 1000, host_ip)
@@ -63,7 +61,7 @@ module Cct
 
     def connected?
       if gateway
-        session && session.active? ? true :false
+        session && session.active? ? true : false
       else
         session && !session.closed? ? true : false
       end
@@ -88,7 +86,7 @@ module Cct
 
     def open_session_channel &block
       if gateway
-        session.ssh(target.ip, target.user, target.command_options) do |session|
+        session.ssh(options.ip, options.user, options.extended.to_h) do |session|
           session.open_channel(&block)
         end
       else
@@ -173,9 +171,10 @@ module Cct
       timeout.to_i
     end
 
-    def validate_options
+    def validate_options *options_to_skip
+      options_to_skip.flatten!
       errors = []
-      errors.push("missing ip") unless options.ip
+      errors.push("missing ip") if !options.ip && !options_to_skip.include?(:ip)
       errors.push("missing user") unless options.user
       errors.unshift("Invalid options: ") unless errors.empty?
       raise ValidationError.new(self, errors) unless errors.empty?
