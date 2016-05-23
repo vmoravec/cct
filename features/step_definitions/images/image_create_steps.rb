@@ -33,7 +33,7 @@ When(/^I create new glance image based on jeos$/) do
   control_node.openstack.image.create @image_name,
     :properties => @properties,
     :disk_format => "qcow2",
-    :public => true,
+    :visibility => "public",
     :container_format => "bare",
     :copy_from => @image_source
 end
