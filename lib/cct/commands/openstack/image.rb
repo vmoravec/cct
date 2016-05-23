@@ -2,7 +2,7 @@ module Cct
   module Commands
     module Openstack
       class Image < Command
-        self.command = ["--os-image-api-version", "1", "image"]
+        self.command = ["image"]
 
         def create name, options={}
           super do |params|
@@ -13,8 +13,7 @@ module Cct
             # optional params
             params.add :optional, copy_from: "--copy-from"
             params.add :optional, location: "--location"
-            params.add :optional, public: "--public", param_type: :switch
-            params.add :optional, private: "--private", param_type: :switch
+            params.add :optional, visibility: "--visibility"
 
             # properties: will be transformed into --property hypervisor_type=kvm
             params.add :property, hypervisor_type: "hypervisor_type"
