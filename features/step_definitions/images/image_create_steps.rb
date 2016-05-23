@@ -30,12 +30,15 @@ Given(/^glance image does not exist$/) do
 end
 
 When(/^I create new glance image based on jeos$/) do
+  imagedir = File.expand_path "~/cct-images/"
+  control_node.download_file @image_source, imagedir, "#{@image_name}.qcow2"
   control_node.openstack.image.create @image_name,
     :properties => @properties,
     :disk_format => "qcow2",
     :public => true,
     :container_format => "bare",
-    :copy_from => @image_source
+    :file => "/#{imagedir}/#{@image_name}.qcow2"
+  control_node.rmdir imagedir
 end
 
 Then(/^this image has non-empty ID$/) do
