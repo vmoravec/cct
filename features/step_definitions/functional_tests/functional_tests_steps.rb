@@ -13,13 +13,17 @@ Given(/^the proper cirros test image has been created$/) do
     control_node.openstack.image.delete(test_image_name)
   end
 
+  imagedir = File.expand_path "~/cct-images/"
+  imagesource = "http://clouddata.nue.suse.com/images/cirros-0.3.4-x86_64-disk.img"
+  control_node.download_file imagesource, imagedir, test_image_name
   @test_image = control_node.openstack.image.create(
     test_image_name,
-    copy_from: "http://clouddata.nue.suse.com/images/cirros-0.3.4-x86_64-disk.img",
+    file: "/#{imagedir}/#{test_image_name}",
     container_format: :bare,
     disk_format: :qcow2,
     public: true
   )
+  control_node.rmdir imagedir
 
   wait_for "Image status set 'active'", max: "60 seconds", sleep: "2 seconds" do
     image = control_node.openstack.image.show(@test_image.id)

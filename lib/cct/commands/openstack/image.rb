@@ -2,7 +2,7 @@ module Cct
   module Commands
     module Openstack
       class Image < Command
-        self.command = ["--os-image-api-version", "1", "image"]
+        self.command = ["image"]
 
         def create name, options={}
           super do |params|
@@ -11,8 +11,7 @@ module Cct
             params.add disk_format:      "--disk-format"
 
             # optional params
-            params.add :optional, copy_from: "--copy-from"
-            params.add :optional, location: "--location"
+            params.add :optional, file: "--file"
             params.add :optional, public: "--public", param_type: :switch
             params.add :optional, private: "--private", param_type: :switch
 

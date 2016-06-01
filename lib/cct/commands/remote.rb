@@ -24,6 +24,15 @@ module Cct
         end
         result
       end
+
+      def download_file url, destdir, destname
+        exec!("mkdir -p #{destdir}")
+        exec!("wget -np -nc #{url} -O #{destdir}/#{destname}")
+      end
+
+      def rmdir dir
+        exec!("rm -rf #{dir}")
+      end
     end
   end
 end
