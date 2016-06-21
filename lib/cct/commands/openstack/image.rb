@@ -4,6 +4,12 @@ module Cct
       class Image < Command
         self.command = ["image"]
 
+        def list *options
+          super(options << columns(
+            Struct.new(:id, :name, :status)
+          ))
+        end
+
         def create name, options={}
           super do |params|
             # mandatory params
