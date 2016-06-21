@@ -130,8 +130,8 @@ module Cct
         def list options=[]
           params.clear
           extended = options.last.is_a?(Hash) ? options.pop : {}
-          row = extended[:row] || Struct.new(:id, :name)
-          result = exec!("list #{extended[:args]}", "--format=csv", options).output
+          row = extended[:keys] || Struct.new(:id, :name)
+          result = exec!("list #{extended[:args]}", "--format=csv", extended[:columns], options).output
           csv_parse(result).map do |csv_row|
             row.new(*csv_row)
           end
@@ -164,8 +164,11 @@ module Cct
 
         private
 
-        def columns struct
-          {row: struct}
+        def columns names
+          {
+            keys: Struct.new(*names.keys),
+            columns: names.values.map {|column_name| "-c \'#{column_name}\' " }.join
+          }
         end
 
         def csv_parse csv_data, header: false

@@ -6,7 +6,9 @@ module Cct
 
         def list *options
           super(options << columns(
-            Struct.new(:id, :name, :status)
+            id: "ID",
+            name: "Name",
+            status: "Status"
           ))
         end
 
