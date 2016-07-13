@@ -1,11 +1,11 @@
 cloud:
-  version: 6
+  version: 7
   product: SUSE OpenStack Cloud
 
 admin_node:
   os:
     name: SUSE Linux Enterprise Server 12
-    version: 12-SP1
+    version: 12-SP2
 
   ip: localhost
   ssh:
