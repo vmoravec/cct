@@ -10,9 +10,10 @@ Feature: Admin node
     And I can reach the crowbar API
     And the admin node is in "ready" state
 
-  @os
-  Scenario: Operating system support
-    Given the admin node is running correct SLES version
+# FIXME: enable this scenario again once we switch to SP2 admin node
+#  @os
+#  Scenario: Operating system support
+#    Given the admin node is running correct SLES version
 
   @ntp
   Scenario: NTP Server availability
