@@ -47,3 +47,31 @@ end
 at_exit do
   log.info "Exiting cucumber testsuite now..."
 end
+
+## Configuration for UI tests done by capybara gem
+
+configure_ui_tests = !!ENV["cct_ui_tests"].to_s.match(/(1|true)/)
+
+if configure_ui_tests
+  begin
+    Bundler.require(:ui_tests)
+    require "capybara/cucumber"
+  rescue LoadError
+    puts "You need to run `bundle install --with ui_tests` to get the gems installed and loaded"
+    exit 1
+  end
+
+  crowbar = Cct.config["admin_node"]
+
+  Capybara.configure do |config|
+    config.default_driver = :webkit
+    config.app_host =
+      "http://#{crowbar["api"]["user"]}:#{crowbar["api"]["password"]}@#{crowbar["ip"]}"
+  end
+
+  Capybara::Webkit.configure do |config|
+    config.allow_url(crowbar["ip"])
+  end
+
+  World(Capybara)
+end
