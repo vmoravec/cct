@@ -1,8 +1,8 @@
 #!/bin/env rake
 
-$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+require 'bundler/setup'
+Bundler.require(:default)
 
-require "cct"
 require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
