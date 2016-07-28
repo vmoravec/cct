@@ -1,4 +1,5 @@
-require "cct"
+Bundler.require(:default)
+
 require "cct/cloud/world"
 
 require_relative "step_helpers"
