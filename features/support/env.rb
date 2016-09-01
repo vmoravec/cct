@@ -46,6 +46,7 @@ end
 
 at_exit do
   log.info "Exiting cucumber testsuite now..."
+  headless.stop if respond_to?(:headless)
 end
 
 ## Configuration for UI tests done by capybara gem
@@ -56,6 +57,7 @@ if configure_ui_tests
   begin
     Bundler.require(:ui_tests)
     require "capybara/cucumber"
+    require "capybara-screenshot/cucumber"
   rescue LoadError
     puts "You need to run `bundle install --with ui_tests` to get the gems installed and loaded"
     exit 1
@@ -63,6 +65,17 @@ if configure_ui_tests
 
   crowbar = Cct.config["admin_node"]
 
+  # Creating X server virtual frame buffer; it's stopped in the `at_exit` block above
+  headless = Headless.new
+  headless.start
+
+  # Having $WORKSPACE defined assumes a Jenkins build is running;
+  # In case our test fails a file with name screenshot-YYYY-MM-DD-HH-MM-SS.MS.png is created
+  # as well as copy of the html content is saved in the $WORKSPACE/.artifacts directory.
+  # If no $WORKSPACE is defined, the files are created in current working dir
+  Capybara.save_path = File.join(ENV["WORKSPACE"], ".artifacts") unless ENV["WORKSPACE"].to_s.empty?
+
+  # Configure capybara to reach for the crowbar instance IP using webkit driver
   Capybara.configure do |config|
     config.default_driver = :webkit
     config.app_host =
