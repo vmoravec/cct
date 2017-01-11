@@ -13,7 +13,7 @@ Feature: Upgrade cloud via browser UI
   Scenario: Landing page
     Given I click the "Upgrade" link to trigger the upgrade process
     And the upgrade process is successfuly initialized
-    When I trigger the preliminary checks by clicking on "Run checks"
+    When I click the "Check" button to trigger preliminary checks
     Then all checks show successful results
     And  I get the "Begin Upgrade" button enabled
 
