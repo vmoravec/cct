@@ -86,5 +86,7 @@ if configure_ui_tests
     config.allow_url(crowbar["ip"])
   end
 
+  Capybara.default_max_wait_time = 5
+
   World(Capybara)
 end
