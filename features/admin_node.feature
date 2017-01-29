@@ -30,8 +30,8 @@ Feature: Admin node
       | crowbar-openstack                    |
       | crowbar-ceph                         |
       | crowbar-ha                           |
-      | crowbar-hyperv                       |
-      | crowbar-hyperv-data                  |
+      | crowbar-init                         |
+      | crowbar-ui                           |
       | yast2-crowbar                        |
     And all dependencies of installed packages are satisfied
 
@@ -40,5 +40,6 @@ Feature: Admin node
     Given the following services are available on the admin node
       | Service name                         |
       | chef-server                          |
+      | crowbar                              |
       | rabbitmq-server                      |
     And these services are enabled and running on the admin node
