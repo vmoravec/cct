@@ -19,6 +19,7 @@ Given(/^the controller node is in "([^"]*)" state$/) do |ready|
   # in an "unknown" state
   60.times do
     break unless control_node.status == "unknown"
+    control_node.load!(force: true)
     sleep 5
   end
   expect(control_node.status).to eq(ready)
