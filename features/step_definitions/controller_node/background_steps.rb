@@ -15,5 +15,11 @@ Given(/^I can establish SSH connection to the controller node$/) do
 end
 
 Given(/^the controller node is in "([^"]*)" state$/) do |ready|
+  # before checking for "ready" state, make sure the controller is not
+  # in an "unknown" state
+  60.times do
+    break unless control_node.status == "unknown"
+    sleep 5
+  end
   expect(control_node.status).to eq(ready)
 end
