@@ -87,6 +87,8 @@ if configure_ui_tests
   end
 
   Capybara.default_max_wait_time = 5
+  Capybara.page.current_window.resize_to(1280, 1024)
+  Capybara::Screenshot.webkit_options = { width: 1280, height: 1024 }
 
   World(Capybara)
 end
