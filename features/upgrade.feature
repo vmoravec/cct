@@ -17,3 +17,13 @@ Feature: Upgrade cloud via browser UI
     Then all checks show successful results
     And  I get the "Begin Upgrade" button enabled
 
+  @admin_backup
+  Scenario: Admin server backup
+    Given I click the "Begin Upgrade" button on the landing page
+    And button for "Download Backup of Administration Server" is available and enabled
+    And the "Next" button is disabled
+    When I click the backup button
+    Then I get the backup archive created
+    And the "Next" button gets enabled
+    And I click the "Next" button to move to next upgrade action
+

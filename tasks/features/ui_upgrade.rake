@@ -7,6 +7,9 @@ namespace :feature do
       desc "Landing page"
       feature_task :landing, tags: :@landing
 
+      desc "Admin node backup"
+      feature_task :"admin:backup", tags: :@admin_backup
+
       feature_task :all
     end
 
