@@ -6,7 +6,6 @@ Given(/^I click the "([^"]*)" button on the landing page$/) do |button_text|
     verify_upgrade_landing_page
     upgrade_button = find_button(button_text)
     upgrade_button.click
-    expect(upgrade_button.find("suse-lazy-spinner").visible?).to be(true)
   end
 
   wait_for "Starting upgrade workflow", max: "80 seconds", sleep: "10 seconds" do

@@ -11,7 +11,6 @@ When(/^I click the "([^"]*)" button to trigger preliminary checks$/) do |button_
   check_button = find_button(button_text)
   check_button.click
   expect(check_button.disabled?).to be(true)
-  expect(check_button.find("suse-lazy-spinner").visible?).to be(true)
   wait_for "Prechecks to finish", max: "60 seconds", sleep: "5 seconds" do
     break if !check_button.disabled?
   end
