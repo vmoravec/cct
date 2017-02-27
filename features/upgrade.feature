@@ -27,3 +27,11 @@ Feature: Upgrade cloud via browser UI
     And the "Next" button gets enabled
     And I click the "Next" button to move to next upgrade action
 
+  @admin_repos
+  Scenario: Admin repo checks
+    Given I am on the page for admin repo checks for upgrade workflow
+    And the "Check" button is available and enabled
+    And the "Next" button is available and disabled
+    When I click the "Check" button to verify new cloud repos on admin node
+    Then I get successful results for all repos
+

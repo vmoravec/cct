@@ -10,6 +10,9 @@ namespace :feature do
       desc "Admin node backup"
       feature_task :"admin:backup", tags: :@admin_backup
 
+      desc "Admin repo checks"
+      feature_task :"admin:repos", tags: :@admin_repos
+
       feature_task :all
     end
 
