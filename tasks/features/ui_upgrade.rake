@@ -13,6 +13,9 @@ namespace :feature do
       desc "Admin repo checks"
       feature_task :"admin:repos", tags: :@admin_repos
 
+      desc "Admin server upgrade"
+      feature_task :"admin:upgrade", tags: :@admin_upgrade
+
       feature_task :all
     end
 
