@@ -12,4 +12,13 @@ module StepHelpers
     step 'all checks show successful results'
     step 'I get the "Begin Upgrade" button enabled'
   end
+
+  def verify_upgrade_admin_backup_page
+    step 'button for "Download Backup of Administration Server" is available and enabled'
+    step 'the "Next" button is disabled'
+    step 'I click the backup button'
+    step 'I get the backup archive created'
+    step 'the "Next" button gets enabled'
+    step 'I click the "Next" button to move to next upgrade action'
+  end
 end
