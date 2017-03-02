@@ -42,3 +42,15 @@ Feature: Upgrade cloud via browser UI
     And button for "Upgrade Administration Server" is available and enabled
     And the "Next" button is disabled
 
+  @create_db
+  Scenario: Create postgresql database
+    Given I am on the page for creating new database
+    And the "Create Database" button is available and disabled
+    And the "Next" button is available and disabled
+    When I insert "crowbar" as the "username"
+    And I insert "crowbar" as the "password"
+    Then I click the "Create Database" button
+    And the "Create Database" button gets disabled
+    And I wait max "5 mins" until the database is created
+    And the "Next" button is available and enabled
+    And I click the "Next" button to move to next upgrade action
