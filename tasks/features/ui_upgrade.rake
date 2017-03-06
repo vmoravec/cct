@@ -16,6 +16,9 @@ namespace :feature do
       desc "Admin server upgrade"
       feature_task :"admin:upgrade", tags: :@admin_upgrade
 
+      desc "Create postgresql database"
+      feature_task :"pgsql:create", tags: :@pgsql_create
+
       feature_task :all
     end
 
