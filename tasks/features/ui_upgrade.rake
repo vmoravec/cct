@@ -19,6 +19,9 @@ namespace :feature do
       desc "Create postgresql database"
       feature_task :"pgsql:create", tags: :@pgsql_create
 
+      desc "Nodes repo checks"
+      feature_task :"nodes:repos", tags: :@nodes_repos
+
       feature_task :all
     end
 
