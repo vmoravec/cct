@@ -21,4 +21,13 @@ module StepHelpers
     step 'the "Next" button gets enabled'
     step 'I click the "Next" button to move to next upgrade action'
   end
+
+  def verify_upgrade_admin_repos_page
+    step 'I am on the page for admin repo checks for upgrade workflow'
+    step 'the "Check" button is available and enabled'
+    step 'the "Next" button is available and disabled'
+    step 'I click the "Check" button to verify new cloud repos on admin node'
+    step 'I get successful results for all repos'
+    step 'I click the "Next" button to move to next upgrade action'
+  end
 end
