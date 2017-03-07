@@ -52,3 +52,12 @@ Feature: Upgrade cloud via browser UI
     And I wait max "5 minutes" until the database is created
     And the "Next" button is available and enabled
     And I click the "Next" button to move to next upgrade action
+
+  @nodes_repos
+  Scenario: Nodes repo checks
+    Given I am on the page for checking nodes repos
+    And the "Check" button is available and enabled
+    And the "Next" button is available and disabled
+    When I click the "Check" button to verify new cloud repos on for all nodes
+    Then I get successful results for all repos
+    And I click the "Next" button to move to next upgrade action
