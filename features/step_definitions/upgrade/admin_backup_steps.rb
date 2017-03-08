@@ -26,7 +26,8 @@ end
 When(/^I click the backup button$/) do
   @backup_button.click
   wait_for "Waiting for 'Next' button to get enabled", max: "10 seconds", sleep: "1 second" do
-    break unless all("button", text: "Next").empty?
+    next_btn_enabled = find_all("button", text: "Next").find {|b| !b[:disabled]}
+    break if next_btn_enabled
   end
 end
 

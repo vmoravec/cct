@@ -10,8 +10,8 @@ Given(/^I am on the page for checking nodes repos$/) do
   end
 end
 
-When(/^I click the "([^"]*)" button to verify new cloud repos on for all nodes$/) do |btn_text|
-  check_button = find_button(btn_text)
+When(/^I click the "([^"]*)" button to verify new cloud repos on for all nodes$/) do |button_text|
+  check_button = find_button(button_text)
   check_button.click
   expect(check_button.disabled?).to be(true)
 end

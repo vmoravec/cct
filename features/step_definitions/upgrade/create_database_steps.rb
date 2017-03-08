@@ -20,6 +20,7 @@ end
 
 Then(/^I wait max "([^"]*)" until the database is created$/) do |time|
   wait_for "Waiting for 'Next' button to get enabled", max: time, sleep: "10 seconds" do
-    break unless all("button", text: "Next").empty?
+    next_btn_enabled = find_all("button", text: "Next").find {|b| !b[:disabled]}
+    break if next_btn_enabled
   end
 end
