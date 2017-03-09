@@ -41,6 +41,6 @@ Then(/^I get successful results for all repos$/) do
   end
 
   if !failed_checks.empty?
-    raise "Admin node repo checks failed:\n#{failed_checks.map {|p| p.text}.join("\n")}\n"
+    raise "Repo checks failed:\n#{failed_checks.map {|p| p.text}.join("\n")}\n"
   end
 end
