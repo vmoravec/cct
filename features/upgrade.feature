@@ -69,7 +69,18 @@ Feature: Upgrade cloud via browser UI
     And the "Next" button is available and disabled
     When I click the "Stop Services" button to perform the action on the backend
     Then the "Stop Services" button is disabled
-    And I wait max "2 minutes" until the openstack services are stopped
+    And I wait max "5 minutes" until the openstack services are stopped
     And the "Next" button is available and enabled
+    And I click the "Next" button to move to next upgrade action
+
+  @os_db_backup
+  Scenario: Openstack database backup
+    Given I am on the page for Openstack database backup
+    And the "Create Backup" button is available and enabled
+    And the "Next" button is available and disabled
+    When I click the "Create Backup" button to perform the backup action
+    Then the "Create Backup" button is disabled
+    And I get the openstack database backup archive created
+    And the "Next" button gets enabled
     And I click the "Next" button to move to next upgrade action
 
