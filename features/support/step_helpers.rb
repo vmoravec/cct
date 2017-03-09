@@ -30,4 +30,13 @@ module StepHelpers
     step 'I get successful results for all repos'
     step 'I click the "Next" button to move to next upgrade action'
   end
+
+  def verify_nodes_repo_check_page
+    step 'I am on the page for checking nodes repos'
+    step 'the "Check" button is available and enabled'
+    step 'the "Next" button is available and disabled'
+    step 'I click the "Check" button to verify new cloud repos on for all nodes'
+    step 'I get successful results for all repos'
+    step 'I click the "Next" button to move to next upgrade action'
+  end
 end

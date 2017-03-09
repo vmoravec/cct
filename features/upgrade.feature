@@ -61,3 +61,15 @@ Feature: Upgrade cloud via browser UI
     When I click the "Check" button to verify new cloud repos on for all nodes
     Then I get successful results for all repos
     And I click the "Next" button to move to next upgrade action
+
+  @stop_os_services
+  Scenario: Stop Openstack services
+    Given I am on the page for stopping the Openstack services
+    And the "Stop Services" button is available and enabled
+    And the "Next" button is available and disabled
+    When I click the "Stop Services" button to perform the action on the backend
+    Then the "Stop Services" button is disabled
+    And I wait max "2 minutes" until the openstack services are stopped
+    And the "Next" button is available and enabled
+    And I click the "Next" button to move to next upgrade action
+
