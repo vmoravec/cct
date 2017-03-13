@@ -22,6 +22,12 @@ namespace :feature do
       desc "Nodes repo checks"
       feature_task :"nodes:repos", tags: :@nodes_repos
 
+      desc "Stop Openstack services"
+      feature_task :"os-services:stop", tags: :@stop_os_services
+
+      desc "Openstack database backup"
+      feature_task :"os-db:backup", tags: :@os_db_backup
+
       feature_task :all
     end
 
