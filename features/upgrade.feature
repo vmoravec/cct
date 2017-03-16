@@ -84,3 +84,15 @@ Feature: Upgrade cloud via browser UI
     And the "Next" button gets enabled
     And I click the "Next" button to move to next upgrade action
 
+  @nodes_upgrade
+  Scenario: Upgrade of nodes
+    Given I am on the page for upgrade of the cloud nodes
+    And the "Upgrade Nodes" button is available and enabled
+    And the "Finish" button is available and disabled
+    When I click the "Upgrade Nodes" button to upgrade the cloud nodes
+    Then the "Upgrade Nodes" button is disabled
+    And I wait "120 minutes" until the nodes get upgraded
+    And the "Finish" button is available and enabled
+    And I click the "Finish" button to finish the upgrade process
+    And I can see the crowbar dashboard
+
