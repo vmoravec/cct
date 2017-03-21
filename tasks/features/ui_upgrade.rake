@@ -28,6 +28,9 @@ namespace :feature do
       desc "Openstack database backup"
       feature_task :"os-db:backup", tags: :@os_db_backup
 
+      desc "Upgrade of nodes"
+      feature_task :"nodes:upgrade", tags: :@nodes_upgrade
+
       feature_task :all
     end
 
