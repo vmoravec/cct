@@ -27,7 +27,7 @@ Then(/^I get successful results for all repos$/) do
   checklist = find("crowbar-checklist")
   items = checklist.find("ul").all("li")
 
-  wait_for "Show 'Next' button", max: "10 seconds", sleep: "1 seconds" do
+  wait_for "Show 'Next' button", max: "60 seconds", sleep: "3 seconds" do
     next_btn_enabled = all("button", text: "Next").find {|b| !b[:disabled]}
     # The check button remains disabled after all checks have succeeded.
     # But we need to test its status dynamically together with Next button status
