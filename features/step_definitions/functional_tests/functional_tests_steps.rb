@@ -69,6 +69,8 @@ Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_na
     json_response = proposal("nova")
     ssl_insecure ||= json_response["attributes"]["nova"]["ssl"]["insecure"]
     env = {
+      OS_USER_DOMAIN_ID: "default",
+      OS_PROJECT_DOMAIN_ID: "default",
       OS_NOVACLIENT_EXEC_DIR: "/usr/bin"
     }
   when "python-manilaclient"
@@ -88,14 +90,11 @@ Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_na
     case package_name
     when "python-novaclient"
       [
-        "test_admin_dns_domains", # Does not work with neutron
-        "test_fixedip_get",       # This uses nova-network specific API
-        # FIXME: The following tests can be re-enabled once:
-        # https://bugs.launchpad.net/python-novaclient/+bug/1510975
-        # is fixed.
-        "test_server_ips",        # Relies on the default network called "private"
-        "test_instances",         # Requires the "first" network returned to be
-        "test_servers"            # non-external
+        "test_servers",             # non-external
+        "test_trigger_crash_dump",  # need to be investigated
+        "test_consoles",            # need to be investigated
+        "test_extended_attributes", # need to be investigated
+        "test_auth"                 # need to be investigated
       ]
     when "python-manilaclient"
       [
