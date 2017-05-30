@@ -71,7 +71,8 @@ Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_na
     env = {
       OS_USER_DOMAIN_ID: "default",
       OS_PROJECT_DOMAIN_ID: "default",
-      OS_NOVACLIENT_EXEC_DIR: "/usr/bin"
+      OS_NOVACLIENT_EXEC_DIR: "/usr/bin",
+      OS_NOVACLIENT_NETWORK: "fixed"
     }
   when "python-manilaclient"
     json_response = proposal("manila")
@@ -91,9 +92,6 @@ Then(/^all the functional tests for the package "([^"]*)" pass$/) do |package_na
     when "python-novaclient"
       [
         "test_servers",             # non-external
-        "test_trigger_crash_dump",  # need to be investigated
-        "test_consoles",            # need to be investigated
-        "test_extended_attributes", # need to be investigated
         "test_auth"                 # need to be investigated
       ]
     when "python-manilaclient"
