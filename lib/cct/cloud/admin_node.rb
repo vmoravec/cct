@@ -9,11 +9,12 @@ module Cct
       admin_node
     end
 
-    attr_reader :api, :log, :config
+    attr_reader :api, :log, :config, :alias
 
     def initialize options={}
       @name = NAME
       @admin = true
+      @alias = "crowbar"
       @log = BaseLogger.new(NAME.upcase)
       @config = Cct.config["admin_node"]
       set_node_attributes(options)

@@ -20,6 +20,7 @@ module Cct
       @admin ||= false
       @controller ||= false
       @environment ||= {}
+      @crowbar_proxy = CrowbarProxy.new(options[:crowbar]) unless @controller
       @command =
         if admin || Cct.is_running_on_admin_node?
           RemoteCommand.new(attributes)
@@ -29,7 +30,6 @@ module Cct
             RemoteCommand.new(attrs)
         end
       set_command_target
-      @crowbar_proxy = CrowbarProxy.new(options[:crowbar]) unless @controller
       @log ||= BaseLogger.new(self.alias)
       validate_attributes unless @controller
     end
@@ -72,6 +72,7 @@ module Cct
     def attributes
       attrs = {
         ip: ip,
+        alias: self.alias,
         user: user,
         name: name,
         password: password,

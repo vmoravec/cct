@@ -156,6 +156,7 @@ module Cct
 
     def construct_options opts
       options.ip = opts['ip'] || opts[:ip] || opts["fqdn"] || opts[:fqdn]
+      options.alias = opts['alias'] || opts[:alias]
       options.user = opts['user'] || opts[:user]
       options.environment = opts['env'] || opts['environment'] || opts [:env] || {}
       options.extended = EXTENDED_OPTIONS.dup
