@@ -25,12 +25,13 @@ module Cct
       log.base.level = ::Logger::WARN
       connect!
       host_ip = gateway ? target.ip : options.ip
+      host_alias = gateway ? target.alias : options.alias
       environment = set_environment(params)
       full_command = "#{command} #{params.join(" ")}".strip
       result = Result.new(false, "", "", 1000, host_ip)
       open_session_channel do |channel|
         channel.exec("#{environment}#{full_command}") do |p, d|
-          log.always("Running command `#{full_command}` on remote host #{host_ip}")
+          log.always("Running command `#{full_command}` on remote host #{host_ip} ( #{host_alias} )")
           channel.on_data {|p,data| result.output << data }
           channel.on_extended_data {|_,_,data| result.error << data }
           channel.on_request("exit-status") {|p,data| result.exit_code = data.read_long}

@@ -8,7 +8,7 @@ module Cct
 
     include Commands::Openstack
 
-    attr_reader :gateway, :crowbar, :log
+    attr_reader :gateway, :crowbar, :log, :alias
     attr_reader :name, :fqdn, :state, :status, :description
     attr_reader :config, :command, :command_options
 
@@ -22,13 +22,15 @@ module Cct
       @port = config["ssh"]["port"]
       @environment = {}
       @crowbar = options[:crowbar]
-      @gateway = options[:gateway]
-      @command = RemoteCommand.new(gateway: options[:gateway])
+      super(options)
+    end
+
+    def crowbar
+      @crowbar
     end
 
     def exec! command_name, *params
       self.load!
-      set_command_target
       params << update_environment(params)
       command.exec!(command_name, params.compact)
     end
@@ -132,23 +134,5 @@ module Cct
       @loaded = true
     end
 
-    private
-
-    def set_command_target
-      return if command.target
-
-      command.target = self
-      set_command_options
-    end
-
-    def set_command_options
-      return if command_options
-
-      options = {port: port}
-      options.merge!(timeout: command.options.extended.timeout)
-      options.merge!(password: password) unless password.to_s.empty?
-      options.merge!(logger: log)
-      @command_options = options
-    end
   end
 end

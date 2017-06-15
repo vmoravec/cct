@@ -9,7 +9,9 @@ module Cct
                                     :data, :loaded?
 
     attr_reader :admin, :name, :ip, :user, :password, :port, :environment, :command,
-                :keys
+                :keys, :gateway, :log
+
+    attr_accessor :command_options
 
     private :admin
 
@@ -18,9 +20,18 @@ module Cct
       @admin ||= false
       @controller ||= false
       @environment ||= {}
-      @command = RemoteCommand.new(attributes)
-      @crowbar_proxy = CrowbarProxy.new(options[:crowbar])
-      validate_attributes
+      @command =
+        if admin || Cct.is_running_on_admin_node?
+          RemoteCommand.new(attributes)
+        else
+            @gateway = AdminNode.create.attributes
+            attrs = attributes.merge(gateway: gateway)
+            RemoteCommand.new(attrs)
+        end
+      set_command_target
+      @crowbar_proxy = CrowbarProxy.new(options[:crowbar]) unless @controller
+      @log ||= BaseLogger.new(self.alias)
+      validate_attributes unless @controller
     end
 
     def exec! command, *params, capture_error: false, environment: {}
@@ -55,7 +66,7 @@ module Cct
     def inspect
       "<#{self.class}##{object_id} alias=#{self.alias} name=#{name} ip=#{ip} " +
       "user=#{user} connected?=#{connected?} status=#{status} state=#{state} " +
-      "fqdn=#{fqdn} environment=#{environment}>"
+      "fqdn=#{fqdn} gateway=#{gateway} environment=#{environment}>"
     end
 
     def attributes
@@ -88,7 +99,8 @@ module Cct
       @ip = options['ip'] || options[:ip]
       @name ||= (options['name'] || options[:name])
       @environment = options['environment'] || options[:environment]
-      set_ssh_attributes(options['ssh'] || options[:ssh])
+      @gateway = options['gateway'] || options[:gateway]
+      set_ssh_attributes(options['ssh'] || options[:ssh] || {})
     end
 
     def set_ssh_attributes options={}
@@ -106,6 +118,23 @@ module Cct
       errors.push("name can't be blank") unless name
       errors.unshift("Invalid attributes for node '#{name}'") unless errors.empty?
       raise ValidationError.new(self, errors) unless errors.empty?
+    end
+
+    def set_command_target
+      return if command.target
+
+      command.target = self
+      set_command_options
+    end
+
+    def set_command_options
+      return if command_options
+
+      options = {port: port}
+      options.merge!(timeout: command.options.extended.timeout)
+      options.merge!(password: password) unless password.to_s.empty?
+      options.merge!(logger: log)
+      @command_options = options
     end
 
     class CrowbarProxy

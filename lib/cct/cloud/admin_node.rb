@@ -2,6 +2,13 @@ module Cct
   class AdminNode < Node
     NAME = "crowbar"
 
+    def self.create
+      admin_node = new
+      crowbar = CrowbarApi.new(admin_node.config)
+      admin_node.crowbar_proxy = Node::CrowbarProxy.new(api: crowbar)
+      admin_node
+    end
+
     attr_reader :api, :log, :config
 
     def initialize options={}
