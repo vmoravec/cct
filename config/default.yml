@@ -30,6 +30,7 @@ nodes:
     ssh:
       user: root
       password: linux
+      port: 22
 
 timeout:
   ssh: 15
