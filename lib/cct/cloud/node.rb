@@ -53,7 +53,7 @@ module Cct
     end
 
     def inspect
-      "<#{self.class}##{object_id} name=#{name} ip=#{ip} " +
+      "<#{self.class}##{object_id} alias=#{self.alias} name=#{name} ip=#{ip} " +
       "user=#{user} connected?=#{connected?} status=#{status} state=#{state} " +
       "fqdn=#{fqdn} environment=#{environment}>"
     end

@@ -42,8 +42,9 @@ module Cct
     # @param element [String] Element name in the crowbar proposal json tree
     # @note Parameter :barclamp requires element to be specified
     # @return [Array] One or multiple node instances
-    def find name: nil, fqdn: nil, barclamp: nil, element: nil, proposal: "default"
+    def find node_alias: nil, name: nil, fqdn: nil, barclamp: nil, element: nil, proposal: "default"
       load!
+      return nodes.select {|n| n.alias =~ /#{node_alias}/ } if node_alias
       return nodes.select {|n| n.name == name } if name
       return nodes.select {|n| n.fqdn == fqdn } if fqdn
 
