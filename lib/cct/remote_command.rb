@@ -6,7 +6,7 @@ module Cct
       port: 22
     )
 
-    Result = Struct.new(:success?, :output, :error, :exit_code, :host)
+    Result = Struct.new(:success?, :output, :error, :exit_code, :host, :alias)
 
     attr_reader :session, :options, :log, :gateway, :proxy
     attr_accessor :target
@@ -28,7 +28,7 @@ module Cct
       host_alias = gateway ? target.alias : options.alias
       environment = set_environment(params)
       full_command = "#{command} #{params.join(" ")}".strip
-      result = Result.new(false, "", "", 1000, host_ip)
+      result = Result.new(false, "", "", 1000, host_ip, host_alias)
       open_session_channel do |channel|
         channel.exec("#{environment}#{full_command}") do |p, d|
           log.always("Running command `#{full_command}` on remote host #{host_ip} ( #{host_alias} )")
