@@ -59,7 +59,7 @@ module Cct
         else
           raise "Source type #{source.class} not allowed"
         end
-      new_source << ENV_FILE
+      new_source.unshift(ENV_FILE)
     end
 
     def get_hash_from_envfile
