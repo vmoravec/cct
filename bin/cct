@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+ 
+require "optparse"
+require "ostruct"
+require "tmpdir"
+require "tempfile"
+
+options = OpenStruct.new
+
+LOCAL_CONFIG = File.join("/home/#{ENV["USER"]}/.cct/config.yaml")
+
+begin
+  op = OptionParser.new do |o|
+    o.on("--tags TAG_NAMEs", "Tag names separated with commas") {|tags| options.tags = "--tags #{tags}" }
+    o.on('--help', "Show this message and exit")                { puts o; exit }
+    o.parse!
+  end
+
+rescue OptionParser::MissingArgument,
+       OptionParser::InvalidOption => err
+  print "Error: "
+  abort err.message
+end
+
+if options.tags.nil?
+  options.tags = ARGV.first.split(":").map {|tag| "--tags @#{tag} "}.join
+end
+
+Dir.chdir(Pathname.new(__dir__).join("..").expand_path) do |cct_dir|
+  puts "Loading from #{cct_dir}"
+  env = File.exist?(LOCAL_CONFIG) ? "cct_config_file=#{LOCAL_CONFIG}" : ""
+  system "#{env} bundle exec cucumber #{options.tags}"
+end
