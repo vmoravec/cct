@@ -7,9 +7,6 @@ require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
 
-Cct.setup(__dir__, verbose: verbose)
-Cct.load_tasks!
-
 unless ENV["PACKAGING"] && ENV["PACKAGING"] == "yes"
   require "rspec/core/rake_task"
   RSpec::Core::RakeTask.new(:spec)
