@@ -15,8 +15,6 @@ require "cct/base_logger"
 require "cct/core_ext"
 require "cct/local_user"
 require "cct/config"
-require "cct/rake/dsl"
-require "cct/cucumber_task"
 require "cct/commands/local"
 require "cct/commands/remote"
 require "cct/local_command"
@@ -51,12 +49,6 @@ module Cct
 
     def update_logger base_logger
       @logger = base_logger.base
-    end
-
-    def load_tasks!
-      require "cucumber"
-      require "cucumber/rake/task"
-      Dir.glob(root.to_s + '/tasks/**/*.rake').each { |task| load(task) }
     end
   end
 end
