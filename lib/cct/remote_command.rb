@@ -162,7 +162,7 @@ module Cct
       options.extended.port = opts['port'] || opts[:port] if opts['port'] || opts[:port]
       options.extended.password = opts['password'] || opts[:password]
       options.extended.timeout = detect_timeout(opts)
-      options.extended.proxy = proxy
+      options.extended.proxy = proxy if proxy
       options.extended.keys = opts["keys"] || opts[:keys] if opts[:keys] || opts["keys"]
     end
 
