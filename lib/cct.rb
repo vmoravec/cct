@@ -10,6 +10,7 @@ require "faraday/digestauth"
 require "faraday_middleware"
 
 require "cct/version"
+require "cct/cli"
 require "cct/errors"
 require "cct/base_logger"
 require "cct/core_ext"
