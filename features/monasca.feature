@@ -10,8 +10,7 @@ Feature: Monasca - cloud monitoring
   Scenario: Services are active and enabled
     Given all monitoring services are enabled and running on the monasca node
       |Service name:                             |
-     # BUG apache2.service is disabled
-     #|apache2                                   |
+      |apache2                                   |
       |influxdb                                  |
       |elasticsearch                             |
       |kafka                                     |
@@ -30,5 +29,21 @@ Feature: Monasca - cloud monitoring
       |storm-nimbus                              |
       |storm-supervisor                          |
       |zookeeper                                 |
-   #Then
+
+  Scenario: Monasca CLI client functionality
+    Given the package "python-monascaclient" is installed
+    When "monasca" command is available on controller node
+    And openrc file is adapted for monasca
+    Then all monasca subcommands containing list succeed
+      |Subcommand:           |
+      |alarm-list            |
+      |alarm-definition-list |
+      |alarm-history-list    |
+      |dimension-name-list   |
+     #|dimension-value-list  | needs argument DIMENSION_NAME, skipping..
+     #|measurement-list      | needs argument METRIC_NAME, skipping..
+      |metric-list           |
+      |metric-name-list      |
+      |notification-list     |
+      |notification-type-list|
 
