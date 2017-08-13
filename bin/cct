@@ -6,13 +6,28 @@ require "pathname"
 
 options = OpenStruct.new
 
+subcommand_help = <<HELP
+Commonly used commands are:
+  test   : Manage tests
+  config : Show current config data
+  log    : Show recent log
+
+HELP
+
 LOCAL_CONFIG = File.join("/home/#{ENV["USER"]}/.cct/config.yaml")
 
 begin
   op = OptionParser.new do |o|
-    o.on("--tags TAG_NAMEs", "Tag names separated with commas") {|tags| options.tags = "--tags #{tags}" }
-    o.on('--help', "Show this message and exit")                { puts o; exit }
-    o.parse!
+    o.banner = "Usage: cct COMMAND [options]"
+    o.separator ""
+    o.separator subcommand_help
+    o.separator "Options: "
+    o.on('--help', "-h", "Show this message and exit") { puts o; exit }
+    o.on('--verbose', "-v", "Show more about what's going on") do |verbose|
+      options.verbose = verbose
+    end
+    o.separator ""
+    o.separator "See cct COMMAND --help' for more information on a specific command"
   end
 
 rescue OptionParser::MissingArgument,
@@ -23,24 +38,23 @@ end
 require_relative '../lib/cct'
 include Cct::Cli
 
-case ARGV.first
-when /console/
-  console
-when /config/
-  config
-when nil
-  abort "No subcommand given"
-else
-  if options.tags.nil?
-    options.tags = ARGV.first.split(":").map {|tag| "--tags @#{tag} "}.join
-  end
+if ARGV.first.nil?
+  puts "No command given"
+  puts op.help
+  abort
+end
 
-  Dir.chdir(Pathname.new(__dir__).join("..").expand_path) do |cct_dir|
-    puts "Loading from #{cct_dir}"
-    env = ""#File.exist?(LOCAL_CONFIG) ? "cct_config_file=#{LOCAL_CONFIG}" : ""
-    command = "#{env} bundle exec cucumber #{options.tags}".strip
-    puts command
-    system(command)
+safely_parse { op.order! }
+command_name = ARGV.shift
+
+# Use #command method from Cct::Cli to define command options if needed
+command :test do |test|
+  OptionParser.new do |op|
+    op.banner = "Usage: test [options]"
+    op.on("-t", "--tags", "Tag names separated with commas, e.g. --tags admin,ntp") do |tags|
+      options.tags = ARGV.shift
+    end
   end
 end
 
+run_command(command_name, options)
