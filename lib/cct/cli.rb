@@ -27,7 +27,7 @@ module Cct
       Dir.chdir(Pathname.new(File.join(__dir__, "../..")).expand_path) do |cct_dir|
         puts "Loading from #{cct_dir}"
         env = ""#File.exist?(LOCAL_CONFIG) ? "cct_config_file=#{LOCAL_CONFIG}" : ""
-        command = "#{env} bundle exec cucumber --tags #{options.tags} #{'--verbose' if options.verbose}".strip
+        command = "#{env} bundle exec cucumber --tags #{options.tags} #{'--verbose' if options.verbose} -- #{ARGV.last}".strip
         puts command
         system(command)
       end
