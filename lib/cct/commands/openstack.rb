@@ -78,7 +78,7 @@ module Cct
 
         def create name, options={}
           params.clear
-          yield params
+          yield params if block_given?
           all_params = ["create", name, "--format=shell"].concat(params.extract!(options))
           OpenStruct.new(shell_parse(exec!(all_params).output))
         end
